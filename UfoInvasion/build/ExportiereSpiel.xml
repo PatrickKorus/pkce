@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project UfoInvasion with libraries in sub-folder">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="D:/Eclipse/UfoInvasion/trunk/UfoInvasion.jar">
+            <manifest>
+                <attribute name="Main-Class" value="de.game.ufoinvasion.UfoInvasion"/>
+                <attribute name="Class-Path" value=". UfoInvasion_lib/ibxm.jar UfoInvasion_lib/jinput.jar UfoInvasion_lib/jogg-0.0.7.jar UfoInvasion_lib/jorbis-0.0.15.jar UfoInvasion_lib/lwjgl.jar UfoInvasion_lib/slick.jar UfoInvasion_lib/tinylinepp.jar UfoInvasion_lib/tools.jar"/>
+            </manifest>
+            <fileset dir="D:/Eclipse/UfoInvasion/bin"/>
+        </jar>
+        <delete dir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <mkdir dir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/ibxm.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/jinput.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/jogg-0.0.7.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/jorbis-0.0.15.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/lwjgl.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/slick.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/lib/tinylinepp.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+        <copy file="D:/Eclipse/UfoInvasion/tools/tools.jar" todir="D:/Eclipse/UfoInvasion/trunk/UfoInvasion_lib"/>
+    </target>
+</project>
