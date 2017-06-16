@@ -17,6 +17,16 @@ public abstract class Car extends GameObject {
 	boolean isIndicating;
 	boolean isBreaking;
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param basicImage
+	 * @param indicateImage
+	 * @param breakImage
+	 * @param isOnGoalLine
+	 * @param initSpeed
+	 */
 	public Car(int x, int y, Image basicImage, Image indicateImage, Image breakImage, boolean isOnGoalLine, double initSpeed) {
 		super(x, y, basicImage);
 		this.isOnGoalLine = isOnGoalLine;

@@ -6,6 +6,8 @@ public abstract class GameObject {
 
 	protected int x;
 	protected int y;
+	double meterTillEnd;
+	
 	protected Image image;
 	
 	public GameObject(int x, int y, Image image) {
