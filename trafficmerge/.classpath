@@ -6,12 +6,12 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="trafficmerge/natives"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/ibxm.jar"/>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/jinput.jar"/>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/jogg-0.0.7.jar"/>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/jorbis-0.0.15.jar"/>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/lwjgl.jar"/>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/slick.jar"/>
-	<classpathentry kind="lib" path="E:/Dokumente/Uni/4_Semester/Projektkurs_CE/Git/pkce/trafficmerge/lib/tinylinepp.jar"/>
+	<classpathentry kind="lib" path="lib/ibxm.jar"/>
+	<classpathentry kind="lib" path="lib/jinput.jar"/>
+	<classpathentry kind="lib" path="lib/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/slick.jar"/>
+	<classpathentry kind="lib" path="lib/tinylinepp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
