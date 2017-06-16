@@ -1,6 +1,5 @@
 package game;
 
-import java.util.*;
 import org.newdawn.slick.*;
 
 import game.Game;

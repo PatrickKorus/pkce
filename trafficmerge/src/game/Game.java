@@ -4,15 +4,15 @@ import java.util.*;
 
 import org.newdawn.slick.*;
 
-import game.Punkte;
-import game.Car;
+//import game.Punkte;
+import car.Car;
 
-public class Game {
+public class Game extends BasicGame { 
 
 	private Image hintergrund;
-	private Image car;
-	private Punkte punkte;
-	private List<Car> cars = new ArrayList<car>();
+	private Image auto;
+//	private Punkte punkte;
+	private List<Car> cars = new ArrayList<Car>();
 
 	public Game() {
 		super("Traffic Merge Simulation");
@@ -22,20 +22,20 @@ public class Game {
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		hintergrund.draw();
 		for (Car car : cars) {
-			cars.draw(g);
+			car.draw(g);
 		}
 	}	
 	
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		hintergrund = new Image("res/Strasse.jpg");
-		car = new Image("res/auto.png");
-		Car car = new Car(300, 150, auto);
+		auto = new Image("res/auto.png");
+		Car car = new Car(300, 150, auto, false, 2.0);
 		cars.add(car);
-		Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt", new Image(
+/*		Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt", new Image(
 				"res/fonts/score_numer_font.png"));
 		punkte = new Punkte(container.getWidth() - 180, 10, fontPunkte);
-	}
+*/	}
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
@@ -61,7 +61,7 @@ public class Game {
 
 	
 	private void moreCars(int mausX, int mausY) {
-		Car car = new Car(mausX, mausY,auto);
+		Car car = new Car(mausX, mausY,auto,false,2.0);
 		cars.add(car);
 	}
 }
