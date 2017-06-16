@@ -17,6 +17,11 @@ public abstract class GameObject {
 		this.image = image;
 	}
 	
+	public GameObject(int x, int y) {
+		super();
+		this.x = x;
+		this.y = y;
+	}
 
 	public abstract void draw(Graphics g);
 	
