@@ -14,6 +14,8 @@ public abstract class Car extends GameObject {
 	Image basicImage;
 	Image indicateImage;
 	Image breakImage;
+	boolean isIndicating;
+	boolean isBreaking;
 	
 	public Car(int x, int y, Image basicImage, Image indicateImage, Image breakImage, boolean isOnGoalLine, double initSpeed) {
 		super(x, y, basicImage);
