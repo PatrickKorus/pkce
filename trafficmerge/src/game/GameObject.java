@@ -14,6 +14,11 @@ public abstract class GameObject {
 		this.y = y;
 		this.image = image;
 	}
+	
+
+	public abstract void draw(Graphics g);
+	
+	public void update(int delta){};
 
 	public int getX() {
 		return x;
