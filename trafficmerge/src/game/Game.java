@@ -31,7 +31,7 @@ public class Game extends BasicGame {
 	public void init(GameContainer container) throws SlickException {
 		hintergrund = new Image("res/Strasse.jpg");
 		auto = new Image("res/auto.png");
-		Car car = new BasicCar(300, 150, auto, false, 2.0);
+		Car car = new BasicCar(300, 150, auto, false, 2.0, 0.005);
 		cars.add(car);
 /*		Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt", new Image(
 				"res/fonts/score_numer_font.png"));
@@ -62,7 +62,7 @@ public class Game extends BasicGame {
 
 	
 	private void moreCars(int mausX, int mausY) {
-		Car car = new BasicCar(mausX, mausY,auto,false,2.0);
+		Car car = new BasicCar(mausX, mausY, auto, false, 2.0, 0.005);
 		cars.add(car);
 	}
 }
