@@ -10,15 +10,15 @@ import car.BasicCar;
 
 public class Game extends BasicGame { 
 
-	public static int LEFT_LANE_TOP = 380;
-	public static int RIGHT_LANE_TOP = 390;
-	public static int LEFT_LANE_BOTTOM = 520;
-	public static int RIGHT_LANE_BOTTOM = 530;
+	public static int LEFT_LANE_TOP = 370;
+	public static int RIGHT_LANE_TOP = 375;
+	public static int LEFT_LANE_BOTTOM = 560;
+	public static int RIGHT_LANE_BOTTOM = 565;
 	public static int height = 786;
 	public static int width = 1024;
 	
 	public static double halfMeterMax = 600; // in meter
-	public static double meterToPixel = 0.5859;
+	public static double meterToPixel = 1.706;
 	
 	private Image hintergrund;
 	private Image auto;
@@ -39,8 +39,8 @@ public class Game extends BasicGame {
 	
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		hintergrund = new Image("res/Strasse.jpg");
-		auto = new Image("res/auto.png");
+		hintergrund = new Image("res/Hintergrund.png");
+		auto = new Image("res/basicCar/car.png");
 		Car car = new BasicCar(300.0, false, auto, 2.0, 0.005);
 		cars.add(car);
 /*		Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt", new Image(
@@ -72,7 +72,7 @@ public class Game extends BasicGame {
 
 	
 	private void moreCars(int mausX, int mausY) {
-		Car car = new BasicCar(500.0, false, auto, 2.0, 0.005);
+		Car car = new BasicCar(605.0, true, auto, 2.0, 0.005);
 		cars.add(car);
 	}
 }
