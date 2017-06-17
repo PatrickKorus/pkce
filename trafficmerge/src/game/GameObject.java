@@ -7,31 +7,35 @@ public abstract class GameObject {
 	protected int x;
 	protected int y;
 	protected double meter;
-	double meterTillEnd;
-	boolean isRightLane;
+	protected boolean isRightLane;
 	
 	protected Image image;
 	
 	public GameObject(Double meter, boolean isRightLane, Image image) {
-		super();
 		this.meter = meter;
 		this.isRightLane = isRightLane;
-		this.x = getXCoordinate(meter);
-		this.y = getYCoordinate(meter);
+		this.x = updateXCoordinate();
+		this.y = updateYCoordinate();
 		this.image = image;
 	}
 	
 	public GameObject(int x, int y) {
-		super();
 		this.x = x;
 		this.y = y;
+	}
+
+	public GameObject(double meter, boolean isRightLane) {
+		this.meter = meter;
+		this.isRightLane = isRightLane;
+		this.x = updateXCoordinate();
+		this.y = updateYCoordinate();
 	}
 
 	public abstract void draw(Graphics g);
 	
 	public void update(int delta){};
 	
-	public int getXCoordinate(double meter) {
+	public int updateXCoordinate() {
 		if (meter < Game.halfMeterMax) {
 			return (int) Math.round(meter*Game.meterToPixel);
 		} else {
@@ -39,16 +43,16 @@ public abstract class GameObject {
 		}
 	}
 	
-	public int getYCoordinate(double meter) {
+	public int updateYCoordinate() {
 		if (meter < Game.halfMeterMax) {
 			if (isRightLane) {
-				return Game.RIGHT_LANE_TOP;
+				return Game.LEFT_LANE_TOP + Game.SPACE_BETWEEN_LANES;
 			} else {
 				return Game.LEFT_LANE_TOP;
 			}
 		}
 		if (isRightLane) {
-			return Game.RIGHT_LANE_BOTTOM;
+			return Game.LEFT_LANE_BOTTOM + Game.SPACE_BETWEEN_LANES;
 		} else {
 			return Game.LEFT_LANE_BOTTOM;
 		}
@@ -76,6 +80,11 @@ public abstract class GameObject {
 
 	public void setImage(Image image) {
 		this.image = image;
+	}
+
+	public void updateCoordinates() {
+		this.x = updateXCoordinate();
+		this.y = updateYCoordinate();
 	}
 	
 	

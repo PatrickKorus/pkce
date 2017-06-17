@@ -68,6 +68,7 @@ public class UfoInvasion extends BasicGame {
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
+		System.out.println(delta);
 		Input input = container.getInput();
 		if (!gameOver.isGameOver()) {
 			raumschiff.update(delta);

@@ -10,10 +10,9 @@ import car.BasicCar;
 
 public class Game extends BasicGame { 
 
-	public static int LEFT_LANE_TOP = 370;
-	public static int RIGHT_LANE_TOP = 375;
-	public static int LEFT_LANE_BOTTOM = 560;
-	public static int RIGHT_LANE_BOTTOM = 565;
+	public static int LEFT_LANE_TOP = 365;
+	public static int LEFT_LANE_BOTTOM = 575;
+	public static int SPACE_BETWEEN_LANES = 36;
 	public static int height = 786;
 	public static int width = 1024;
 	
@@ -40,8 +39,8 @@ public class Game extends BasicGame {
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		hintergrund = new Image("res/Hintergrund.png");
-		auto = new Image("res/basicCar/car.png");
-		Car car = new BasicCar(300.0, false, auto, 2.0, 0.005);
+		auto = new Image("res/basicCar/normal.png");
+		Car car = new BasicCar(900.0, false, 100);
 		cars.add(car);
 /*		Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt", new Image(
 				"res/fonts/score_numer_font.png"));
@@ -70,9 +69,11 @@ public class Game extends BasicGame {
 		}
 	}
 
+	boolean laneSetter = true;
 	
-	private void moreCars(int mausX, int mausY) {
-		Car car = new BasicCar(605.0, true, auto, 2.0, 0.005);
+	private void moreCars(int mausX, int mausY) throws SlickException {
+		Car car = new BasicCar(0, laneSetter, 100);
+		laneSetter = !laneSetter;
 		cars.add(car);
 	}
 }
