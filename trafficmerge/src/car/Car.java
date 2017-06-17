@@ -17,7 +17,7 @@ public abstract class Car extends GameObject {
 
 	double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
 	double MAX_BREAKING_FORCE; // seconds 100 to 0
-	static Image basicImage;
+	Image basicImage;
 	Image indicateImage;
 	Image breakImage;
 
@@ -52,7 +52,7 @@ public abstract class Car extends GameObject {
 
 	@Override
 	public void update(int delta) {
-		super.update(delta);
+		// invoke superclass
 		super.updateCoordinates();
 
 		// graphical
@@ -68,15 +68,15 @@ public abstract class Car extends GameObject {
 			super.image = basicImage;
 		}
 
+		if (isChangingLane) {
+		changeLane(delta);
+		}
+
 		// control
 		regulateToGoalSpeed();
 
 		// apply changes
 		move(delta);
-		if (isChangingLane) {
-		changeLane(delta);
-		}
-		// currentAcc = accelerate(CarAcc);
 	}
 
 	private void move(int delta) {
@@ -97,7 +97,7 @@ public abstract class Car extends GameObject {
 		}
 	}
 
-	// TODO ueberkritisch gedaempfte Feder?
+	// TODO wissenschaftlicher..
 	public void regulateToGoalSpeed() {
 
 		double error = this.goalSpeed - this.currentSpeed;
