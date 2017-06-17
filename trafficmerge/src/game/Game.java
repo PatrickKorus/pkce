@@ -1,12 +1,18 @@
 package game;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.newdawn.slick.*;
+import org.newdawn.slick.BasicGame;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
 
+import car.BasicCar;
 //import game.Punkte;
 import car.Car;
-import car.BasicCar;
 
 public class Game extends BasicGame { 
 

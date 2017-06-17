@@ -1,8 +1,7 @@
 package game;
 
-import org.newdawn.slick.*;
-
-import game.Game;
+import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.SlickException;
 
 public class Main {
 
