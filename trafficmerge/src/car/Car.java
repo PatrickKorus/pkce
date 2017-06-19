@@ -1,14 +1,10 @@
 package car;
 
-import java.util.Collection;
-
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 import game.Game;
 import game.GameObject;
-import game.Sign;
-import sun.util.resources.cldr.ur.CurrencyNames_ur;
 
 public abstract class Car extends GameObject {
 
@@ -53,9 +49,12 @@ public abstract class Car extends GameObject {
 		image.drawCentered(x, y);
 	}
 
-	public void update(int delta, Collection<? extends Car> cars, Collection<? extends Sign> signs) {
+	@Override
+	public void update(int delta) {
 		// invoke superclass
+		super.update(delta);
 		super.updateCoordinates();
+	
 
 		// graphical
 		if (isIndicating) {

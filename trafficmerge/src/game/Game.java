@@ -19,15 +19,14 @@ public class Game extends BasicGame {
 	public static int LEFT_LANE_TOP = 365;
 	public static int LEFT_LANE_BOTTOM = 575;
 	public static int SPACE_BETWEEN_LANES = 36;
-	public static int height = 786;
+	public static int height = 768;
 	public static int width = 1024;
 	
 	public static double halfMeterMax = 600; // in meter
 	public static double meterToPixel = 1.706;
 	
 	private Image hintergrund;
-	private Image auto;
-//	private Punkte punkte;
+	//	private Punkte punkte;
 	private List<Car> cars = new ArrayList<Car>();
 
 	public Game() {
@@ -45,7 +44,7 @@ public class Game extends BasicGame {
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		hintergrund = new Image("res/Hintergrund.png");
-		auto = new Image("res/basicCar/normal.png");
+		new Image("res/basicCar/normal.png");
 		Car car = new BasicCar(900.0, false, 100);
 		cars.add(car);
 /*		Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt", new Image(
@@ -64,8 +63,7 @@ public class Game extends BasicGame {
 				moreCars(mausX,mausY);
 			}
 			
-		for(int j=0; j < cars.size() ; j++ ){
-			Car car = cars.get(j);
+		for(Car car : cars){
 			car.update(delta);}	
 		
 		
