@@ -32,30 +32,58 @@ public abstract class GameObject {
 		this.y = updateYCoordinate();
 	}
 
+	public void drawWithCulling(Graphics g) {
+		if(this.meter < Game.getMeterOutOfWindow()) {
+			return;
+		}
+		this.draw(g);
+	}
+	
 	public abstract void draw(Graphics g);
+
 	
 	public void update(int delta){};
+	int halfMeterMax = 600; // TODO
 	
 	public int updateXCoordinate() {
-		if (meter < Game.halfMeterMax) {
-			return (int) Math.round(meter*Game.meterToPixel);
+		if (viewCase() != 1) {
+			return (int) Math.round((meter - Game.meter_out_of_window)*Game.meterToPixel );
 		} else {
-			return (int) Math.round((meter - Game.halfMeterMax)*Game.meterToPixel);
+			return (int) Math.round((meter - Game.meter_per_width - Game.meter_out_of_window)*Game.meterToPixel);
 		}
 	}
 	
 	public int updateYCoordinate() {
-		if (meter < Game.halfMeterMax) {
+		
+		if(this.viewCase() == 1) {
+			if (isRightLane) {
+				return Game.LEFT_LANE_BOTTOM + Game.SPACE_BETWEEN_LANES;
+			} else {
+				return Game.LEFT_LANE_BOTTOM;
+			}
+		} else {
 			if (isRightLane) {
 				return Game.LEFT_LANE_TOP + Game.SPACE_BETWEEN_LANES;
 			} else {
 				return Game.LEFT_LANE_TOP;
 			}
 		}
-		if (isRightLane) {
-			return Game.LEFT_LANE_BOTTOM + Game.SPACE_BETWEEN_LANES;
+		
+	}
+	
+	/**
+	 * 
+	 * @return 	-1 if out of window;
+	 * 			+0 if on top lane;
+	 * 			+1 if on bottom lane;
+ 	 */
+	private int viewCase() {
+		if (this.meter < Game.meter_out_of_window + 2) {
+			return -1;
+		} else if (this.meter < Game.meter_out_of_window + Game.meter_per_width) {
+			return 0;
 		} else {
-			return Game.LEFT_LANE_BOTTOM;
+			return 1;
 		}
 	}
 
