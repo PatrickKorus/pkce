@@ -3,6 +3,7 @@ package car;
 import org.newdawn.slick.SlickException;
 
 import game.Game;
+import sign.Sign;
 
 public class CMcorrectCar extends Car {
 	
@@ -18,13 +19,21 @@ public class CMcorrectCar extends Car {
 
 	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
 		super(meter, isRightLane, initSpeed, game, Color.BLUE);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void regulate(Game game) {
-		// TODO Auto-generated method stub
-
+		
+	}
+	
+	double getSpeedLimit(Game game) {
+		 for (Sign sign : game.getSigns()) {
+			 	if (sign.getDistance(this) < 200.0) {
+			 		if (sign.getValue() > 1)
+			 			return sign.getValue();
+			 }
+		 }
+		 return this.goalSpeed;
 	}
 
 }

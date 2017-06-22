@@ -121,6 +121,13 @@ public abstract class GameObject {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	/**
+	 * positive Value if Object hasn't past this yet, negative Value if givenObject is behind this Object
+	 */
+	public double getDistance(GameObject object) {
+		return this.meter-object.meter;
+	}
 
 	public Image getImage() {
 		return image;

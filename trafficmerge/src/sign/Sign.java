@@ -17,10 +17,10 @@ public class Sign extends GameObject {
 		switch (SIGNTYPE) {
 		case LINE_END_0:
 			setImage(new Image("res/signs/laneends.png"));
-			value = 0;
+			value = -0;
 			break;
 		case LINE_END_200:
-			value = 200;
+			value = -200;
 			break;
 		case SPD_60:
 			value = 60;

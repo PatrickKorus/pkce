@@ -6,5 +6,4 @@ public enum Sign_Type {
 	SPD_60,
 	SPD_80,
 	SPD_100;
-
 }

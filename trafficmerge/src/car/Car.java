@@ -35,7 +35,7 @@ public abstract class Car extends GameObject {
 	 *            - initial Speed in km/h
 	 * @param game
 	 *            - the Game that holds the other cars and signs
-	 * @throws SlickException 
+	 * @throws SlickException
 	 */
 
 	public Car(double meter, boolean isRightLane, double initSpeed, Game game, Color color) throws SlickException {
@@ -76,17 +76,16 @@ public abstract class Car extends GameObject {
 			super.image = basicImage;
 		}
 
-		// vertical position
-		if (isChangingLane) {
-			changeLane(delta);
-		}
-
 		// control
 		regulate(this.game);
 
 		// apply changes
 		move(delta);
 		super.updateCoordinates();
+		// vertical position
+		if (isChangingLane) {
+			changeLane(delta);
+		}
 	}
 
 	/**

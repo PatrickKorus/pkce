@@ -44,6 +44,8 @@ public class Game extends BasicGame {
 	// private Punkte punkte;
 	private ArrayList<Sign> signs;
 	private ArrayList<Car> cars;
+	// TODO
+	@SuppressWarnings("unused")
 	private Obstacle obstacle;
 	
 	EntitySpawner spawner;
