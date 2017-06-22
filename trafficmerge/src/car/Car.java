@@ -11,12 +11,12 @@ public abstract class Car extends GameObject {
 
 	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
 	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
-	
+
 	// car images
 	protected Image basicImage, indicateImage, breakImage;
 	// backgrounds
 	protected Image normback, indback, breakback, backimage;
-	
+
 	// current data
 	protected double goalSpeed, currentAcc, currentSpeed;
 	protected boolean isIndicating, isChangingLane;
@@ -24,6 +24,7 @@ public abstract class Car extends GameObject {
 
 	// pointer to the game this car is in
 	protected Game game;
+
 	/**
 	 * 
 	 * @param meter
@@ -32,14 +33,17 @@ public abstract class Car extends GameObject {
 	 * 
 	 * @param initSpeed
 	 *            - initial Speed in km/h
-	 * @param game - the Game that holds the other cars and signs
+	 * @param game
+	 *            - the Game that holds the other cars and signs
+	 * @throws SlickException 
 	 */
 
-	public Car(double meter, boolean isRightLane, double initSpeed, Game game) {
+	public Car(double meter, boolean isRightLane, double initSpeed, Game game, Color color) throws SlickException {
 		super(meter, isRightLane);
 		this.game = game;
 		this.setSpeed(initSpeed);
 		this.currentAcc = 0.0;
+		this.setColor(color);
 		isIndicating = false;
 		isChangingLane = false;
 	}
@@ -48,7 +52,6 @@ public abstract class Car extends GameObject {
 	public void draw(Graphics g) {
 		backimage.drawCentered(x, y);
 		image.drawCentered(x, y);
-
 	}
 
 	@Override
@@ -114,7 +117,8 @@ public abstract class Car extends GameObject {
 	}
 
 	/**
-	 * Here the car makes its choices manipulating only currentACC, isIndicating & isChangingLane!
+	 * Here the car makes its choices manipulating only currentACC, isIndicating
+	 * & isChangingLane!
 	 */
 	public abstract void regulate(Game game);
 
@@ -158,12 +162,11 @@ public abstract class Car extends GameObject {
 	public double acc(double Noughtto100) {
 		return 10000.0 / (36.0 * Noughtto100);
 	}
-	
-	
+
 	public void setColor(Color color) throws SlickException {
-		switch(color) {
+		switch (color) {
 		// TODO other colors
-		case BLUE : 
+		case BLUE:
 			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(Game.SCALE);
 			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(Game.SCALE);
 			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(Game.SCALE);
@@ -171,7 +174,7 @@ public abstract class Car extends GameObject {
 			breakback = new Image("res/basicCar/breaking_back.png");
 			indback = new Image("res/basicCar/indicating_back.png");
 			break;
-		default :
+		default:
 			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(Game.SCALE);
 			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(Game.SCALE);
 			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(Game.SCALE);
@@ -180,7 +183,7 @@ public abstract class Car extends GameObject {
 			indback = new Image("res/basicCar/indicating_back.png");
 			break;
 		}
-		
+
 		super.setImage(basicImage);
 		backimage = normback;
 	}
@@ -199,6 +202,6 @@ public abstract class Car extends GameObject {
 
 	public boolean isChangingLane() {
 		return isChangingLane;
-	}	
-	
+	}
+
 }

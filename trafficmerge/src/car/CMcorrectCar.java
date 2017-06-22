@@ -1,5 +1,7 @@
 package car;
 
+import org.newdawn.slick.SlickException;
+
 import game.Game;
 
 public class CMcorrectCar extends Car {
@@ -11,10 +13,11 @@ public class CMcorrectCar extends Car {
 	 * @param isRightLane
 	 * @param initSpeed
 	 * @param game
+	 * @throws SlickException 
 	 */
 
-	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, Game game) {
-		super(meter, isRightLane, initSpeed, game);
+	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
+		super(meter, isRightLane, initSpeed, game, Color.BLUE);
 		// TODO Auto-generated constructor stub
 	}
 

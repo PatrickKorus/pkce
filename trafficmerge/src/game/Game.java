@@ -62,7 +62,6 @@ public class Game extends BasicGame {
 		meterToPixel = scale * Game.VEHICLE_LENGTH_PIX / Game.VEHICLE_LENGTH_M;
 		meter_per_width = Game.width / meterToPixel;
 		meter_out_of_window = Game.TOTAL_SIMULATION_DISTANCE - (Game.meter_per_width * 2);
-
 	}
 
 	@Override

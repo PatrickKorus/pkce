@@ -11,8 +11,7 @@ import game.Game;
 public class BasicCar extends Car {
 
 	public BasicCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
-		super(meter, isRightLane, initSpeed, game);
-		setColor(Color.BLUE);
+		super(meter, isRightLane, initSpeed, game, Color.BLUE);
 		MAX_ACC = acc(12);
 		MAX_BREAKING_FORCE = acc(5);
 	}
