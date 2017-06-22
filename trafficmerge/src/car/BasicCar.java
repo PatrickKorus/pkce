@@ -20,21 +20,25 @@ public class BasicCar extends Car {
 	public void update(int delta) {
 		super.update(delta);
 		
-		// testing
-		if (meter > 500 && meter < 700) {
-			super.goalSpeed = 50;
-		} else if (meter > 700 && meter < 800) {
-			super.goalSpeed = 100;
-		} else if (meter > 800 && meter < 900) {
-			isIndicating = true;
-		} else if (meter > 900 && meter < 1000) {
-			this.goalSpeed = 30;
-		} else if (meter > 1000 && meter < 1100) {
-			this.isChangingLane = true;
-		} else {
-			this.isIndicating = false;
-			this.goalSpeed = 10;
-		}
+//		// testing
+//		if (meter > 500 && meter < 700) {
+//			super.goalSpeed = 50;
+//		} else if (meter > 700 && meter < 800) {
+//			super.goalSpeed = 100;
+//		} else if (meter > 800 && meter < 900) {
+//			isIndicating = true;
+//		} else if (meter > 900 && meter < 1000) {
+//			this.goalSpeed = 30;
+//		} else if (meter > 1000 && meter < 1100) {
+//			this.isChangingLane = true;
+//		} else {
+//			this.isIndicating = false;
+//			this.goalSpeed = 10;
+//		}
+		
+		this.goalSpeed = 30;
+		this.isRightLane = true;
+//		this.isChangingLane = true;
 	}
 
 	@Override

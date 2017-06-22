@@ -68,7 +68,7 @@ public abstract class Car extends GameObject {
 		if (indicatingLightsOn) {
 			backimage = indback;
 			super.image = indicateImage;
-		} else if (this.currentAcc < -1.0) {
+		} else if (this.currentAcc < -2.0) {
 			backimage = breakback;
 			super.image = breakImage;
 		} else {

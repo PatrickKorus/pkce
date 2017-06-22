@@ -3,7 +3,10 @@ package game.spawner;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
+import com.sun.xml.internal.messaging.saaj.soap.impl.DetailImpl;
+
 import car.BasicCar;
+import car.CMcorrectCar;
 import car.Car;
 import game.Game;
 import sign.Sign;
@@ -14,14 +17,24 @@ public class manualSpawner implements EntitySpawner {
 	@Override
 	public void init(Game game) throws SlickException {
 		initSigns(game);
-	}
 
+		game.addCar(new BasicCar(0, false, 90, game));
+	}
+	
+	
+	private int deltaCOunter = 0;
 	@Override
 	public void spawn(int delta, Input input, Game game) throws SlickException {
 		
-
 		int mausX = input.getMouseX();
 		int mausY = input.getMouseY();
+		
+		
+		deltaCOunter += delta;
+		if (deltaCOunter > 700) {
+			deltaCOunter = 0;
+			moreCars(mausX, mausY, game);
+		}
 		
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
 			moreCars(mausX, mausY, game);
@@ -30,7 +43,7 @@ public class manualSpawner implements EntitySpawner {
 	
 	boolean laneSetter = true;
 	private void moreCars(int mausX, int mausY, Game game) throws SlickException {
-		Car car = new BasicCar(0, laneSetter, 100, game);
+		Car car = new CMcorrectCar(0, laneSetter, 90.0, game);
 		laneSetter = !laneSetter;
 		game.addCar(car);
 	}

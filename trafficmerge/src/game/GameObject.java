@@ -129,6 +129,9 @@ public abstract class GameObject {
 		return this.meter-object.meter;
 	}
 
+	public boolean isRightLane() {
+		return isRightLane;
+	}
 	public Image getImage() {
 		return image;
 	}
