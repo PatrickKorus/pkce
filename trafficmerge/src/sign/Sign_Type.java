@@ -1,4 +1,4 @@
-package game;
+package sign;
 
 public enum Sign_Type {
 	LINE_END_0,

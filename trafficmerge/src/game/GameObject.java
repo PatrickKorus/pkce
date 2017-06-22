@@ -20,20 +20,25 @@ public abstract class GameObject {
 		this.image = image;
 	}
 	
-	public GameObject(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+
 
 	public GameObject(double meter, boolean isRightLane) {
 		this.meter = meter;
 		this.isRightLane = isRightLane;
-		this.x = updateXCoordinate();
-		this.y = updateYCoordinate();
+		updateCoordinates();
 	}
+	
+//	public GameObject(int x, int y) {
+//		this.x = x;
+//		this.y = y;
+//	}
 
+	/**
+	 * Draws object only if on Displayed Part of the road (Frustum Culling)
+	 * @param g
+	 */
 	public void drawWithCulling(Graphics g) {
-		if(this.meter < Game.getMeterOutOfWindow()) {
+		if(this.meter < Game.meter_out_of_window || this.meter > Game.TOTAL_SIMULATION_DISTANCE) {
 			return;
 		}
 		this.draw(g);
@@ -41,18 +46,24 @@ public abstract class GameObject {
 	
 	public abstract void draw(Graphics g);
 
-	
 	public void update(int delta){};
-	int halfMeterMax = 600; // TODO
 	
+	/**
+	 * Calculates X coordinate by current distance in meter
+	 * @return
+	 */
 	public int updateXCoordinate() {
-		if (viewCase() != 1) {
-			return (int) Math.round((meter - Game.meter_out_of_window)*Game.meterToPixel );
+		if (viewCase() == 1) {
+			return Game.meterToPixel(meter - Game.meter_per_width - Game.meter_out_of_window);
 		} else {
-			return (int) Math.round((meter - Game.meter_per_width - Game.meter_out_of_window)*Game.meterToPixel);
+			return Game.meterToPixel(meter - Game.meter_out_of_window);
 		}
 	}
 	
+	/**
+	 * Calculates Y coordinate by using current distance in meter and current Lane
+	 * @return
+	 */
 	public int updateYCoordinate() {
 		
 		if(this.viewCase() == 1) {
@@ -67,8 +78,16 @@ public abstract class GameObject {
 			} else {
 				return Game.LEFT_LANE_TOP;
 			}
-		}
-		
+		}	
+	}
+	
+
+	/**
+	 * Updates pixel coordinates from meter distance
+	 */
+	public void updateCoordinates() {
+		this.x = updateXCoordinate();
+		this.y = updateYCoordinate();
 	}
 	
 	/**
@@ -111,10 +130,6 @@ public abstract class GameObject {
 		this.image = image;
 	}
 
-	public void updateCoordinates() {
-		this.x = updateXCoordinate();
-		this.y = updateYCoordinate();
-	}
 	
 	
 }
