@@ -1,9 +1,13 @@
 package car;
 
+import javax.sound.midi.SysexMessage;
+
+import org.lwjgl.Sys;
 import org.newdawn.slick.SlickException;
 
 import game.Game;
 import sign.Sign;
+import sign.SpeedLimitSign;
 
 public class CMcorrectCar extends Car {
 
@@ -21,82 +25,120 @@ public class CMcorrectCar extends Car {
 	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
 		super(meter, isRightLane, initSpeed, game, Color.BLUE);
 		MAX_ACC = acc(12);
-		MAX_BREAKING_FORCE = acc(5);
+		MAX_BREAKING_FORCE = acc(3);
 	}
 
 	@Override
 	public void regulate(Game game) {
+
 		// For testing so far
-		if (this.meter > 1050 && this.meter < 1130 && !this.isRightLane()) {
+		if (this.meter > Game.END_OF_LANE - 120 && this.meter < Game.END_OF_LANE && !this.isRightLane()) {
 			this.isIndicating = true;
 		} else {
 			this.isIndicating = false;
 		}
-		if (this.meter > 1130) {
+		if (this.meter > Game.END_OF_LANE-30) {
 			this.isChangingLane = true;
 		}
 
-		Car carUpFront = getCarUpFront(game);
+		Car carUpFront = getCarUpFront(game)[0];
+//		Car indicatingUpFront =;
 		double distance = Game.TOTAL_SIMULATION_DISTANCE;
-		double safetyDistance = this.currentSpeed / 1 + 2.0;
-		if (carUpFront != null)
-			distance = carUpFront.getDistance(this);
+		double speed = 100.0;
+		if (carUpFront != null) {
+			distance = this.getDistance(carUpFront);
+			speed = carUpFront.getCurrentSpeed();
+		}
+		// double safetyDistance = 4 +this.currentSpeed * this.currentSpeed *
+		// this.MAX_BREAKING_FORCE * 0.03858;
+		// System.out.println(currentSpeed);
+		// System.out.println(safetyDistance);
+		// double safetyDistance = this.currentSpeed / 2.0 + 2 *
+		// this.currentSpeed / (speed + 1) + 5;
+		double minDistance = (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
 
-		// priority 1: preserve security distance & TODO don't crash into
-		// obstacle
+		double safetyDistance = minDistance + this.currentSpeed / 2;
+
+		//
+		// System.out.println("minimum distance = " + minDistance);
+		// System.out.println("safe distance = " + safetyDistance);
+		// System.out.println("current distance = " + distance);
+		
+		
+		// stop if crashed
+		if (distance < 5) {
+			this.currentSpeed = 0;
+			System.err.println("crash");
+		}
+		// priority 1: preserve critical distance
 		if (distance < safetyDistance) {
-			this.regulateTo(distance, safetyDistance);
+			this.regulateTo(distance, safetyDistance, 10);
 			return;
 		}
 
-		// lowest priority: regulat to SpeedLimit
-		double speedLimit = this.getSpeedLimit(game);
-		this.regulateTo(speedLimit, currentSpeed);
+		// priority 2: drive safe distance
+		this.regulateTo(distance, safetyDistance, 5);
 
+		// priority 3: safety distance to indicating car up front
+
+		// lowest priority: regulate to SpeedLimit
+		 double speedLimit = kmhTOmpers(this.getSpeedLimit(game));
+		 if (this.currentSpeed > speedLimit && currentAcc > -0.1)
+		 this.regulateTo(speedLimit, currentSpeed, 4);
+		 
+//		 System.out.println(speedLimit * 36/10);
+//		 System.out.println(this.currentSpeed * 36/10);
 	}
 
-	public void regulateTo(double goal, double current) {
+	public void regulateTo(double goal, double current, float importance) {
 		double error = goal - current;
-		if (error < 0.00001 && error > -0.00001) {
+		if (error < 0.001 && error > -0.001) {
 			this.currentAcc = 0;
 			return;
 		}
 		double newacc;
 		if (error < 0) {
-			newacc = Math.max(5 * error, -MAX_BREAKING_FORCE);
+			newacc = Math.max(importance * error, -MAX_BREAKING_FORCE);
 		} else {
-			newacc = Math.min(2 * error, MAX_ACC);
+			newacc = Math.min(0.8 * importance * error, MAX_ACC);
 		}
-		if (this.currentSpeed + newacc < 0) {
-			this.currentSpeed = 0;
-			this.currentAcc = 0;
-		} else {
-			this.currentAcc = newacc;
-		}
+		this.currentAcc = newacc;
+
 	}
 
 	double getSpeedLimit(Game game) {
-		double speedLimit = this.goalSpeed;
+		double speedLimit = 100.0;
 		for (Sign sign : game.getSigns()) {
-			if (sign.getDistance(this) < 100.0) {
-				if (sign.getValue() > 1 && sign.getValue() < speedLimit)
-					speedLimit = sign.getValue();
-			}
+			if (sign instanceof SpeedLimitSign && this.getDistance(sign) < 50.0 && sign.getValue() < speedLimit)
+				speedLimit = sign.getValue();
 		}
 		return speedLimit;
 	}
 
-	Car getCarUpFront(Game game) {
-		Car carUpFront = null;
-		double smallestDistance = Game.TOTAL_SIMULATION_DISTANCE;
-		double currentDistance = 0;
+	Car[] getCarUpFront(Game game) {
+		Car[] carUpFront = new Car[2];
+		double smallestDistance0 = Game.TOTAL_SIMULATION_DISTANCE;
+		double currentDistance0 = 0;
+		double smallestDistance1 = Game.TOTAL_SIMULATION_DISTANCE;
 		for (Car car : game.getCars()) {
-			if (car.isRightLane() == this.isRightLane() || car.isChangingLane
-					|| (car.isIndicating && car.isRightLane() != this.isRightLane)) {
-				currentDistance = car.getDistance(this);
-				if (currentDistance > 0 && currentDistance < smallestDistance) {
-					smallestDistance = currentDistance;
-					carUpFront = car;
+			currentDistance0 = this.getDistance(car);
+			// for all cars are in front of this car
+			if (currentDistance0 > 0) {
+				// find the closest car on the same lane
+				if (car.isRightLane() == this.isRightLane() || car.isChangingLane) {
+					if (currentDistance0 < smallestDistance0) {
+						smallestDistance0 = currentDistance0;
+						carUpFront[0] = car;
+						continue;
+					}
+				}
+
+				if (car.isIndicating) {
+					currentDistance0 = car.getDistance(this);
+					if (currentDistance0 < smallestDistance1) {
+						smallestDistance1 = currentDistance0;
+						carUpFront[1] = car;
+					}
 				}
 			}
 		}

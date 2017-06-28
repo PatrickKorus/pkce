@@ -3,14 +3,14 @@ package game.spawner;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import com.sun.xml.internal.messaging.saaj.soap.impl.DetailImpl;
-
 import car.BasicCar;
 import car.CMcorrectCar;
 import car.Car;
 import game.Game;
-import sign.Sign;
+import sign.Delineator;
+import sign.LaneEndsSign;
 import sign.Sign_Type;
+import sign.SpeedLimitSign;
 
 public class manualSpawner implements EntitySpawner {
 
@@ -18,7 +18,9 @@ public class manualSpawner implements EntitySpawner {
 	public void init(Game game) throws SlickException {
 		initSigns(game);
 
-		game.addCar(new BasicCar(0, false, 90, game));
+		game.addCar(new BasicCar(0, true, 100, game));
+		
+		
 	}
 	
 	
@@ -31,7 +33,7 @@ public class manualSpawner implements EntitySpawner {
 		
 		
 		deltaCOunter += delta;
-		if (deltaCOunter > 700) {
+		if (deltaCOunter > 1400) {
 			deltaCOunter = 0;
 			moreCars(mausX, mausY, game);
 		}
@@ -49,12 +51,16 @@ public class manualSpawner implements EntitySpawner {
 	}
 
 	private void initSigns(Game game) throws SlickException {
-		game.addSign(new Sign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
-		game.addSign(new Sign(Game.END_OF_LANE - 400, Sign_Type.LINE_END_0));
-		game.addSign(new Sign(Game.END_OF_LANE - 750, Sign_Type.LINE_END_0));
-		game.addSign(new Sign(Game.END_OF_LANE - 1000, Sign_Type.SPD_100));
-		game.addSign(new Sign(Game.END_OF_LANE - 800, Sign_Type.SPD_80));
-		game.addSign(new Sign(Game.END_OF_LANE - 200, Sign_Type.SPD_60));
+		game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
+		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
+		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		
+		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
+			game.addDelineator(new Delineator(d));
+		}
 	}
 
 }

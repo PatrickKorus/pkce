@@ -13,13 +13,19 @@ public class BasicCar extends Car {
 	public BasicCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
 		super(meter, isRightLane, initSpeed, game, Color.BLUE);
 		MAX_ACC = acc(12);
-		MAX_BREAKING_FORCE = acc(5);
+		MAX_BREAKING_FORCE = acc(4);
 	}
 
 	@Override
 	public void update(int delta) {
 		super.update(delta);
+//		
+//		if (meter > 1000) {
+			this.goalSpeed = kmhTOmpers(80);
 		
+//		while (currentSpeed + currentAcc <0) 
+//			this.currentAcc *= 0.5;
+//		}
 //		// testing
 //		if (meter > 500 && meter < 700) {
 //			super.goalSpeed = 50;
@@ -36,8 +42,8 @@ public class BasicCar extends Car {
 //			this.goalSpeed = 10;
 //		}
 		
-		this.goalSpeed = 30;
-		this.isRightLane = true;
+//		this.goalSpeed = 0.0;
+//		this.isRightLane = true;
 //		this.isChangingLane = true;
 	}
 
@@ -50,9 +56,9 @@ public class BasicCar extends Car {
 		}
 
 		if (error < 0) {
-			currentAcc = Math.max(5 * error, -MAX_BREAKING_FORCE);
+			currentAcc = Math.max(error, -MAX_BREAKING_FORCE);
 		} else {
-			currentAcc = Math.min(2 * error, MAX_ACC);
+			currentAcc = Math.min(error, MAX_ACC);
 		}
 	}
 

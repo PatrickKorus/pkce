@@ -16,6 +16,8 @@ public abstract class Car extends GameObject {
 	protected Image basicImage, indicateImage, breakImage;
 	// backgrounds
 	protected Image normback, indback, breakback, backimage;
+	// color
+	private Color color;
 
 	// current data
 	protected double goalSpeed, currentAcc, currentSpeed;
@@ -43,7 +45,9 @@ public abstract class Car extends GameObject {
 		this.game = game;
 		this.setSpeed(initSpeed);
 		this.currentAcc = 0.0;
-		this.setColor(color);
+		this.setColor(color, Game.SCALE);
+		super.setImage(basicImage);
+		backimage = normback;
 		isIndicating = false;
 		isChangingLane = false;
 	}
@@ -56,8 +60,6 @@ public abstract class Car extends GameObject {
 
 	@Override
 	public void update(int delta) {
-		// invoke superclass
-		super.update(delta);
 
 		// invoke indicator
 		if (isIndicating) {
@@ -68,7 +70,7 @@ public abstract class Car extends GameObject {
 		if (indicatingLightsOn) {
 			backimage = indback;
 			super.image = indicateImage;
-		} else if (this.currentAcc < -2.0) {
+		} else if (this.currentAcc < -0.09) {
 			backimage = breakback;
 			super.image = breakImage;
 		} else {
@@ -86,6 +88,9 @@ public abstract class Car extends GameObject {
 		if (isChangingLane) {
 			changeLane(delta);
 		}
+
+		// invoke superclass
+//		super.update(delta);
 	}
 
 	/**
@@ -95,6 +100,8 @@ public abstract class Car extends GameObject {
 	 */
 	private void move(int delta) {
 		this.currentSpeed += currentAcc * delta / 1000.0;
+		if (this.currentSpeed < 0)
+			this.currentSpeed = 0;
 		this.meter += currentSpeed * delta / 1000.0;
 	}
 
@@ -148,7 +155,7 @@ public abstract class Car extends GameObject {
 	 *            - speed in km/h
 	 */
 	public void setSpeed(double kmh) {
-		this.currentSpeed = kmh * 100.0 / 36.0;
+		this.currentSpeed = kmhTOmpers(kmh);
 		this.goalSpeed = this.currentSpeed;
 	}
 
@@ -159,32 +166,39 @@ public abstract class Car extends GameObject {
 	 * @return equivalent acceleration in m/s^2
 	 */
 	public double acc(double Noughtto100) {
-		return 10000.0 / (36.0 * Noughtto100);
+		return 1000.0 / (36.0 * Noughtto100);
 	}
 
-	public void setColor(Color color) throws SlickException {
+	protected double kmhTOmpers(double kmh) {
+		return kmh * 10.0 / 36.0;
+	}
+
+	public void setColor(Color color, float scale) throws SlickException {
+		this.color = color;
 		switch (color) {
 		// TODO other colors
 		case BLUE:
-			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(Game.SCALE);
-			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(Game.SCALE);
-			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(Game.SCALE);
+			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
+			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
+			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(scale);
 			normback = new Image("res/basicCar/normal_back.png");
 			breakback = new Image("res/basicCar/breaking_back.png");
 			indback = new Image("res/basicCar/indicating_back.png");
 			break;
 		default:
-			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(Game.SCALE);
-			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(Game.SCALE);
-			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(Game.SCALE);
+			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
+			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
+			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(scale);
 			normback = new Image("res/basicCar/normal_back.png");
 			breakback = new Image("res/basicCar/breaking_back.png");
 			indback = new Image("res/basicCar/indicating_back.png");
 			break;
 		}
+	}
 
-		super.setImage(basicImage);
-		backimage = normback;
+	@Override
+	public void rescale(float scale) throws SlickException {
+		setColor(color, scale);
 	}
 
 	public double getCurrentAcc() {
