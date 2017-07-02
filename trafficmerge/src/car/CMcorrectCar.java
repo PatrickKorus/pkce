@@ -132,7 +132,7 @@ public class CMcorrectCar extends Car {
 						continue;
 					}
 				}
-
+				// TODO: closest car on the other lane?
 				if (car.isIndicating) {
 					currentDistance0 = car.getDistance(this);
 					if (currentDistance0 < smallestDistance1) {

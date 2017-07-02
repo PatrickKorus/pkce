@@ -44,6 +44,7 @@ public class manualSpawner implements EntitySpawner {
 	}
 	
 	boolean laneSetter = true;
+	
 	private void moreCars(int mausX, int mausY, Game game) throws SlickException {
 		Car car = new CMcorrectCar(0, laneSetter, 90.0, game);
 		laneSetter = !laneSetter;
