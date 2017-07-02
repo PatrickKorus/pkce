@@ -16,9 +16,13 @@ public class CMcorrectCar extends Car {
 	 * (Reissverschlussverfahren)
 	 * 
 	 * @param meter
+	 *            - spawn position in meter
 	 * @param isRightLane
+	 * 
 	 * @param initSpeed
+	 *            - initial Speed in km/h
 	 * @param game
+	 *            - the Game that holds the other cars and signs
 	 * @throws SlickException
 	 */
 

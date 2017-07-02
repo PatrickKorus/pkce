@@ -25,17 +25,22 @@ public class manualSpawner implements EntitySpawner {
 	
 	
 	private int deltaCOunter = 0;
+	private boolean spawncar = true;
+
 	@Override
 	public void spawn(int delta, Input input, Game game) throws SlickException {
 		
 		int mausX = input.getMouseX();
 		int mausY = input.getMouseY();
-		
-		
+		if(spawncar){
 		deltaCOunter += delta;
 		if (deltaCOunter > 1400) {
 			deltaCOunter = 0;
 			moreCars(mausX, mausY, game);
+		}
+		}
+		if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
+			spawncar = !spawncar;
 		}
 		
 		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
