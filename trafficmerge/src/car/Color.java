@@ -1,5 +1,7 @@
 package car;
 
 public enum Color {
-BLUE
+BLUE,
+AGGRESSIVE,
+PASSIVE;
 }
