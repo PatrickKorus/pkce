@@ -18,7 +18,7 @@ public class manualSpawner implements EntitySpawner {
 	public void init(Game game) throws SlickException {
 		initSigns(game);
 
-		game.addCar(new BasicCar(0, true, 100, game));
+//		game.addCar(new BasicCar(0, true, 60, game));
 		
 		
 	}

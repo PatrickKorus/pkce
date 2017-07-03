@@ -20,9 +20,9 @@ public class BasicCar extends Car {
 	public void update(int delta) {
 		super.update(delta);
 //		
-//		if (meter > 1000) {
-			this.goalSpeed = kmhTOmpers(80);
-		
+		if (meter > 1000) {
+			this.goalSpeed = kmhTOmpers(0);
+		}
 //		while (currentSpeed + currentAcc <0) 
 //			this.currentAcc *= 0.5;
 //		}
