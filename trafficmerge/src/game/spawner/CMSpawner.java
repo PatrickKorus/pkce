@@ -115,7 +115,7 @@ public class CMSpawner implements EntitySpawner  {
 	private Car[] lastCarOnLane (Game game) throws SlickException{
 		//==================
 		// not spawning cars to get the distance of the driving cars. 
-		// TODO: direct output of a cars distance to spawn?
+		// TODO: direct output of a cars distance to spawn? -> meter
 		Car phantomCarR = new CMcorrectCar(0,true,0, game);
 		Car phantomCarL = new CMcorrectCar(0,false,0, game);
 		Car[] lastcar = new Car[2];

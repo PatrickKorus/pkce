@@ -53,12 +53,8 @@ public class CMcorrectCar extends Car {
 			distance = this.getDistance(carUpFront);
 			speed = carUpFront.getCurrentSpeed();
 		}
-		// double safetyDistance = 4 +this.currentSpeed * this.currentSpeed *
-		// this.MAX_BREAKING_FORCE * 0.03858;
-		// System.out.println(currentSpeed);
-		// System.out.println(safetyDistance);
-		// double safetyDistance = this.currentSpeed / 2.0 + 2 *
-		// this.currentSpeed / (speed + 1) + 5;
+
+		//TODO: in public function auskoppeln.
 		double minDistance = (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
 
 		double safetyDistance = minDistance + this.currentSpeed / 2;
