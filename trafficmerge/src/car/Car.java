@@ -2,121 +2,144 @@ package car;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import game.Game;
 import game.GameObject;
 
 public abstract class Car extends GameObject {
 
-	// Image ViewField;
+	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
+	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
 
-	// TODO ! factors that transform metric speed into pixel speed
-	private static double ACC_CONSTANT = 0.1;
-	private static double SPEED_CONSTANT = 0.001;
+	// car images
+	protected Image basicImage, indicateImage, breakImage;
+	// backgrounds
+	protected Image normback, indback, breakback, backimage;
+	// color
+	private Color color;
 
-	double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
-	double MAX_BREAKING_FORCE; // seconds 100 to 0
-	Image basicImage;
-	Image indicateImage;
-	Image breakImage;
-
-	double goalSpeed;
-	double currentSpeed;
-	double currentAcc;
-
-	boolean isIndicating;
-	boolean isChangingLane;
+	// current data
+	protected double goalSpeed, currentAcc, currentSpeed;
+	protected boolean isIndicating, isChangingLane;
 	// boolean isBreaking; // redundant since true when currentACC < 0
+
+	// pointer to the game this car is in
+	protected Game game;
 
 	/**
 	 * 
 	 * @param meter
+	 *            - spawn position in meter
 	 * @param isRightLane
+	 * 
 	 * @param initSpeed
+	 *            - initial Speed in km/h
+	 * @param game
+	 *            - the Game that holds the other cars and signs
+	 * @throws SlickException
 	 */
 
-	public Car(double meter, boolean isRightLane, double initSpeed) {
+	public Car(double meter, boolean isRightLane, double initSpeed, Game game, Color color) throws SlickException {
 		super(meter, isRightLane);
-		this.goalSpeed = initSpeed;
-		this.currentSpeed = initSpeed;
+		this.game = game;
+		this.setSpeed(initSpeed);
 		this.currentAcc = 0.0;
+		this.setColor(color, Game.SCALE);
+		super.setImage(basicImage);
+		backimage = normback;
 		isIndicating = false;
 		isChangingLane = false;
 	}
 
 	@Override
 	public void draw(Graphics g) {
+		backimage.drawCentered(x, y);
 		image.drawCentered(x, y);
 	}
 
 	@Override
 	public void update(int delta) {
-		// invoke superclass
-		super.update(delta);
-		super.updateCoordinates();
-	
 
-		// graphical
+		// invoke indicator
 		if (isIndicating) {
-			indicater(delta);
+			indicator(delta);
 		}
 
+		// set correct display image
 		if (indicatingLightsOn) {
+			backimage = indback;
 			super.image = indicateImage;
-		} else if (this.currentAcc < -1.0) {
+		} else if (this.currentAcc < -0.09) {
+			backimage = breakback;
 			super.image = breakImage;
 		} else {
+			backimage = normback;
 			super.image = basicImage;
 		}
 
-		if (isChangingLane) {
-		changeLane(delta);
-		}
-
 		// control
-		regulateToGoalSpeed();
+		regulate(this.game);
 
 		// apply changes
 		move(delta);
+		super.updateCoordinates();
+		// vertical position
+		if (isChangingLane) {
+			changeLane(delta);
+		}
+
+		// invoke superclass
+//		super.update(delta);
 	}
 
+	/**
+	 * Applies speed to position and acceleration to speed.
+	 * 
+	 * @param delta
+	 */
 	private void move(int delta) {
-		// TODO do mathematically correct
-		this.currentSpeed += currentAcc * delta / 100.0;
+		this.currentSpeed += currentAcc * delta / 1000.0;
+		if (this.currentSpeed < 0)
+			this.currentSpeed = 0;
 		this.meter += currentSpeed * delta / 1000.0;
 	}
 
 	// TODO there is probably a better way to do this
-	private int deltaCounter = 901;
+	private int deltaCounter = 400;
 	private boolean indicatingLightsOn = false;
 
-	private void indicater(int delta) {
+	/**
+	 * This is used to make the indicator flash.
+	 * 
+	 * @param delta
+	 */
+	private void indicator(int delta) {
 		deltaCounter += delta;
-		if (deltaCounter > 700) {
+		if (deltaCounter >= 400) {
 			deltaCounter = 0;
 			indicatingLightsOn = !indicatingLightsOn;
 		}
 	}
 
-	// TODO wissenschaftlicher..
-	public void regulateToGoalSpeed() {
+	/**
+	 * Here the car makes its choices manipulating only currentACC, isIndicating
+	 * & isChangingLane!
+	 */
+	public abstract void regulate(Game game);
 
-		double error = this.goalSpeed - this.currentSpeed;
-		if (error < 0) {
-			currentAcc = Math.max(error, -MAX_BREAKING_FORCE);
-		} else {
-			currentAcc = Math.min(error, MAX_ACC);
-		}
-	}
+	private int laneMover = 0;
 
-	// TODO make pretty
-	int laneMover = 0;
-
+	/**
+	 * Moves linearly to the right lane
+	 * 
+	 * @param delta
+	 */
 	public void changeLane(int delta) {
 		if (isRightLane) {
 			return;
 		}
-		laneMover += Math.round((delta/1000.0) * Game.SPACE_BETWEEN_LANES);
+		laneMover += Math.round((delta / 1000.0) * Game.SPACE_BETWEEN_LANES);
 		if (laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
 		} else {
@@ -126,15 +149,72 @@ public abstract class Car extends GameObject {
 		}
 	}
 
-	// public double accelerate(double CarAcc) {
-	// if (!isBreaking) { // && currentSpeed < Speedlimit){ //spaeter:
-	// // Speedlimit durch Sign gegeben
-	// return 0.5 * CarAcc;
-	// }
-	// if (isBreaking) { // || currentSpeed > Speedlimit){
-	// return -CarAcc;
-	// }
-	// return 0.0;
-	// }
+	/**
+	 * 
+	 * @param kmh
+	 *            - speed in km/h
+	 */
+	public void setSpeed(double kmh) {
+		this.currentSpeed = kmhTOmpers(kmh);
+		this.goalSpeed = this.currentSpeed;
+	}
+
+	/**
+	 * 
+	 * @param Noughtto100
+	 *            - Seconds needed to get from 0 to 100 or 100 to 0
+	 * @return equivalent acceleration in m/s^2
+	 */
+	public double acc(double Noughtto100) {
+		return 1000.0 / (36.0 * Noughtto100);
+	}
+
+	protected double kmhTOmpers(double kmh) {
+		return kmh * 10.0 / 36.0;
+	}
+
+	public void setColor(Color color, float scale) throws SlickException {
+		this.color = color;
+		switch (color) {
+		// TODO other colors
+		case BLUE:
+			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
+			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
+			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(scale);
+			normback = new Image("res/basicCar/normal_back.png");
+			breakback = new Image("res/basicCar/breaking_back.png");
+			indback = new Image("res/basicCar/indicating_back.png");
+			break;
+		default:
+			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
+			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
+			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(scale);
+			normback = new Image("res/basicCar/normal_back.png");
+			breakback = new Image("res/basicCar/breaking_back.png");
+			indback = new Image("res/basicCar/indicating_back.png");
+			break;
+		}
+	}
+
+	@Override
+	public void rescale(float scale) throws SlickException {
+		setColor(color, scale);
+	}
+
+	public double getCurrentAcc() {
+		return currentAcc;
+	}
+
+	public double getCurrentSpeed() {
+		return currentSpeed;
+	}
+
+	public boolean isIndicating() {
+		return isIndicating;
+	}
+
+	public boolean isChangingLane() {
+		return isChangingLane;
+	}
 
 }
