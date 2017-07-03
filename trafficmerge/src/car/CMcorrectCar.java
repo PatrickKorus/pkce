@@ -13,9 +13,13 @@ public class CMcorrectCar extends Car {
 	 * (Reissverschlussverfahren)
 	 * 
 	 * @param meter
+	 *            - spawn position in meter
 	 * @param isRightLane
+	 * 
 	 * @param initSpeed
+	 *            - initial Speed in km/h
 	 * @param game
+	 *            - the Game that holds the other cars and signs
 	 * @throws SlickException
 	 */
 
@@ -146,7 +150,7 @@ public class CMcorrectCar extends Car {
 						continue;
 					}
 				}
-
+				// TODO: closest car on the other lane?
 				if (car.isIndicating) {
 					currentDistance0 = car.getDistance(this);
 					if (currentDistance0 < smallestDistance1) {
