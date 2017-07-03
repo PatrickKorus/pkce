@@ -34,12 +34,22 @@ public class CMSpawner implements EntitySpawner  {
 	
 	@Override
 	public void spawn(int delta, Input input, Game game) throws SlickException {
-		if (input.isMousePressed(Input.MOUSE_LEFT_BUTTON)) {
+		if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
 			spawncars = !spawncars;
 		}
-		//Left Click turns car spawning on and off
+		//Right Click turns car spawning on and off
 		if(spawncars){
-			//TODO: Einbinden der Verkehrsdichte, bzw Verhältnis der Spuren. dann maxSpd und LaneSpd(spd des letzten autos) berechnen und spawnzeitpunkt
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 		}
 	}
