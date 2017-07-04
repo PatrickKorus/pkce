@@ -89,19 +89,24 @@ public class CMSpawner implements EntitySpawner  {
 				
 			// spd-calc:
 				if(lastCars[0] !=  null){
-				laneSpd[0] = lastCars[0].getCurrentSpeed();
-				//maxSpd[0]:
-				double actDist = startPos.getDistance(lastCars[0]);
-				phantomCarL.setSpeed(lastCars[0].getCurrentSpeed() * 3.6);
-//				this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6
-				double minDist = (phantomCarL.getCurrentSpeed() / (2 * phantomCarL.getCurrentSpeed())) * (phantomCarL.getCurrentSpeed() - lastCars[0].getCurrentSpeed()) + 6;
-				
-				if(actDist >= minDist){
+					laneSpd[0] = lastCars[0].getCurrentSpeed();
+					//maxSpd[0]:
+					double actDist = startPos.getDistance(lastCars[0]);
+					phantomCarL.setSpeed(lastCars[0].getCurrentSpeed() * 3.6);
+//					this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6
+//					double maxSpd = 0.5 * laneSpd[0] + Math.sqrt(Math.pow(0.5 * laneSpd[0] , 2)- 2* phantomCarL.getMaxBreak() * (actDist - 6)  );
+//					(phantomCarL.getCurrentSpeed() / (2 * phantomCarL.getCurrentSpeed())) * (phantomCarL.getCurrentSpeed() - lastCars[0].getCurrentSpeed()) + 6;
+					double minDist = 0.0;
+					if(actDist >= minDist){
+						
+						maxSpd[0] = 0.5 * laneSpd[0] + Math.sqrt(Math.pow(0.5 * laneSpd[0] , 2)- 2* phantomCarL.getMaxBreak() * (actDist - 6)  );
+	
+						leftSpawnFree = true;
+					}else{
+						//not enough space -> no cars spawning
+						leftSpawnFree = false;
+					}
 					
-				}
-				
-				
-				
 				}
 				
 				//spawn if enough space and reset timer
