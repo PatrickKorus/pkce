@@ -95,7 +95,7 @@ public class CMcorrectCar extends Car {
 	 * @param speed -speed of the car in the front
 	 * @return
 	 */
-	public 	double minDist(double speed){
+	public double minDist(double speed){
 		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
 	}
 	

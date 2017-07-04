@@ -204,6 +204,14 @@ public abstract class Car extends GameObject {
 	public double getCurrentAcc() {
 		return currentAcc;
 	}
+	
+	/**
+	 * 
+	 * @return max breaking force
+	 */
+	public double getMaxBreak(){
+		return MAX_BREAKING_FORCE;
+	}
 
 	public double getCurrentSpeed() {
 		return currentSpeed;

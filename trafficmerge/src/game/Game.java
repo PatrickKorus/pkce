@@ -12,6 +12,7 @@ import org.newdawn.slick.gui.TextField;
 
 //import game.Punkte;
 import car.Car;
+import game.spawner.CMSpawner;
 import game.spawner.EntitySpawner;
 import game.spawner.manualSpawner;
 import sign.Sign;
@@ -30,7 +31,7 @@ public class Game extends BasicGame {
 	public static final int width = 1024;
 
 	// TODO make these variable during runtime
-	public static float SCALE = 0.05f;
+	public static float SCALE = 0.09f;
 	public static float timeFactor = 1.0f;
 	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
 	public static double END_OF_LANE = 1100; // in meter
@@ -94,7 +95,8 @@ public class Game extends BasicGame {
 		delineators = new ArrayList<>();
 		background = new Image("res/background_stripes.jpg");
 		obstacle = new Obstacle(END_OF_LANE);
-		spawner = new manualSpawner();
+		//spawner = new manualSpawner();
+		spawner = new CMSpawner();
 		spawner.init(this);
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
