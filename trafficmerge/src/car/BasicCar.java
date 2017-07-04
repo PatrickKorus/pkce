@@ -21,7 +21,7 @@ public class BasicCar extends Car {
 		super.update(delta);
 //		
 //		if (meter > 1000) {
-			this.goalSpeed = kmhTOmpers(80);
+			this.goalSpeed = kmhTOmps(80);
 		
 //		while (currentSpeed + currentAcc <0) 
 //			this.currentAcc *= 0.5;

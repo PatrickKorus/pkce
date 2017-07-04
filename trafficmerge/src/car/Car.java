@@ -155,7 +155,7 @@ public abstract class Car extends GameObject {
 	 *            - speed in km/h
 	 */
 	public void setSpeed(double kmh) {
-		this.currentSpeed = kmhTOmpers(kmh);
+		this.currentSpeed = kmhTOmps(kmh);
 		this.goalSpeed = this.currentSpeed;
 	}
 
@@ -169,8 +169,12 @@ public abstract class Car extends GameObject {
 		return 1000.0 / (36.0 * Noughtto100);
 	}
 
-	protected double kmhTOmpers(double kmh) {
-		return kmh * 10.0 / 36.0;
+	protected double kmhTOmps(double kmh) {
+		return kmh / 3.60;
+	}
+	
+	protected double mpsTOkmh(double mps) {
+		return mps * 3.60;
 	}
 
 	public void setColor(Color color, float scale) throws SlickException {
@@ -213,8 +217,13 @@ public abstract class Car extends GameObject {
 		return MAX_BREAKING_FORCE;
 	}
 
+	/**
+	 *  returns current speed
+	 * @return - in kmh
+	 */
 	public double getCurrentSpeed() {
-		return currentSpeed;
+		//*3.6 to get kmh instead of mph
+		return mpsTOkmh(currentSpeed);
 	}
 
 	public boolean isIndicating() {

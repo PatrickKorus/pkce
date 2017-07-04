@@ -82,7 +82,7 @@ public class CMcorrectCar extends Car {
 		// priority 3: safety distance to indicating car up front
 
 		// lowest priority: regulate to SpeedLimit
-		 double speedLimit = kmhTOmpers(this.getSpeedLimit(game));
+		 double speedLimit = kmhTOmps(this.getSpeedLimit(game));
 		 if (this.currentSpeed > speedLimit && currentAcc > -0.1)
 		 this.regulateTo(speedLimit, currentSpeed, 4);
 		 
@@ -92,15 +92,15 @@ public class CMcorrectCar extends Car {
 	
 	/**
 	 * calculates the minimal distance to stop
-	 * @param speed -speed of the car in the front
+	 * @param speed -speed of the car in the front in km/h
 	 * @return
 	 */
 	public double minDist(double speed){
-		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
+		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - kmhTOmps(speed)) + 6;
 	}
 	
 	/**
-	 * returns safty distance to the front car
+	 * returns safety distance to the front car
 	 * @param minDistance - minimal distance to stop
 	 * @return 
 	 */
@@ -108,7 +108,12 @@ public class CMcorrectCar extends Car {
 		return 	minDistance + this.currentSpeed / 2;
 	}
 
-	
+	/**
+	 * regulate to goal speed
+	 * @param goal - goal speed
+	 * @param current - speed
+	 * @param importance
+	 */
 	public void regulateTo(double goal, double current, float importance) {
 		double error = goal - current;
 		if (error < 0.001 && error > -0.001) {
