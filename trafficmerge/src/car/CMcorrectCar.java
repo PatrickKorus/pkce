@@ -55,7 +55,7 @@ public class CMcorrectCar extends Car {
 		}
 
 		//TODO: in public function auskoppeln.
-		double minDistance = minDist(speed);
+		double minDistance = getMinDist(speed);
 
 		double safetyDistance = safetyDist(minDistance);
 
@@ -95,7 +95,7 @@ public class CMcorrectCar extends Car {
 	 * @param speed -speed of the car in the front in km/h
 	 * @return
 	 */
-	public double minDist(double speed){
+	public double getMinDist(double speed){
 		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - kmhTOmps(speed)) + 6;
 	}
 	
@@ -156,7 +156,7 @@ public class CMcorrectCar extends Car {
 						continue;
 					}
 				}
-				// TODO: closest car on the other lane?
+				
 				if (car.isIndicating) {
 					currentDistance0 = car.getDistance(this);
 					if (currentDistance0 < smallestDistance1) {
