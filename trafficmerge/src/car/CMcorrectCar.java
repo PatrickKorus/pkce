@@ -28,8 +28,8 @@ public class CMcorrectCar extends Car {
 	 * @throws SlickException
 	 */
 
-	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
-		super(meter, isRightLane, initSpeed, game, Color.BLUE);
+	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game) throws SlickException {
+		super(meter, isRightLane, initSpeed, initGoalSpeed, game, Color.BLUE);
 		MAX_ACC = acc(12);
 		MAX_BREAKING_FORCE = acc(3);
 		areaI = Game.END_OF_LANE - 500;
