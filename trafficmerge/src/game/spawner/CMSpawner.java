@@ -28,7 +28,7 @@ public class CMSpawner implements EntitySpawner  {
 	private CMcorrectCar startPos;
 	
 	//variables for spawning:
-	private double trafficDensity = 0.4;  
+	private double trafficDensity = 0.1;  
 	private double sigma = (1.0/trafficDensity);	
 	/**
 	 * [left , right] - in km/h
@@ -163,14 +163,14 @@ public class CMSpawner implements EntitySpawner  {
 		Car car;
 
 		//chooses a driver type. Right now with equal chances for each type.
-		//TODO:improove the type variation 
+		//TODO: Improve the type variation 
 		int type = (int)(randomGenerator.nextFloat()*3);
 		
 		/*
-		 * Standardabweichung ist:
-		 * (maxSpdLane-actLaneSpd)/1 -> 1 Sigma umgebung für aggressiven fahrer. a lot drive more aggressive, with evtl to small distance
-		 * (maxSpdLane-actLaneSpd)/2 -> 2 Sigma Umgebung für standard fahrer. most drive ok
-		 * (maxSpdLane-actLaneSpd)/3 -> 3 Sigma umgebung für vorsichtigen fahrer. nearly anyone drives in a good range
+		 * Standard deviation is :
+		 * (maxSpdLane-actLaneSpd)/1 -> 1 Sigma for aggressive driver. a lot drive more aggressive, with evtl to small distance
+		 * (maxSpdLane-actLaneSpd)/2 -> 2 Sigma for standard driver. most drive ok
+		 * (maxSpdLane-actLaneSpd)/3 -> 3 Sigma for careful driver. nearly anyone drives in a good range
 		 */	
 		
 		//maxSpd größer als LaneSpeed -> Erwartungswert ist LaneSpd. Je nach Typ liegen 1-3 Sigma zwischen LaneSpd und maxSpd
@@ -187,12 +187,10 @@ public class CMSpawner implements EntitySpawner  {
 		
 		
 		
-		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd;
+		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd+(maxSpd-LaneSpd)/3.0;
 //		initSpd = Math.abs(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
 
 	
-//		System.out.println(initSpd + " - " + maxSpd + " - " + LaneSpd + " - " + type);
-
 		switch(type){
 		case 0: //CMaggressiveCar	
 			car = new CMaggressiveCar(0, rightLane, initSpd, game);
@@ -265,7 +263,7 @@ public class CMSpawner implements EntitySpawner  {
 	 */
 	private double calcTrigger(){
 		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*15;
-		System.out.println(trigger);
+//		System.out.println(trigger);
 		return trigger;
 	}
 	
@@ -280,5 +278,15 @@ public class CMSpawner implements EntitySpawner  {
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));
 		}
+	}
+	
+	/**
+	 * Sets the traffic density to another value
+	 * @param Density - 0 < Density <= 1
+	 */
+	@Override
+	public void setTrafficDensity ( double Density){
+		if(Density <= 1.0 && Density > 0)
+			trafficDensity = Density;
 	}
 }

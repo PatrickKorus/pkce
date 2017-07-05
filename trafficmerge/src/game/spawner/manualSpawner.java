@@ -69,4 +69,10 @@ public class manualSpawner implements EntitySpawner {
 		}
 	}
 
+	@Override
+	public void setTrafficDensity(double Density) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

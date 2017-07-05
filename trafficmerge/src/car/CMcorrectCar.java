@@ -54,10 +54,9 @@ public class CMcorrectCar extends Car {
 			speed = carUpFront.getCurrentSpeed();
 		}
 
-		//TODO: in public function auskoppeln.
 		double minDistance = getMinDist(speed);
 
-		double safetyDistance = safetyDist(minDistance);
+		double safetyDistance = getSafetyDist(minDistance);
 
 		//
 		// System.out.println("minimum distance = " + minDistance);
@@ -104,7 +103,7 @@ public class CMcorrectCar extends Car {
 	 * @param minDistance - minimal distance to stop
 	 * @return 
 	 */
-	public double safetyDist(double minDistance){
+	public double getSafetyDist(double minDistance){
 		return 	minDistance + this.currentSpeed / 2;
 	}
 

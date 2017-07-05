@@ -105,7 +105,7 @@ public abstract class Car extends GameObject {
 		this.meter += currentSpeed * delta / 1000.0;
 	}
 
-	// TODO there is probably a better way to do this
+	// TODO: There is probably a better way to do this
 	private int deltaCounter = 400;
 	private boolean indicatingLightsOn = false;
 
@@ -180,7 +180,7 @@ public abstract class Car extends GameObject {
 	public void setColor(Color color, float scale) throws SlickException {
 		this.color = color;
 		switch (color) {
-		// TODO other colors
+		// TODO: Other colors
 		case BLUE:
 			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
 			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);

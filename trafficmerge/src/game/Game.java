@@ -30,7 +30,7 @@ public class Game extends BasicGame {
 	public static final int height = 768;
 	public static final int width = 1024;
 
-	// TODO make these variable during runtime
+	// TODO: Make these variable during runtime
 	public static float SCALE = 0.09f;
 	public static float timeFactor = 1.0f;
 	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
@@ -52,8 +52,9 @@ public class Game extends BasicGame {
 	EntitySpawner spawner;
 	TextField scaler;
 	TextField timeControler;
+	TextField trafficDensity;
 
-	// TODO this already counts passing cars but is unused so far
+	// TODO: This already counts passing cars but is unused so far
 	@SuppressWarnings("unused")
 	private int carsEndCounter;
 
@@ -105,7 +106,7 @@ public class Game extends BasicGame {
 		 */
 		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
 		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
-
+		trafficDensity = new TextField(container, container.getDefaultFont(),50,150,100,20);
 	}
 
 	@Override
@@ -135,7 +136,8 @@ public class Game extends BasicGame {
 			delineator.update(newDelta);
 		}
 
-		// TODO in einen Parser auskoppeln?
+		// TODO: In einen Parser auskoppeln?
+		//rescaling
 		try {
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
@@ -146,6 +148,7 @@ public class Game extends BasicGame {
 			// TODO: handle exception
 		}
 		
+		//change timeLapse
 		try {
 			String value = timeControler.getText();
 			float newFactor = Float.parseFloat(value);
@@ -155,7 +158,17 @@ public class Game extends BasicGame {
 			// e.printStackTrace();
 			// TODO: handle exception
 		}
-
+		
+		//change traffic density
+		try{
+			String value = trafficDensity.getText();
+			float newDensity = Float.parseFloat(value);
+			if(newDensity <= 1.0 && newDensity > 0)
+				spawner.setTrafficDensity(newDensity);
+		}catch(NumberFormatException e){
+			
+		}
+		
 		// Fenster mit ESC sclieﬂen
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
 			container.exit();

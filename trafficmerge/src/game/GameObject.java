@@ -145,7 +145,7 @@ public abstract class GameObject {
 	}
 	
 	public void rescale(float scale) throws SlickException {
-		// TODO this is not working at all.
+		// TODO: This is not working at all.
 	};
 
 }
