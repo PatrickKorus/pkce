@@ -23,7 +23,7 @@ public class manualSpawner implements EntitySpawner {
 		
 	}
 	
-	
+	private double trafficDensity = 0.6;  
 	private int deltaCOunter = 0;
 	private boolean spawncar = true;
 
@@ -68,11 +68,23 @@ public class manualSpawner implements EntitySpawner {
 			game.addDelineator(new Delineator(d));
 		}
 	}
-
+	
 	@Override
-	public void setTrafficDensity(double Density) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Sets the traffic density to another value
+	 * @param Density - 0 < Density <= 1
+	 */
+	public void setTrafficDensity ( double Density){
+			trafficDensity = Density;
+		}
+	
+	@Override
+	/**
+	 * returns current traffic density
+	 * @return - 0 < Density <= 1
+	 */
+	public double getTrafficDensity() {
+		return trafficDensity;
 	}
 
 }
