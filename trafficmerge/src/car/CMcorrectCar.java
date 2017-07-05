@@ -98,7 +98,7 @@ public class CMcorrectCar extends Car {
 		}
 
 		// lowest priority: regulate to SpeedLimit
-		double speedLimit = kmhTOmps(this.getSpeedLimit(game));
+		double speedLimit = Math.min(kmhTOmps(this.getSpeedLimit(game)), this.goalSpeed);
 		if (this.currentSpeed > speedLimit) {
 			error = Math.min(error, this.regulateTo(currentSpeed, speedLimit, 4));
 
@@ -198,7 +198,7 @@ public class CMcorrectCar extends Car {
 
 	int it = 0;
 	double getSpeedLimit(Game game) {
-		double speedLimit = this.goalSpeed * 36/10;
+		double speedLimit = 180 * 36/10;
 		for (Sign sign : game.getSigns()) {
 			if (sign instanceof SpeedLimitSign && this.getDistance(sign) < 50.0 && sign.getValue() < speedLimit)
 				speedLimit = sign.getValue();
