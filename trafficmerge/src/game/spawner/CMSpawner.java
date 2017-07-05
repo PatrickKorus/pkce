@@ -108,7 +108,7 @@ public class CMSpawner implements EntitySpawner  {
 				}
 			}
 			else{
-				leftTime++;			
+				leftTime += delta;			
 			}
 //===right lane==============================================================================================
 			if(rightTime >= rightTTrigger){	
@@ -152,7 +152,7 @@ public class CMSpawner implements EntitySpawner  {
 				}
 			}
 			else{
-				rightTime++;			
+				rightTime += delta;			
 				}
 //===========================================================================================================		
 		}
@@ -286,7 +286,7 @@ public class CMSpawner implements EntitySpawner  {
 	 * @return
 	 */
 	private double calcTrigger(){
-		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*15;
+		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*1000;
 //		System.out.println(trigger);
 		return trigger;
 	}

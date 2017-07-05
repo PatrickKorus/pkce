@@ -32,7 +32,7 @@ public class GameUI {
 		timeControler.render(container, g);
 		g.drawString("Verkehrsdichte:", trafficDensity.getX(), trafficDensity.getY()-20);
 		trafficDensity.render(container, g);
-		g.drawString("Autos:" + game.carsEndCounter, 30, container.getWidth()-30);
+		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-75, 25);
 
 	}
 	
