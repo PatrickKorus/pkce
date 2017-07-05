@@ -311,7 +311,7 @@ public class CMSpawner implements EntitySpawner  {
 	@Override
 	public void setTrafficDensity ( double Density){
 		if(Density <= 1.0 && Density > 0){
-			if(trafficDensity == Density){
+			if(trafficDensity != Density){
 				leftTime = 0;
 				rightTime = 0;
 				leftTTrigger = calcTrigger();
