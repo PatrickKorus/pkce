@@ -132,6 +132,15 @@ public class CMSpawner implements EntitySpawner  {
 				else{//no car on the lane
 					maxSpd[1] = 0;
 				}
+				
+				//limit right speed to left speed
+				if(laneSpd[0] <= maxSpd[1]){
+					maxSpd[1] = laneSpd[0];
+					if(laneSpd[1] >= maxSpd[1]-10){
+						laneSpd[1] = maxSpd[1] - 10;
+					}
+				}
+				
 					
 				//spawn if enough space and reset timer
 				if(rightSpawnFree){
@@ -189,6 +198,18 @@ public class CMSpawner implements EntitySpawner  {
 		
 		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd+(maxSpd-LaneSpd)/3.0;
 //		initSpd = Math.abs(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
+		
+		//TODO: Testwise: lower speedlimit matching with the current traffic
+		if(rightLane){
+			if(initSpd <= 0.6 * laneSpd[1]){
+				initSpd = 0.6 * laneSpd[1];
+			}
+		}
+		else{
+			if (initSpd <= 0.8 * laneSpd[0]){
+				initSpd = 0.8 * laneSpd[0];
+			}
+		}
 
 	
 		switch(type){
@@ -286,7 +307,9 @@ public class CMSpawner implements EntitySpawner  {
 	 */
 	@Override
 	public void setTrafficDensity ( double Density){
-		if(Density <= 1.0 && Density > 0)
+		if(Density <= 1.0 && Density > 0){
 			trafficDensity = Density;
+			sigma = (1.0/trafficDensity);
+		}
 	}
 }

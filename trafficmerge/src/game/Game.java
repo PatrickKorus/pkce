@@ -87,6 +87,7 @@ public class Game extends BasicGame {
 
 		scaler.render(container, g);
 		timeControler.render(container, g);
+		trafficDensity.render(container, g);
 	}
 
 	@Override
