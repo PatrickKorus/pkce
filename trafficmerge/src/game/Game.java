@@ -37,7 +37,8 @@ public class Game extends BasicGame {
 	public static float timeFactor = 1.0f;
 	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
 
-	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in meter
+	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
+																		// meter
 
 	/* ---------------- END PRESET ---------------- */
 
@@ -104,7 +105,7 @@ public class Game extends BasicGame {
 		delineators = new ArrayList<>(50);
 		background = new Image("res/background_stripes.jpg");
 		obstacle = new Obstacle(END_OF_LANE);
-		//spawner = new manualSpawner();
+		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
 		spawner.init(this);
 		/*
@@ -114,7 +115,7 @@ public class Game extends BasicGame {
 		 */
 		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
 		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
-		trafficDensity = new TextField(container, container.getDefaultFont(),50,150,100,20);
+		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
 	}
 
 	@Override
@@ -132,21 +133,21 @@ public class Game extends BasicGame {
 		for (Car car : carsRight) {
 			car.update(newDelta);
 		}
-		
-		if (carsRight.peek().meter > Game.TOTAL_SIMULATION_DISTANCE +10) {
+
+		if (carsRight.peek().meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
 			carsRight.poll();
 		}
-		
+
 		for (Sign sign : signs) {
 			sign.update(newDelta);
 		}
-		
+
 		for (Sign delineator : delineators) {
 			delineator.update(newDelta);
 		}
 
 		// TODO: In einen Parser auskoppeln?
-		//rescaling
+		// rescaling
 		try {
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
@@ -156,8 +157,8 @@ public class Game extends BasicGame {
 			// e.printStackTrace();
 			// TODO: handle exception
 		}
-		
-		//change timeLapse
+
+		// change timeLapse
 		try {
 			String value = timeControler.getText();
 			float newFactor = Float.parseFloat(value);
@@ -167,17 +168,17 @@ public class Game extends BasicGame {
 			// e.printStackTrace();
 			// TODO: handle exception
 		}
-		
-		//change traffic density
-		try{
+
+		// change traffic density
+		try {
 			String value = trafficDensity.getText();
 			float newDensity = Float.parseFloat(value);
-			if(newDensity <= 1.0 && newDensity > 0)
+			if (newDensity <= 1.0 && newDensity > 0)
 				spawner.setTrafficDensity(newDensity);
-		}catch(NumberFormatException e){
-			
+		} catch (NumberFormatException e) {
+
 		}
-		
+
 		// Fenster mit ESC sclieﬂen
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
 			container.exit();
@@ -215,7 +216,7 @@ public class Game extends BasicGame {
 	public PriorityQueue<Car> getCarsLeft() {
 		return carsLeft;
 	}
-	
+
 	public PriorityQueue<Car> getCarsRight() {
 		return carsRight;
 	}
@@ -223,15 +224,15 @@ public class Game extends BasicGame {
 	public void addCarLeft(Car car) {
 		this.carsLeft.add(car);
 	}
-	
+
 	public void addCarRight(Car car) {
 		this.carsRight.add(car);
 	}
-	
+
 	public void removeCarLeft(Car car) {
 		this.carsLeft.remove(car);
 	}
-	
+
 	public Collection<Car> getCars() {
 		ArrayList<Car> result = new ArrayList<>(carsLeft);
 		result.addAll(carsRight);
