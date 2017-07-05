@@ -34,7 +34,6 @@ public class CMcorrectCar extends Car {
 		MAX_BREAKING_FORCE = acc(3);
 		areaI = Game.END_OF_LANE - 500;
 		areaII = Game.END_OF_LANE - 200;
-
 	}
 
 	@Override
@@ -106,7 +105,7 @@ public class CMcorrectCar extends Car {
 		
 		// stop indicating after lane has changed
 		 if (this.isRightLane == true) {
-		 this.isIndicating = false;
+		 this.stopInidicating();
 		 }
 
 		this.currentAcc = error;
@@ -117,6 +116,7 @@ public class CMcorrectCar extends Car {
 	}
 
 	
+
 
 	/**
 	 * calculates the minimal distance to stop

@@ -99,11 +99,17 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		super.updateCoordinates();
 		// vertical position
 		if (isChangingLane) {
-			changeLane(delta);
+			changeLane(delta, game);
 		}
 
 		// invoke superclass
 //		super.update(delta);
+	}
+	
+
+	protected void stopInidicating() {
+		this.indicatingLightsOn = false;
+		this.isIndicating = false;
 	}
 
 	/**
@@ -148,7 +154,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 * 
 	 * @param delta
 	 */
-	public void changeLane(int delta) {
+	public void changeLane(int delta, Game game) {
 		if (isRightLane) {
 			return;
 		}
@@ -159,6 +165,8 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			this.y += laneMover;
 			isChangingLane = false;
 			isRightLane = true;
+			game.removeCarLeft(this);
+			game.addCar(this);
 		}
 	}
 
@@ -221,9 +229,9 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	@Override
 	public int compareTo(Car otherCar) {
 		if (this.meter < otherCar.meter) {
-			return -1;
-		} else if (this.meter > otherCar.meter) {
 			return 1;
+		} else if (this.meter > otherCar.meter) {
+			return -1;
 		}
 		return 0;
 	}
