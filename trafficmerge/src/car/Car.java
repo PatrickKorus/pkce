@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import game.Game;
 import game.GameObject;
 
-public abstract class Car extends GameObject {
+public abstract class Car extends GameObject implements Comparable<Car> {
 
 	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
 	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
@@ -200,6 +200,16 @@ public abstract class Car extends GameObject {
 	public void rescale(float scale) throws SlickException {
 		setColor(color, scale);
 	}
+	
+	@Override
+	public int compareTo(Car otherCar) {
+		if (this.meter < otherCar.meter) {
+			return -1;
+		} else if (this.meter > otherCar.meter) {
+			return 1;
+		}
+		return 0;
+	}
 
 	public double getCurrentAcc() {
 		return currentAcc;
@@ -217,4 +227,4 @@ public abstract class Car extends GameObject {
 		return isChangingLane;
 	}
 
-}
+}	

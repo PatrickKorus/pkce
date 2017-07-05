@@ -129,7 +129,7 @@ public abstract class GameObject {
 	 * positive Value if given Object lies in front of this.
 	 */
 	public double getDistance(GameObject object) {
-		return object.meter - this.meter;
+		return object == null ? Double.MAX_VALUE : object.meter - this.meter;
 	}
 
 	public boolean isRightLane() {
