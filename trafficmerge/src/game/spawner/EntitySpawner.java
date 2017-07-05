@@ -11,5 +11,5 @@ public interface EntitySpawner {
 	
 	void spawn(int delta, Input input, Game game) throws SlickException;
 	
-
+	void setTrafficDensity ( double Density);
 }

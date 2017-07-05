@@ -47,7 +47,7 @@ public class CMcorrectCar extends Car {
 		Car carUpFront = carsUpFront[0];
 
 		double distanceCarUpFront = this.getDistance(carUpFront);
-		double minDistance = minDist(carUpFront);
+		double minDistance = getMinDist(carUpFront);
 		double safetyDistance = minDistance + this.currentSpeed / 2;
 		// System.out.println(isRightLane);
 
@@ -60,12 +60,10 @@ public class CMcorrectCar extends Car {
 		// priority 1: preserve critical distance
 
 		double error = this.regulateTo(minDistance, distanceCarUpFront, 10);
-		System.out.println("error mindist " + error);
 		// System.out.println("critical Distance = " + error );
 
 		// priority 2: drive safe distance
-		error = Math.min(error, this.regulateTo(safetyDistance, distanceCarUpFront, 5));
-		System.out.println("error recdist " + error);
+		error = Math.min(error, this.regulateTo(safetyDistance, distanceCarUpFront, 8));
 		// System.out.println("rec Distance = " + error);
 
 		// priority 3: position dependent
@@ -75,7 +73,7 @@ public class CMcorrectCar extends Car {
 				Car indicatingUpFront = carsUpFront[1];
 				double distanceIndicating = this.getDistance(indicatingUpFront);
 				// make some space for cars that indicate
-				error = Math.min(error, this.regulateTo(this.minDist(indicatingUpFront), distanceIndicating, 4));
+				error = Math.min(error, this.regulateTo(this.getMinDist(indicatingUpFront), distanceIndicating, 4));
 				// if fewer cars right than left
 				if (moreCarsLeftThanRight(game))
 					error = Math.min(error, this.regulateTo(safetyDistance * 1.5, distanceCarUpFront, 6));
@@ -101,11 +99,10 @@ public class CMcorrectCar extends Car {
 		}
 
 		// lowest priority: regulate to SpeedLimit
-		double speedLimit = kmhTOmpers(this.getSpeedLimit(game));
+		double speedLimit = kmhTOmps(this.getSpeedLimit(game));
 		if (this.currentSpeed > speedLimit) {
 			error = Math.min(error, this.regulateTo(currentSpeed, speedLimit, 4));
 
-			System.out.println("error speedlimit " + error);
 		}
 		
 		// stop indicating after lane has changed
@@ -114,23 +111,13 @@ public class CMcorrectCar extends Car {
 		 }
 
 		this.currentAcc = error;
-		System.out.println("applied " + error);
-		System.out.println(speedLimit * 36 / 10);
-		System.out.println(this.currentSpeed * 36 / 10);
+//		System.out.println("applied " + error);
+		System.out.println("speed Limit" + speedLimit * 36 / 10);
+		System.out.println("current speed " + this.currentSpeed * 36 / 10);
+		System.out.println("goal speed " + this.goalSpeed *36/10);
 	}
 
-	// TODO redundancy..
-	/**
-	 * calculates the minimal distance to stop
-	 *
-	 * 
-	 * @param speed
-	 *            -speed of the car in the front
-	 * @return
-	 */
-	public double minDist(double speed) {
-		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
-	}
+	
 
 	/**
 	 * calculates the minimal distance to stop
@@ -139,9 +126,9 @@ public class CMcorrectCar extends Car {
 	 *            - car ahead
 	 * @return
 	 */
-	public double minDist(Car carUpFront) {
+	public double getMinDist(Car carUpFront) {
 
-		double speedCarUpFront = 130.0;
+		double speedCarUpFront = 400.0;
 		if (carUpFront != null) {
 			speedCarUpFront = carUpFront.getCurrentSpeed();
 		}
@@ -149,6 +136,7 @@ public class CMcorrectCar extends Car {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Counts all cars that are up to metersBehind behind and up to metersAhead
 	 * ahead of this car, on the given Lane and have not passed the obstacle
 	 * yet.
@@ -187,21 +175,17 @@ public class CMcorrectCar extends Car {
 		return carsLeft > carsRight;
 	}
 
-	/**
-	 * returns safety distance to the car ahead
-	 * 
-	 * @param minDistance
-	 *            - minimal distance to stop
-	 * @return
-	 */
-	public double safetyDist(double minDistance) {
-		return minDistance + this.currentSpeed / 2;
-	}
 
+
+	/**
+	 * regulate to goal speed
+	 * @param goal - goal speed
+	 * @param current - speed
+	 * @param importance
+	 */
 	public double regulateTo(double goal, double current, float importance) {
 		double error = current - goal;
 		if (error < 0.001 && error > -0.001) {
-			this.currentAcc = 0;
 			return 0;
 		}
 		double newacc;
@@ -210,12 +194,12 @@ public class CMcorrectCar extends Car {
 		} else {
 			newacc = Math.min(0.8 * importance * error, MAX_ACC);
 		}
-		this.currentAcc = newacc;
 		return newacc;
 	}
 
+	int it = 0;
 	double getSpeedLimit(Game game) {
-		double speedLimit = 100.0;
+		double speedLimit = this.goalSpeed * 36/10;
 		for (Sign sign : game.getSigns()) {
 			if (sign instanceof SpeedLimitSign && this.getDistance(sign) < 50.0 && sign.getValue() < speedLimit)
 				speedLimit = sign.getValue();
@@ -234,7 +218,7 @@ public class CMcorrectCar extends Car {
 		double currentDistance0 = 0;
 		double smallestDistance1 = Game.TOTAL_SIMULATION_DISTANCE;
 		// TODO
-		for (Car car : game.getCarsLeft()) {
+		for (Car car : game.getCars()) {
 			currentDistance0 = this.getDistance(car);
 			// for all cars are in front of this car
 			if (currentDistance0 > 0) {

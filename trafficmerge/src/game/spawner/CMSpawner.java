@@ -1,5 +1,7 @@
 package game.spawner;
 
+import java.util.Random;
+
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
@@ -7,9 +9,6 @@ import car.CMaggressiveCar;
 import car.CMcorrectCar;
 import car.CMpassiveCar;
 import car.Car;
-
-import java.util.Random;
-
 import game.Game;
 import sign.Delineator;
 import sign.LaneEndsSign;
@@ -23,92 +22,184 @@ public class CMSpawner implements EntitySpawner  {
 	 */
 	private Random randomGenerator = new Random();
 	
-	@Override
-	public void init(Game game) throws SlickException {
-		initSigns(game);
-		
-	}
-
-	private boolean spawncars = true;
+	//phantomCars for the calculation
+	private CMcorrectCar phantomCarR;
+	private CMcorrectCar phantomCarL;
+	private CMcorrectCar startPos;
+	
+	//variables for spawning:
+	private double trafficDensity = 0.1;  
+	private double sigma = (1.0/trafficDensity);	
+	/**
+	 * [left , right] - in km/h
+	 */
+	private double[] maxSpd = new double[2];
+	/**
+	 * [left , right] - in km/h
+	 */
+	private double[] laneSpd = new double[2];	
+	
+	//left:
+	private int leftTime = 0;	
+	private double leftTTrigger = 0.0;
+	private boolean leftSpawnFree = true;
+	
+	//right:
+	private int rightTime = 0;
+	private double rightTTrigger = 0.0;
+	private boolean rightSpawnFree = true;	
+	
 
 	
 	@Override
-	public void spawn(int delta, Input input, Game game) throws SlickException {
-		if (input.isMousePressed(Input.MOUSE_RIGHT_BUTTON)) {
-			spawncars = !spawncars;
-		}
-		//Right Click turns car spawning on and off
-		if(spawncars){
+	public void init(Game game) throws SlickException {
+		initSigns(game);
+		phantomCarR = new CMcorrectCar(0,true,0, game);
+		phantomCarL = new CMcorrectCar(0,false,0, game);
+		startPos = new CMcorrectCar(0,true,0,game);
+		spawnRandomCar(150, 130, true, game);
+		spawnRandomCar(300, 250, false, game);
+		leftTTrigger = calcTrigger();
+		rightTTrigger = calcTrigger();
 
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		}
 	}
+	
+	@Override
+	public void spawn(int delta, Input input, Game game) throws SlickException {
+
+			Car[] lastCars = lastCarOnLane(game);
+			
+			
+			maxSpd[0] = 150.0;
+			laneSpd[0] = 130.0;
+			maxSpd[1] = 0.75 * maxSpd[0];
+			laneSpd[1] = 0.75 * laneSpd[0];
+			
+//===left lane==============================================================================================					
+			if(leftTime >= leftTTrigger){	
+				// spd-calc:
+				if(lastCars[0] !=  null){
+					laneSpd[0] = lastCars[0].getCurrentSpeed();
+					//maxSpd[0]:
+					double actDist = startPos.getDistance(lastCars[0]);
+					phantomCarL.setSpeed(lastCars[0].getCurrentSpeed());
+					double minDist = phantomCarL.getMinDist(lastCars[0]);
+					if(actDist >= minDist+12){
+						
+						// convert laneSpd to mps for the calculation
+						maxSpd[0] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[0])) + Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[0]) , 2)/4)+ 2* phantomCarL.getMaxBreak() * (actDist - 6)));
+						leftSpawnFree = true;
+					}else{
+						//not enough space -> no cars spawning
+						leftSpawnFree = false;
+					}
+				}
+				else{//no car on the lane
+					maxSpd[0] = 0;
+				}
+					
+				//spawn if enough space and reset timer
+				if(leftSpawnFree){
+					spawnRandomCar(maxSpd[0], laneSpd[0], false, game);
+					leftSpawnFree = false;
+					leftTime = 0;
+					leftTTrigger = calcTrigger();
+	
+				}
+			}
+			else{
+				leftTime++;			
+			}
+//===right lane==============================================================================================
+			if(rightTime >= rightTTrigger){	
+				// spd-calc:
+				if(lastCars[1] !=  null){
+					laneSpd[1] = lastCars[1].getCurrentSpeed();
+					//maxSpd[1]:
+					double actDist = startPos.getDistance(lastCars[1]);
+					phantomCarR.setSpeed(lastCars[1].getCurrentSpeed());
+					double minDist = phantomCarR.getMinDist(lastCars[1]);
+					if(actDist >= minDist+12){
+						
+						// convert laneSpd to mps for the calculation
+						maxSpd[1] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[1])) + Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[1]) , 2)/4)+ 2* phantomCarR.getMaxBreak() * (actDist - 6)));
+						rightSpawnFree = true;
+					}else{
+						//not enough space -> no cars spawning
+						rightSpawnFree = false;
+					}
+				}
+				else{//no car on the lane
+					maxSpd[1] = 0;
+				}
+					
+				//spawn if enough space and reset timer
+				if(rightSpawnFree){
+					spawnRandomCar(maxSpd[1], laneSpd[1], true, game);
+					rightSpawnFree = false;
+					rightTime = 0;
+					rightTTrigger = calcTrigger();
+	
+				}
+			}
+			else{
+				rightTime++;			
+				}
+//===========================================================================================================		
+		}
+	
+	
 	/**
 	 * spawns a random car with various behaviour and initial spd. 
-	 * @param maxSpd highest possible spd, so that the car wont crash if the car in the front is slowing down.
+	 * @param maxSpd - in km/h  ->  highest possible spd, so that the car wont crash if the car in the front is slowing down.
 	 *  		In case that there is no car set: maxSpd = 0
+	 * @param LaneSpd - in km/h  ->  actual speed driven on the lane
 	 * @param rightLane True -> car spawns right. False -> car spawns left
 	 * @acrRightSpd current speed on the right lane. Needed to spawn cars in a close speedrange around this.
 	 */
-	private void spawnRandomCar(double maxSpd, boolean rightLane, double LaneSpd, Game game)throws SlickException{
+	private void spawnRandomCar(double maxSpd, double LaneSpd, boolean rightLane, Game game)throws SlickException{
 		double initSpd = 60.0;
-		double sigma = 6;
+		double sigma = 6; //random value. gets replaced
 		Car car;
 
-		int type = ((int)randomGenerator.nextFloat()*2);
+		//chooses a driver type. Right now with equal chances for each type.
+		//TODO: Improve the type variation 
+		int type = (int)(randomGenerator.nextFloat()*3);
 		
-		//TODO: eventuellbessere Standardabweichung suchen
+		/*
+		 * Standard deviation is :
+		 * (maxSpdLane-actLaneSpd)/1 -> 1 Sigma for aggressive driver. a lot drive more aggressive, with evtl to small distance
+		 * (maxSpdLane-actLaneSpd)/2 -> 2 Sigma for standard driver. most drive ok
+		 * (maxSpdLane-actLaneSpd)/3 -> 3 Sigma for careful driver. nearly anyone drives in a good range
+		 */	
 		
 		//maxSpd größer als LaneSpeed -> Erwartungswert ist LaneSpd. Je nach Typ liegen 1-3 Sigma zwischen LaneSpd und maxSpd
 		if(maxSpd >= LaneSpd){
-			sigma = (maxSpd-LaneSpd)/(type+1);
+			sigma = (maxSpd-LaneSpd)/(2*(type+1));
 		}
-		//maxSpd == 0 -> entweder kein Auto da, oder Verkehr steht, dann ist auch LaneSpd == 0 => Regelung alleineüber LaneSpd 
+		//maxSpd == 0 -> entweder kein Auto da, oder Verkehr steht, dann ist auch LaneSpd == 0 => Regelung alleine über LaneSpd 
 		//1-3 Sigma sind 10% der LaneSpd
 		else if(maxSpd == 0){
 			sigma = (LaneSpd)/(10*(type+1));	
 		}
 		//maxSpd < LaneSpd Regelung geht nicht, da Verkehr min so schnell wie max Spd, 
 		// da ansonsten Verkehr zu schnell zum bremsen(Widerspruch zur implementierung)
-
-
-		//chooses a driver type. Right now with equal chances for each type.
-		/*
-		now: Erwartungswert ist actLaneSpd:
 		
-		Standardabweichung ist:
-		(maxSpdLane-actLaneSpd)/1 -> 1 Sigma umgebung für aggressiven fahrer.
-		(maxSpdLane-actLaneSpd)/2 -> 2 Sigma Umgebung für standard fahrer.
-		(maxSpdLane-actLaneSpd)/3 -> 3 Sigma umgebung für vorsichtigen fahrer.
-		*/
+		
+		
+		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd+(maxSpd-LaneSpd)/3.0;
+//		initSpd = Math.abs(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
+
+	
 		switch(type){
-		case 0: //CMaggressiveCar
-			// Calculate spawn-speed -> 1Sigma(a lot drive more aggressive, with evtl to small distance)
-			initSpd = (int)(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
-			
+		case 0: //CMaggressiveCar	
 			car = new CMaggressiveCar(0, rightLane, initSpd, game);
 			break;
 		case 1: //CMcorrectCar
-			// Calculate spawn-speed -> 2Sigma(most drive ok)
-			initSpd = (int)(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
-			
 			car = new CMcorrectCar(0, rightLane, initSpd, game);
 			break;
 
-		default: //CMpassiveCar
-			// Calculate spawn-speed -> 3Sigma (nearly anyone drives in a good range)
-			initSpd = (int)(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
-			
+		default: //CMpassiveCar	
 			car = new CMpassiveCar(0, rightLane, initSpd, game);
 			break;
 		}
@@ -125,28 +216,55 @@ public class CMSpawner implements EntitySpawner  {
 	private Car[] lastCarOnLane (Game game) throws SlickException{
 		//==================
 		// not spawning cars to get the distance of the driving cars. 
-		// TODO: direct output of a cars distance to spawn? -> meter
-		Car phantomCarR = new CMcorrectCar(0,true,0, game);
-		Car phantomCarL = new CMcorrectCar(0,false,0, game);
+		// direct output of a cars distance to spawn? -> meter
 		Car[] lastcar = new Car[2];
 		//searches the last car on each lane
 		for(Car car : game.getCars()){
 			//checkout right lane
+						
 			if(car.isRightLane()){
 				//check out for cars closer to spawn
-				if(phantomCarR.getDistance(car) <= phantomCarR.getDistance(lastcar[1]) || lastcar[1] == null){
+				if(car != null && (lastcar[1] == null || startPos.getDistance(car) <= startPos.getDistance(lastcar[1]))){
 					lastcar[1] = car;
 				}
 			}
 			//checkout left lane
 			else{
-				if(phantomCarL.getDistance(car) <= phantomCarL.getDistance(lastcar[0]) || lastcar[0] == null){
+				if(car != null && (lastcar[0] == null  ||  startPos.getDistance(car) <= startPos.getDistance(lastcar[0]))){
 					lastcar[0] = car;
 				}
 			}
 		}
 		return lastcar;
 		
+	}
+	
+	/**
+	 * convert speed from km/h to mps
+	 * @param kmh - speed in km/h
+	 * @return - speed in mps
+	 */
+	private double kmhTOmps(double kmh) {
+		return kmh / 3.6;
+	}
+	
+	/**
+	 * convert speed from mps to km/h 
+	 * @param mps - speed in mps
+	 * @return - speed in km/h
+	 */
+	private double mpsTOkmh (double mps){
+		return mps * 3.6;
+	}
+	
+	/**
+	 * Calculates the trigger times for new cars
+	 * @return
+	 */
+	private double calcTrigger(){
+		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*15;
+//		System.out.println(trigger);
+		return trigger;
 	}
 	
 	private void initSigns(Game game) throws SlickException {
@@ -160,5 +278,15 @@ public class CMSpawner implements EntitySpawner  {
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));
 		}
+	}
+	
+	/**
+	 * Sets the traffic density to another value
+	 * @param Density - 0 < Density <= 1
+	 */
+	@Override
+	public void setTrafficDensity ( double Density){
+		if(Density <= 1.0 && Density > 0)
+			trafficDensity = Density;
 	}
 }

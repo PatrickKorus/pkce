@@ -70,7 +70,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		if (indicatingLightsOn) {
 			backimage = indback;
 			super.image = indicateImage;
-		} else if (this.currentAcc < -0.09) {
+		} else if (this.currentAcc < -0.1) {
 			backimage = breakback;
 			super.image = breakImage;
 		} else {
@@ -105,7 +105,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		this.meter += currentSpeed * delta / 1000.0;
 	}
 
-	// TODO there is probably a better way to do this
+	// TODO: There is probably a better way to do this
 	private int deltaCounter = 400;
 	private boolean indicatingLightsOn = false;
 
@@ -155,7 +155,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 *            - speed in km/h
 	 */
 	public void setSpeed(double kmh) {
-		this.currentSpeed = kmhTOmpers(kmh);
+		this.currentSpeed = kmhTOmps(kmh);
 		this.goalSpeed = this.currentSpeed;
 	}
 
@@ -169,14 +169,18 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		return 1000.0 / (36.0 * Noughtto100);
 	}
 
-	protected double kmhTOmpers(double kmh) {
-		return kmh * 10.0 / 36.0;
+	protected double kmhTOmps(double kmh) {
+		return kmh / 3.60;
+	}
+	
+	protected double mpsTOkmh(double mps) {
+		return mps * 3.60;
 	}
 
 	public void setColor(Color color, float scale) throws SlickException {
 		this.color = color;
 		switch (color) {
-		// TODO other colors
+		// TODO: Other colors
 		case BLUE:
 			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
 			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
@@ -214,9 +218,22 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	public double getCurrentAcc() {
 		return currentAcc;
 	}
+	
+	/**
+	 * 
+	 * @return max breaking force
+	 */
+	public double getMaxBreak(){
+		return MAX_BREAKING_FORCE;
+	}
 
+	/**
+	 *  returns current speed
+	 * @return - in kmh
+	 */
 	public double getCurrentSpeed() {
-		return currentSpeed;
+		//*3.6 to get kmh instead of mph
+		return mpsTOkmh(currentSpeed);
 	}
 
 	public boolean isIndicating() {

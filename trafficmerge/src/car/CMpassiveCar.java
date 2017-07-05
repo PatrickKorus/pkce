@@ -22,7 +22,7 @@ public class CMpassiveCar extends CMcorrectCar{
 	 */
 	public CMpassiveCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
 		super(meter, isRightLane, initSpeed, game);
-		// TODO implement passive car
+		// TODO: Implement passive car
 	}
 
 }
