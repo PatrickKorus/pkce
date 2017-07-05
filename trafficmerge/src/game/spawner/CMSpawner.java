@@ -83,7 +83,7 @@ public class CMSpawner implements EntitySpawner  {
 					//maxSpd[0]:
 					double actDist = startPos.getDistance(lastCars[0]);
 					phantomCarL.setSpeed(lastCars[0].getCurrentSpeed());
-					double minDist = phantomCarL.getMinDist(lastCars[0].getCurrentSpeed());
+					double minDist = phantomCarL.getMinDist(lastCars[0]);
 					if(actDist >= minDist+12){
 						
 						// convert laneSpd to mps for the calculation
@@ -118,7 +118,7 @@ public class CMSpawner implements EntitySpawner  {
 					//maxSpd[1]:
 					double actDist = startPos.getDistance(lastCars[1]);
 					phantomCarR.setSpeed(lastCars[1].getCurrentSpeed());
-					double minDist = phantomCarR.getMinDist(lastCars[1].getCurrentSpeed());
+					double minDist = phantomCarR.getMinDist(lastCars[1]);
 					if(actDist >= minDist+12){
 						
 						// convert laneSpd to mps for the calculation
