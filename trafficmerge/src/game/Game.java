@@ -47,7 +47,6 @@ public class Game extends BasicGame {
 	public static double meter_per_width;
 
 	private Image background;
-	// private Punkte punkte;
 	private ArrayList<Sign> signs;
 	private PriorityQueue<Car> carsLeft;
 	private PriorityQueue<Car> carsRight;
