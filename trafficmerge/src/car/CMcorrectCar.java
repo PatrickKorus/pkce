@@ -34,7 +34,7 @@ public class CMcorrectCar extends Car {
 		MAX_BREAKING_FORCE = acc(3);
 		areaI = Game.END_OF_LANE - 500;
 		areaII = Game.END_OF_LANE - 200;
-		System.out.println(isRightLane);
+//		System.out.println(isRightLane);
 
 	}
 
@@ -107,17 +107,18 @@ public class CMcorrectCar extends Car {
 		
 		// stop indicating after lane has changed
 		 if (this.isRightLane == true) {
-		 this.isIndicating = false;
+		 this.stopInidicating();
 		 }
 
 		this.currentAcc = error;
 //		System.out.println("applied " + error);
-		System.out.println("speed Limit" + speedLimit * 36 / 10);
-		System.out.println("current speed " + this.currentSpeed * 36 / 10);
-		System.out.println("goal speed " + this.goalSpeed *36/10);
+//		System.out.println("speed Limit" + speedLimit * 36 / 10);
+//		System.out.println("current speed " + this.currentSpeed * 36 / 10);
+//		System.out.println("goal speed " + this.goalSpeed *36/10);
 	}
 
 	
+
 
 	/**
 	 * calculates the minimal distance to stop
