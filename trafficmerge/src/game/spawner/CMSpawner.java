@@ -175,6 +175,10 @@ public class CMSpawner implements EntitySpawner  {
 		//TODO: Improve the type variation 
 		int type = (int)(randomGenerator.nextFloat()*3);
 		
+		
+		//TODO:test variation for speed
+		LaneSpd += (maxSpd-LaneSpd)/3.0;
+		
 		/*
 		 * Standard deviation is :
 		 * (maxSpdLane-actLaneSpd)/1 -> 1 Sigma for aggressive driver. a lot drive more aggressive, with evtl to small distance
@@ -308,8 +312,15 @@ public class CMSpawner implements EntitySpawner  {
 	@Override
 	public void setTrafficDensity ( double Density){
 		if(Density <= 1.0 && Density > 0){
+			if(trafficDensity == Density){
+				leftTime = 0;
+				rightTime = 0;
+				leftTTrigger = calcTrigger();
+				rightTTrigger = calcTrigger();
+			}
 			trafficDensity = Density;
 			sigma = (1.0/trafficDensity);
+
 		}
 	}
 }
