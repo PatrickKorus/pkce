@@ -132,7 +132,11 @@ public class CMcorrectCar extends Car {
 		if (carUpFront != null) {
 			speedCarUpFront = carUpFront.getCurrentSpeed();
 		}
-		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10;
+		return Math.max((this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront), 10);
+	}
+	
+	public  double getSafetyDistance(Car carUpFront) {
+		return this.currentSpeed / 2.0 + this.getMinDist(carUpFront);
 	}
 
 	/**
