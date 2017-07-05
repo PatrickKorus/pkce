@@ -47,7 +47,7 @@ public class Game extends BasicGame {
 	public static double meter_per_width;
 
 	private Image background;
-	// private Punkte punkte;
+	GameUI gameUi;
 	private ArrayList<Sign> signs;
 	private TreeSet<Car> carsLeft;
 	private TreeSet<Car> carsRight;
@@ -57,13 +57,8 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToRemoveLeft;
 	
 	EntitySpawner spawner;
-	TextField scaler;
-	TextField timeControler;
-	TextField trafficDensity;
 
-	// TODO: This already counts passing cars but is unused so far
-	@SuppressWarnings("unused")
-	private int carsEndCounter;
+	public int carsEndCounter = 0;
 
 	public Game() {
 		super("Traffic Merge Simulation");
@@ -77,30 +72,6 @@ public class Game extends BasicGame {
 		meter_out_of_window = Game.TOTAL_SIMULATION_DISTANCE - (Game.meter_per_width * 2);
 	}
 
-
-	@Override
-	public void init(GameContainer container) throws SlickException {
-		signs = new ArrayList<>();
-		carsLeft = new TreeSet<>();
-		carsRight = new TreeSet<>();
-		delineators = new ArrayList<>(50);
-		carsToRemoveLeft = new LinkedList<>();
-//		carsToRemoveRight = new LinkedList<>();
-		background = new Image("res/background_stripes.jpg");
-		obstacle = new Obstacle(END_OF_LANE);
-		// spawner = new manualSpawner();
-		spawner = new CMSpawner();
-		spawner.init(this);
-		/*
-		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
-		 * new Image( "res/fonts/score_numer_font.png")); punkte = new
-		 * Punkte(container.getWidth() - 180, 10, fontPunkte);
-		 */
-		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
-		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
-		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
-	}
-
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		background.draw();
@@ -112,18 +83,37 @@ public class Game extends BasicGame {
 		for (Car car : carsRight) {
 			car.drawWithCulling(g);
 		}
-		
 		for (Sign delineator : delineators) {
 			delineator.drawWithCulling(g);
 		}
 		for (Sign sign : signs) {
 			sign.drawWithCulling(g);
 		}
-
-		scaler.render(container, g);
-		timeControler.render(container, g);
+		gameUi.render(container, g);
 	}
-	
+
+	@Override
+	public void init(GameContainer container) throws SlickException {
+		signs = new ArrayList<>();
+		carsLeft = new TreeSet<>();
+		carsRight = new TreeSet<>();
+		delineators = new ArrayList<>(50);
+		carsToRemoveLeft = new LinkedList<>();
+//		carsToRemoveRight = new LinkedList<>();
+		background = new Image("res/background_stripes.jpg");
+		obstacle = new Obstacle(END_OF_LANE);
+//		spawner = new manualSpawner();
+		spawner = new CMSpawner();
+		spawner.init(this);
+		gameUi = new GameUI(this , container, spawner);
+
+		/*
+		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
+		 * new Image( "res/fonts/score_numer_font.png")); punkte = new
+		 * Punkte(container.getWidth() - 180, 10, fontPunkte);
+		 */
+	}
+
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
 
@@ -155,50 +145,17 @@ public class Game extends BasicGame {
 			delineator.update(newDelta);
 		}
 		
-
-		carsLeft.removeAll(carsToRemoveLeft);
-		carsToRemoveLeft.clear();
-		
-		
-		
-
-		// TODO: In einen Parser auskoppeln?
-		// rescaling
-		try {
-			String value = scaler.getText();
-			float newscale = Float.parseFloat(value);
-			if (newscale > 0.01)
-				this.rescale(newscale);
-		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
-		}
-
-		// change timeLapse
-		try {
-			String value = timeControler.getText();
-			float newFactor = Float.parseFloat(value);
-			if (newFactor > 0.1)
-				Game.timeFactor = newFactor;
-		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
-		}
-
-		// change traffic density
-		try {
-			String value = trafficDensity.getText();
-			float newDensity = Float.parseFloat(value);
-			if (newDensity <= 1.0 && newDensity > 0)
-				spawner.setTrafficDensity(newDensity);
-		} catch (NumberFormatException e) {
-
-		}
-
 		// Fenster mit ESC sclieﬂen
 		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
 			container.exit();
 		}
+		
+		carsLeft.removeAll(carsToRemoveLeft);
+		carsToRemoveLeft.clear();
+		
+
+		
+		gameUi.update();
 	}
 
 	public void rescale(float scale) throws SlickException {
@@ -212,6 +169,7 @@ public class Game extends BasicGame {
 		obstacle.rescale(scale);
 		Game.SCALE = scale;
 	}
+
 
 	public static int meterToPixel(double meter) {
 		return (int) Math.round(meter * meterToPixel);
