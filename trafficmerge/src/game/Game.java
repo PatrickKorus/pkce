@@ -59,9 +59,6 @@ public class Game extends BasicGame {
 	
 	EntitySpawner spawner;
 
-
-	// TODO: This already counts passing cars but is unused so far
-	@SuppressWarnings("unused")
 	public int carsEndCounter = 0;
 
 	public Game() {
