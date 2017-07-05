@@ -83,7 +83,7 @@ public class CMSpawner implements EntitySpawner  {
 					//maxSpd[0]:
 					double actDist = startPos.getDistance(lastCars[0]);
 					phantomCarL.setSpeed(lastCars[0].getCurrentSpeed());
-					double minDist = phantomCarL.getMinDist(lastCars[0]);
+					double minDist = phantomCarL.getSafetyDistance(lastCars[0]);
 					if(actDist >= minDist+12){
 						
 						// convert laneSpd to mps for the calculation
@@ -303,12 +303,11 @@ public class CMSpawner implements EntitySpawner  {
 			game.addDelineator(new Delineator(d));
 		}
 	}
-	
+	@Override
 	/**
 	 * Sets the traffic density to another value
 	 * @param Density - 0 < Density <= 1
 	 */
-	@Override
 	public void setTrafficDensity ( double Density){
 		if(Density <= 1.0 && Density > 0){
 			if(trafficDensity != Density){
@@ -321,5 +320,14 @@ public class CMSpawner implements EntitySpawner  {
 			sigma = (1.0/trafficDensity);
 
 		}
+	}
+	
+	@Override
+	/**
+	 * returns current traffic density
+	 * @return - 0 < Density <= 1
+	 */
+	public double getTrafficDensity() {
+		return trafficDensity;
 	}
 }

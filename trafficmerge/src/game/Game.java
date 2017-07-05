@@ -48,7 +48,7 @@ public class Game extends BasicGame {
 	public static double meter_per_width;
 
 	private Image background;
-	GameUI gameUi;
+	private GameUI gameUi;
 	private ArrayList<Sign> signs;
 	private TreeSet<Car> carsLeft;
 	private TreeSet<Car> carsRight;

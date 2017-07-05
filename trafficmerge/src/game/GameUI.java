@@ -13,12 +13,11 @@ public class GameUI {
 	private TextField timeControler;
 	private TextField trafficDensity;
 	private EntitySpawner spawner;
-	GameContainer container;
-	Game game;
+	private Game game;
+	
 	
 	public GameUI(Game game ,GameContainer container, EntitySpawner spawn){
 		this.spawner = spawn;
-		this.container = container;
 		this.game = game;
 		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
 		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
@@ -26,11 +25,11 @@ public class GameUI {
 	}
 	
 	public void render(GameContainer container, Graphics g){
-		g.drawString("Skalierung:", scaler.getX(), scaler.getY()-20);
+		g.drawString("Skalierung: " + game.SCALE, scaler.getX(), scaler.getY()-20);
 		scaler.render(container, g);
-		g.drawString("Zeitraffer:", timeControler.getX(), timeControler.getY()-20);
+		g.drawString("Zeitraffer: " + game.timeFactor, timeControler.getX(), timeControler.getY()-20);
 		timeControler.render(container, g);
-		g.drawString("Verkehrsdichte:", trafficDensity.getX(), trafficDensity.getY()-20);
+		g.drawString("Verkehrsdichte: " + spawner.getTrafficDensity(), trafficDensity.getX(), trafficDensity.getY()-20);
 		trafficDensity.render(container, g);
 		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-75, 25);
 
@@ -71,7 +70,7 @@ public class GameUI {
 			if (newDensity <= 1.0 && newDensity > 0)
 				spawner.setTrafficDensity(newDensity);
 		} catch (NumberFormatException e) {
-
+			//TODO: Handle exceptions
 		}
 
 
