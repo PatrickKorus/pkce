@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.TreeSet;
 
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -49,18 +50,15 @@ public class Game extends BasicGame {
 	private Image background;
 	GameUI gameUi;
 	private ArrayList<Sign> signs;
-	private PriorityQueue<Car> carsLeft;
-	private PriorityQueue<Car> carsRight;
+	private TreeSet<Car> carsLeft;
+	private TreeSet<Car> carsRight;
 	private ArrayList<Sign> delineators;
 	private Obstacle obstacle;
-	private LinkedList<Car> carsToRemoveRight;
+//	private LinkedList<Car> carsToRemoveRight;
 	private LinkedList<Car> carsToRemoveLeft;
 	
 	EntitySpawner spawner;
 
-
-	// TODO: This already counts passing cars but is unused so far
-	@SuppressWarnings("unused")
 	public int carsEndCounter = 0;
 
 	public Game() {
@@ -98,8 +96,8 @@ public class Game extends BasicGame {
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		signs = new ArrayList<>();
-		carsLeft = new PriorityQueue<>();
-		carsRight = new PriorityQueue<>();
+		carsLeft = new TreeSet<>();
+		carsRight = new TreeSet<>();
 		delineators = new ArrayList<>(50);
 		carsToRemoveLeft = new LinkedList<>();
 //		carsToRemoveRight = new LinkedList<>();
@@ -134,8 +132,10 @@ public class Game extends BasicGame {
 		
 		// update cars / remove them if they are past the obstacle
 
-		if (carsRight.peek() != null && carsRight.peek().meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
-			carsRight.poll();
+		Car firstCar = carsRight.first();
+		if (firstCar != null && firstCar.meter > Game.TOTAL_SIMULATION_DISTANCE +10) {
+			carsRight.remove(firstCar);
+			carsEndCounter++;
 		}
 
 		for (Sign sign : signs) {
@@ -188,11 +188,11 @@ public class Game extends BasicGame {
 		return signs;
 	}
 
-	public PriorityQueue<Car> getCarsLeft() {
+	public TreeSet<Car> getCarsLeft() {
 		return carsLeft;
 	}
 
-	public PriorityQueue<Car> getCarsRight() {
+	public TreeSet<Car> getCarsRight() {
 		return carsRight;
 	}
 
