@@ -92,7 +92,8 @@ public class CMcorrectCar extends Car {
 				// area III
 				// TODO
 				// if no car will crash
-				this.isChangingLane = true;
+				if (isSafeToChangeLane(carsUpFront[2]))
+					this.isChangingLane = true;
 			}
 		}
 
@@ -116,30 +117,9 @@ public class CMcorrectCar extends Car {
 	}
 
 	/**
-	 * calculates the minimal distance to stop
-	 * 
-	 * @param carUpFront
-	 *            - car ahead
-	 * @return
-	 */
-	public double getMinDist(Car carUpFront) {
-
-		double speedCarUpFront = 400.0;
-		if (carUpFront != null) {
-			speedCarUpFront = carUpFront.getCurrentSpeed();
-		}
-		return Math.max((this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront),
-				10);
-	}
-
-	public double getSafetyDistance(Car carUpFront) {
-		return this.currentSpeed / 2.0 + this.getMinDist(carUpFront);
-	}
-
-	/**
-	 * Counts all cars that are up to metersBehind behind and up to
-	 * metersAhead ahead of this car, on the given Lane and have not passed the
-	 * obstacle yet.
+	 * Counts all cars that are up to metersBehind behind and up to metersAhead
+	 * ahead of this car, on the given Lane and have not passed the obstacle
+	 * yet.
 	 * 
 	 * @param metersBehind
 	 * @param metersUpFront
@@ -156,8 +136,11 @@ public class CMcorrectCar extends Car {
 				counter++;
 			}
 		}
-
 		return counter;
+	}
+
+	private boolean isSafeToChangeLane(Car carOnTheOtherLane) {
+		return carOnTheOtherLane.getMinDist(this) < carOnTheOtherLane.getDistance(this);
 	}
 
 	/**
@@ -174,7 +157,6 @@ public class CMcorrectCar extends Car {
 
 		return carsLeft > carsRight;
 	}
-	
 
 	/**
 	 * regulate to goal speed
@@ -230,10 +212,10 @@ public class CMcorrectCar extends Car {
 			itrOtherLane = game.getCarsRight();
 		}
 
-		carUpFront[0] =  itrThisLane.lower(this);
-		carUpFront[1] =  itrOtherLane.lower(this);
+		carUpFront[0] = itrThisLane.lower(this);
+		carUpFront[1] = itrOtherLane.lower(this);
 		carUpFront[2] = itrOtherLane.ceiling(this);
-		
+
 		return carUpFront;
 	}
 

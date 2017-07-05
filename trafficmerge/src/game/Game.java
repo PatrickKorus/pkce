@@ -3,7 +3,6 @@ package game;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.TreeSet;
 
 import org.newdawn.slick.BasicGame;

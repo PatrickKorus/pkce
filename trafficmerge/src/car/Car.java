@@ -171,6 +171,32 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	}
 
 	/**
+	 * calculates the minimal distance to stop
+	 * 
+	 * @param carUpFront
+	 *            - car ahead
+	 * @return
+	 */
+	public double getMinDist(Car carUpFront) {
+
+		double speedCarUpFront = 400.0;
+		if (carUpFront != null) {
+			speedCarUpFront = carUpFront.getCurrentSpeed();
+		}
+		return Math.max((this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront),
+				10);
+	}
+
+	/**
+	 * Returns safety distance by Distance that is safe to drive + reaction time ("halber Tacho")
+	 * @param carUpFront
+	 * @return
+	 */
+	public double getSafetyDistance(Car carUpFront) {
+		return this.currentSpeed / 2.0 + this.getMinDist(carUpFront);
+	}
+	
+	/**
 	 * 
 	 * @param kmh
 	 *            - speed in km/h
