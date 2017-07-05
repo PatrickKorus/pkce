@@ -51,6 +51,19 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		isIndicating = false;
 		isChangingLane = false;
 	}
+	
+	public Car(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game, Color color) throws SlickException {
+		super(meter, isRightLane);
+		this.game = game;
+		this.currentSpeed = kmhTOmps(initSpeed);
+		this.goalSpeed = kmhTOmps(initGoalSpeed);
+		this.currentAcc = 0.0;
+		this.setColor(color, Game.SCALE);
+		super.setImage(basicImage);
+		backimage = normback;
+		isIndicating = false;
+		isChangingLane = false;
+	}
 
 	@Override
 	public void draw(Graphics g) {

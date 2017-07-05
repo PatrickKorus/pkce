@@ -34,7 +34,6 @@ public class CMcorrectCar extends Car {
 		MAX_BREAKING_FORCE = acc(3);
 		areaI = Game.END_OF_LANE - 500;
 		areaII = Game.END_OF_LANE - 200;
-		System.out.println(isRightLane);
 
 	}
 
@@ -99,7 +98,7 @@ public class CMcorrectCar extends Car {
 		}
 
 		// lowest priority: regulate to SpeedLimit
-		double speedLimit = kmhTOmps(this.getSpeedLimit(game));
+		double speedLimit = Math.min(kmhTOmps(this.getSpeedLimit(game)), this.goalSpeed);
 		if (this.currentSpeed > speedLimit) {
 			error = Math.min(error, this.regulateTo(currentSpeed, speedLimit, 4));
 
@@ -112,9 +111,9 @@ public class CMcorrectCar extends Car {
 
 		this.currentAcc = error;
 //		System.out.println("applied " + error);
-		System.out.println("speed Limit" + speedLimit * 36 / 10);
-		System.out.println("current speed " + this.currentSpeed * 36 / 10);
-		System.out.println("goal speed " + this.goalSpeed *36/10);
+//		System.out.println("speed Limit" + speedLimit * 36 / 10);
+//		System.out.println("current speed " + this.currentSpeed * 36 / 10);
+//		System.out.println("goal speed " + this.goalSpeed *36/10);
 	}
 
 	
@@ -199,7 +198,7 @@ public class CMcorrectCar extends Car {
 
 	int it = 0;
 	double getSpeedLimit(Game game) {
-		double speedLimit = this.goalSpeed * 36/10;
+		double speedLimit = 180 * 36/10;
 		for (Sign sign : game.getSigns()) {
 			if (sign instanceof SpeedLimitSign && this.getDistance(sign) < 50.0 && sign.getValue() < speedLimit)
 				speedLimit = sign.getValue();
