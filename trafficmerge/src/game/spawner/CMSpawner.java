@@ -28,7 +28,7 @@ public class CMSpawner implements EntitySpawner  {
 	private CMcorrectCar startPos;
 	
 	//variables for spawning:
-	private double trafficDensity = 0.1;  
+	private double trafficDensity = 0.6;  
 	private double sigma = (1.0/trafficDensity);	
 	/**
 	 * [left , right] - in km/h
@@ -118,8 +118,8 @@ public class CMSpawner implements EntitySpawner  {
 					//maxSpd[1]:
 					double actDist = startPos.getDistance(lastCars[1]);
 					phantomCarR.setSpeed(lastCars[1].getCurrentSpeed());
-					double minDist = phantomCarR.getMinDist(lastCars[1]);
-					if(actDist >= minDist+12){
+					double safetyDist = phantomCarR.getSafetyDistance(lastCars[1]);
+					if(actDist >= safetyDist+12){
 						
 						// convert laneSpd to mps for the calculation
 						maxSpd[1] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[1])) + Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[1]) , 2)/4)+ 2* phantomCarR.getMaxBreak() * (actDist - 6)));
@@ -240,7 +240,6 @@ public class CMSpawner implements EntitySpawner  {
 	 */
 	private Car[] lastCarOnLane (Game game) throws SlickException{
 		//==================
-		// not spawning cars to get the distance of the driving cars. 
 		// direct output of a cars distance to spawn? -> meter
 		Car[] lastcar = new Car[2];
 		//searches the last car on each lane
