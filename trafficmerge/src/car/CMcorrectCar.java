@@ -28,8 +28,8 @@ public class CMcorrectCar extends Car {
 	 * @throws SlickException
 	 */
 
-	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, Game game) throws SlickException {
-		super(meter, isRightLane, initSpeed, game, Color.BLUE);
+	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game) throws SlickException {
+		super(meter, isRightLane, initSpeed, initGoalSpeed, game, Color.BLUE);
 		MAX_ACC = acc(12);
 		MAX_BREAKING_FORCE = acc(3);
 		areaI = Game.END_OF_LANE - 500;
@@ -131,7 +131,11 @@ public class CMcorrectCar extends Car {
 		if (carUpFront != null) {
 			speedCarUpFront = carUpFront.getCurrentSpeed();
 		}
-		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10;
+		return Math.max((this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront), 10);
+	}
+	
+	public  double getSafetyDistance(Car carUpFront) {
+		return this.currentSpeed / 2.0 + this.getMinDist(carUpFront);
 	}
 
 	/**

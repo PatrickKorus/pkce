@@ -54,9 +54,9 @@ public class CMSpawner implements EntitySpawner  {
 	@Override
 	public void init(Game game) throws SlickException {
 		initSigns(game);
-		phantomCarR = new CMcorrectCar(0,true,0, game);
-		phantomCarL = new CMcorrectCar(0,false,0, game);
-		startPos = new CMcorrectCar(0,true,0,game);
+		phantomCarR = new CMcorrectCar(0,true,0,0, game);
+		phantomCarL = new CMcorrectCar(0,false,0,0, game);
+		startPos = new CMcorrectCar(0,true,0,0,game);
 		spawnRandomCar(150, 130, true, game);
 		spawnRandomCar(300, 250, false, game);
 		leftTTrigger = calcTrigger();
@@ -218,14 +218,14 @@ public class CMSpawner implements EntitySpawner  {
 	
 		switch(type){
 		case 0: //CMaggressiveCar	
-			car = new CMaggressiveCar(0, rightLane, initSpd, game);
+			car = new CMaggressiveCar(0, rightLane, initSpd, 130, game);
 			break;
 		case 1: //CMcorrectCar
-			car = new CMcorrectCar(0, rightLane, initSpd, game);
+			car = new CMcorrectCar(0, rightLane, initSpd, 130, game);
 			break;
 
 		default: //CMpassiveCar	
-			car = new CMpassiveCar(0, rightLane, initSpd, game);
+			car = new CMpassiveCar(0, rightLane, initSpd, 130, game);
 			break;
 		}
 		game.addCar(car);
