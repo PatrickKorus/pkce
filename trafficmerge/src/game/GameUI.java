@@ -25,14 +25,16 @@ public class GameUI {
 	}
 	
 	public void render(GameContainer container, Graphics g){
-		g.drawString("Skalierung: " + game.SCALE, scaler.getX(), scaler.getY()-20);
+		g.drawString("Skalierung: " + Math.round(Game.SCALE*100)/100.0, scaler.getX(), scaler.getY()-20);
 		scaler.render(container, g);
-		g.drawString("Zeitraffer: " + game.timeFactor, timeControler.getX(), timeControler.getY()-20);
+		g.drawString("Zeitraffer: " + Math.round(Game.timeFactor*100)/100.0, timeControler.getX(), timeControler.getY()-20);
 		timeControler.render(container, g);
-		g.drawString("Verkehrsdichte: " + spawner.getTrafficDensity(), trafficDensity.getX(), trafficDensity.getY()-20);
+		g.drawString("Verkehrsdichte: " + Math.round(spawner.getTrafficDensity()*100)/100.0, trafficDensity.getX(), trafficDensity.getY()-20);
 		trafficDensity.render(container, g);
+		
+		//Counting cars:
 		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-75, 25);
-
+		
 	}
 	
 	public void draw(){
