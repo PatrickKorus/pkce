@@ -1,6 +1,5 @@
 package game.spawner;
 
-import java.util.Collection;
 import java.util.Random;
 
 import org.newdawn.slick.Input;
@@ -10,6 +9,7 @@ import car.CMaggressiveCar;
 import car.CMcorrectCar;
 import car.CMpassiveCar;
 import car.Car;
+import car.ObstacleCar;
 import game.Game;
 import sign.Delineator;
 import sign.LaneEndsSign;
@@ -58,6 +58,7 @@ public class CMSpawner implements EntitySpawner  {
 		phantomCarR = new CMcorrectCar(0,true,0,0, game);
 		phantomCarL = new CMcorrectCar(0,false,0,0, game);
 		startPos = new CMcorrectCar(0,true,0,0,game);
+		game.addCar(new ObstacleCar(game));
 		spawnRandomCar(150, 130, true, game);
 		spawnRandomCar(300, 250, false, game);
 		leftTTrigger = calcTrigger();
@@ -244,10 +245,12 @@ public class CMSpawner implements EntitySpawner  {
 		// direct output of a cars distance to spawn? -> meter
 		Car[] lastcar = new Car[2];
 		//searches the last car on each lane
-		
-		lastcar[0] = game.getCarsLeft().last();
-		lastcar[1] = game.getCarsRight().last();
-
+		if(!game.getCarsLeft().isEmpty())
+			lastcar[0] = game.getCarsLeft().last();
+		if(!game.getCarsRight().isEmpty())
+			lastcar[1] = game.getCarsRight().last();
+// Old code
+//		
 //		for(Car car : game.getCars()){
 //			//checkout right lane
 //						
@@ -295,19 +298,7 @@ public class CMSpawner implements EntitySpawner  {
 //		System.out.println(trigger);
 		return trigger;
 	}
-	
-	private void initSigns(Game game) throws SlickException {
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
-		
-		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
-			game.addDelineator(new Delineator(d));
-		}
-	}
+
 	@Override
 	/**
 	 * Sets the traffic density to another value
@@ -334,5 +325,18 @@ public class CMSpawner implements EntitySpawner  {
 	 */
 	public double getTrafficDensity() {
 		return trafficDensity;
+	}
+	
+	private void initSigns(Game game) throws SlickException {
+		game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
+		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
+		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		
+		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
+			game.addDelineator(new Delineator(d));
+		}
 	}
 }
