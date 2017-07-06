@@ -52,9 +52,13 @@ public class CMcorrectCar extends Car {
 
 		// stop if crashed
 		if (distanceCarUpFront < 5) {
-			this.currentSpeed = 0;
 			System.err.println("crash");
-		}
+			//TODO: Debugg-Output
+			System.out.println("Back: \t Acc->" + this.currentAcc + " Speed->" + this.currentSpeed + " goal->" + this.goalSpeed);
+			System.out.println("Front: \t Acc->" + carUpFront.currentAcc + " Speed->" + carUpFront.currentSpeed + " goal->" + carUpFront.goalSpeed);
+			System.out.println("=================================================================================================");
+			this.currentSpeed = 0;
+		} 
 
 		// priority 1: preserve critical distance
 		double error = this.regulateTo(minDistance, distanceCarUpFront, 10);

@@ -2,6 +2,7 @@ package game;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.TextField;
 
@@ -14,11 +15,13 @@ public class GameUI {
 	private TextField trafficDensity;
 	private EntitySpawner spawner;
 	private Game game;
+	private GameContainer container;
 	
 	
-	public GameUI(Game game ,GameContainer container, EntitySpawner spawn){
+	public GameUI(Game game , GameContainer container, EntitySpawner spawn){
 		this.spawner = spawn;
 		this.game = game;
+		this.container = container;
 		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
 		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
 		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
@@ -33,7 +36,7 @@ public class GameUI {
 		trafficDensity.render(container, g);
 		
 		//Counting cars:
-		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-75, 25);
+		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-100, 25);
 		
 	}
 	
@@ -75,6 +78,11 @@ public class GameUI {
 			//TODO: Handle exceptions
 		}
 
+		
+		// End simulation via KEY_ESCAPE
+		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
+			container.exit();
+		}
 
 	}
 }

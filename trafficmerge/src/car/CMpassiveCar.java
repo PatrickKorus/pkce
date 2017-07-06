@@ -6,6 +6,8 @@ import game.Game;
 
 public class CMpassiveCar extends CMcorrectCar{
 
+	private final double areaI;
+	private final double areaII;
 	
 	/**
 	 * 
@@ -22,7 +24,13 @@ public class CMpassiveCar extends CMcorrectCar{
 	 */
 	public CMpassiveCar(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game) throws SlickException {
 		super(meter, isRightLane, initSpeed, initGoalSpeed, game);
-		// TODO: Implement passive car
+//		super(meter, isRightLane, initSpeed, initGoalSpeed, game, Color.PASSIVE);
+
+		MAX_ACC = acc(12);
+		MAX_BREAKING_FORCE = acc(3);
+		areaI = Game.END_OF_LANE - 500;
+		areaII = Game.END_OF_LANE - 200;
 	}
+
 
 }

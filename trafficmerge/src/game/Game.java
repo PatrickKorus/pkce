@@ -12,12 +12,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.gui.TextField;
 
 //import game.Punkte;
 import car.Car;
 import game.spawner.CMSpawner;
 import game.spawner.EntitySpawner;
+import game.spawner.manualSpawner;
 import sign.Sign;
 
 public class Game extends BasicGame {
@@ -77,7 +77,7 @@ public class Game extends BasicGame {
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		background.draw();
 		obstacle.draw(g);
-
+		
 		for (Car car : carsLeft) {
 			car.drawWithCulling(g);
 		}
@@ -122,7 +122,6 @@ public class Game extends BasicGame {
 		Input input = container.getInput();
 		spawner.spawn(newDelta, input, this);
 
-
 		for (Car car : carsLeft) {
 			car.update(newDelta);
 		}
@@ -145,16 +144,9 @@ public class Game extends BasicGame {
 		for (Sign delineator : delineators) {
 			delineator.update(newDelta);
 		}
-		
-		// Fenster mit ESC sclieﬂen
-		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-			container.exit();
-		}
-		
+
 		carsLeft.removeAll(carsToRemoveLeft);
 		carsToRemoveLeft.clear();
-		
-
 		
 		gameUi.update();
 	}

@@ -3,7 +3,6 @@ package game.spawner;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import car.BasicCar;
 import car.CMcorrectCar;
 import car.Car;
 import game.Game;

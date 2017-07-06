@@ -1,5 +1,6 @@
 package game.spawner;
 
+import java.util.Collection;
 import java.util.Random;
 
 import org.newdawn.slick.Input;
@@ -243,22 +244,26 @@ public class CMSpawner implements EntitySpawner  {
 		// direct output of a cars distance to spawn? -> meter
 		Car[] lastcar = new Car[2];
 		//searches the last car on each lane
-		for(Car car : game.getCars()){
-			//checkout right lane
-						
-			if(car.isRightLane()){
-				//check out for cars closer to spawn
-				if(car != null && (lastcar[1] == null || startPos.getDistance(car) <= startPos.getDistance(lastcar[1]))){
-					lastcar[1] = car;
-				}
-			}
-			//checkout left lane
-			else{
-				if(car != null && (lastcar[0] == null  ||  startPos.getDistance(car) <= startPos.getDistance(lastcar[0]))){
-					lastcar[0] = car;
-				}
-			}
-		}
+		
+		lastcar[0] = game.getCarsLeft().last();
+		lastcar[1] = game.getCarsRight().last();
+
+//		for(Car car : game.getCars()){
+//			//checkout right lane
+//						
+//			if(car.isRightLane()){
+//				//check out for cars closer to spawn
+//				if(car != null && (lastcar[1] == null || startPos.getDistance(car) <= startPos.getDistance(lastcar[1]))){
+//					lastcar[1] = car;
+//				}
+//			}
+//			//checkout left lane
+//			else{
+//				if(car != null && (lastcar[0] == null  ||  startPos.getDistance(car) <= startPos.getDistance(lastcar[0]))){
+//					lastcar[0] = car;
+//				}
+//			}
+//		}
 		return lastcar;
 		
 	}
