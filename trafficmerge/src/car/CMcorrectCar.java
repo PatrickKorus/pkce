@@ -111,9 +111,9 @@ public class CMcorrectCar extends Car {
 				Car indicatingUpFront = carsUpFront[1];
 				double distanceIndicating = this.getDistance(indicatingUpFront);
 				// make some space for cars that indicate
-				error = Math.min(error, this.regulateTo(this.getMinDist(indicatingUpFront), distanceIndicating, 0.2f));
+//				error = Math.min(error, this.regulateTo(this.getMinDist(indicatingUpFront), distanceIndicating, 0.2f));
 				// let the correct car pass
-				if (moreCarsLeftThanRight(game)) {
+				if (moreCarsLeftThanRight(game) && this.getDistance(carsUpFront[1]) > 10 ) {
 					error = Math.min(error, this.regulateTo(getMinDist(carsUpFront[1]), distanceCarUpFront, 6));
 				}
 
@@ -164,7 +164,7 @@ public class CMcorrectCar extends Car {
 		Collection<Car> cars = isRightLane ? game.getCarsRight() : game.getCarsLeft();
 		for (Car car : cars) {
 			if (car.isRightLane() == rightLane && this.getDistance(car) < metersAhead
-					&& this.getDistance(car) > -metersBehind && car.getDistance(game.getObstacle()) > -20) {
+					&& this.getDistance(car) > -metersBehind && car.getDistance(game.getObstacle()) > -15) {
 				counter++;
 			}
 		}
