@@ -48,7 +48,7 @@ public class BasicCar extends Car {
 	}
 
 	@Override
-	public void regulate(Game game) {
+	public void regulate(Game game, int delta) {
 		double error = this.goalSpeed - this.currentSpeed;
 		if (error < 0.00001 && error > -0.00001) {
 			this.currentAcc = 0;
