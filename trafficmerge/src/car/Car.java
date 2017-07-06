@@ -20,7 +20,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	private Color color;
 
 	// current data
-	protected double goalSpeed, currentAcc, currentSpeed;
+	double goalSpeed, currentAcc, currentSpeed;
 	protected boolean isIndicating, isChangingLane;
 	// boolean isBreaking; // redundant since true when currentACC < 0
 
@@ -51,8 +51,9 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		isIndicating = false;
 		isChangingLane = false;
 	}
-	
-	public Car(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game, Color color) throws SlickException {
+
+	public Car(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game, Color color)
+			throws SlickException {
 		super(meter, isRightLane);
 		this.game = game;
 		this.currentSpeed = kmhTOmps(initSpeed);
@@ -67,6 +68,14 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 
 	@Override
 	public void draw(Graphics g) {
+
+		if (true) {
+			String speedString = (this.currentSpeed * 36 / 10) + "";
+			String accString = (this.currentAcc) + "";
+			g.drawString(this.toString().substring(20), this.x, this.y + 20);
+			g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
+			g.drawString(accString.substring(0, 3), this.x, this.y + 60);
+		}
 		backimage.drawCentered(x, y);
 		image.drawCentered(x, y);
 	}
@@ -92,7 +101,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		}
 
 		// control
-		regulate(this.game);
+		regulate(this.game, delta);
 
 		// apply changes
 		move(delta);
@@ -103,9 +112,8 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		}
 
 		// invoke superclass
-//		super.update(delta);
+		// super.update(delta);
 	}
-	
 
 	protected void stopInidicating() {
 		this.indicatingLightsOn = false;
@@ -144,8 +152,10 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	/**
 	 * Here the car makes its choices manipulating only currentACC, isIndicating
 	 * & isChangingLane!
+	 * 
+	 * @param delta
 	 */
-	public abstract void regulate(Game game);
+	public abstract void regulate(Game game, int delta);
 
 	private int laneMover = 0;
 
@@ -166,8 +176,36 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			isChangingLane = false;
 			isRightLane = true;
 			game.removeCarLeft(this);
-			game.addCar(this);
+			game.addCarRight(this);
 		}
+	}
+
+	/**
+	 * calculates the minimal distance to stop
+	 * 
+	 * @param carUpFront
+	 *            - car ahead
+	 * @return
+	 */
+	public double getMinDist(Car carUpFront) {
+
+		double speedCarUpFront = 400.0;
+		if (carUpFront != null) {
+			speedCarUpFront = carUpFront.getCurrentSpeed();
+		}
+		return Math.max(
+				(this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
+	}
+
+	/**
+	 * Returns safety distance by Distance that is safe to drive + reaction time
+	 * ("halber Tacho")
+	 * 
+	 * @param carUpFront
+	 * @return
+	 */
+	public double getSafetyDistance(Car carUpFront) {
+		return this.currentSpeed / 2.0 + this.getMinDist(carUpFront);
 	}
 
 	/**
@@ -193,7 +231,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	protected double kmhTOmps(double kmh) {
 		return kmh / 3.60;
 	}
-	
+
 	protected double mpsTOkmh(double mps) {
 		return mps * 3.60;
 	}
@@ -225,7 +263,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	public void rescale(float scale) throws SlickException {
 		setColor(color, scale);
 	}
-	
+
 	@Override
 	public int compareTo(Car otherCar) {
 		if (this.meter < otherCar.meter) {
@@ -239,22 +277,27 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	public double getCurrentAcc() {
 		return currentAcc;
 	}
-	
+
 	/**
 	 * 
 	 * @return max breaking force
 	 */
-	public double getMaxBreak(){
+	public double getMaxBreak() {
 		return MAX_BREAKING_FORCE;
 	}
 
 	/**
-	 *  returns current speed
+	 * returns current speed
+	 * 
 	 * @return - in kmh
 	 */
 	public double getCurrentSpeed() {
-		//*3.6 to get kmh instead of mph
+		// *3.6 to get kmh instead of mph
 		return mpsTOkmh(currentSpeed);
+	}
+
+	public boolean isBreaking() {
+		return this.currentAcc < -0.1;
 	}
 
 	public boolean isIndicating() {
@@ -265,4 +308,4 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		return isChangingLane;
 	}
 
-}	
+}

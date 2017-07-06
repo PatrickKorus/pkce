@@ -3,7 +3,6 @@ package game;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.TreeSet;
 
 import org.newdawn.slick.BasicGame;
@@ -54,9 +53,9 @@ public class Game extends BasicGame {
 	private TreeSet<Car> carsRight;
 	private ArrayList<Sign> delineators;
 	private Obstacle obstacle;
-//	private LinkedList<Car> carsToRemoveRight;
+	// private LinkedList<Car> carsToRemoveRight;
 	private LinkedList<Car> carsToRemoveLeft;
-	
+
 	EntitySpawner spawner;
 
 	public int carsEndCounter = 0;
@@ -64,7 +63,6 @@ public class Game extends BasicGame {
 	public Game() {
 		super("Traffic Merge Simulation");
 		setConstants(SCALE);
-		System.out.println(meter_out_of_window + "m not visible");
 	}
 
 	private void setConstants(float scale) {
@@ -100,13 +98,13 @@ public class Game extends BasicGame {
 		carsRight = new TreeSet<>();
 		delineators = new ArrayList<>(50);
 		carsToRemoveLeft = new LinkedList<>();
-//		carsToRemoveRight = new LinkedList<>();
+		// carsToRemoveRight = new LinkedList<>();
 		background = new Image("res/background_stripes.jpg");
 		obstacle = new Obstacle(END_OF_LANE);
-//		spawner = new manualSpawner();
+		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
 		spawner.init(this);
-		gameUi = new GameUI(this , container, spawner);
+		gameUi = new GameUI(this, container, spawner);
 
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
@@ -128,12 +126,14 @@ public class Game extends BasicGame {
 		for (Car car : carsRight) {
 			car.update(newDelta);
 		}
-		
+
 		// update cars / remove them if they are past the obstacle
 
-		Car firstCar = carsRight.first();
-		if (firstCar != null && firstCar.meter > Game.TOTAL_SIMULATION_DISTANCE +10) {
-			carsRight.remove(firstCar);
+		Car firstCar = null;
+		if (!carsRight.isEmpty())
+			firstCar = carsRight.first();
+		if (firstCar != null && firstCar.meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
+			carsRight.pollFirst();
 			carsEndCounter++;
 		}
 
@@ -145,9 +145,10 @@ public class Game extends BasicGame {
 			delineator.update(newDelta);
 		}
 
+
 		carsLeft.removeAll(carsToRemoveLeft);
 		carsToRemoveLeft.clear();
-		
+
 		gameUi.update();
 	}
 
@@ -162,7 +163,6 @@ public class Game extends BasicGame {
 		obstacle.rescale(scale);
 		Game.SCALE = scale;
 	}
-
 
 	public static int meterToPixel(double meter) {
 		return (int) Math.round(meter * meterToPixel);
@@ -199,10 +199,10 @@ public class Game extends BasicGame {
 	public void removeCarLeft(Car car) {
 		this.carsToRemoveLeft.add(car);
 	}
-	
-//	public void removeCarRight(Car car){
-//		this.carsToRemoveRight.add(car);
-//	}
+
+	// public void removeCarRight(Car car){
+	// this.carsToRemoveRight.add(car);
+	// }
 
 	public Collection<Car> getCars() {
 		ArrayList<Car> result = new ArrayList<>(carsLeft);

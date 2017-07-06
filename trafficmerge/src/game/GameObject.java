@@ -145,7 +145,10 @@ public abstract class GameObject {
 	}
 	
 	public void rescale(float scale) throws SlickException {
-		// TODO: This is not working at all.
 	};
+	
+	public double getMeterDistance() {
+		return meter;
+	}
 
 }
