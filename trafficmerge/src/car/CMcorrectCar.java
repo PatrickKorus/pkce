@@ -80,17 +80,13 @@ public class CMcorrectCar extends Car {
 		// System.out.println("critical Distance = " + error );
 
 		// priority 2: drive safe distance
-		error = Math.min(error, this.regulateTo(safetyDistance, distanceCarUpFront, 8));
+		error = Math.min(error, this.regulateTo(safetyDistance, distanceCarUpFront, 5));
 //		System.out.println("rec Distance = " + error);
 
 		// priority 3: position dependent
 		if (this.meter > this.areaI && this.meter < this.areaII) {
 			if (isRightLane) {
 				// // area V
-				Car indicatingUpFront = carsUpFront[1];
-				double distanceIndicating = this.getDistance(indicatingUpFront);
-				// make some space for cars that indicate
-//				error = Math.min(error, this.regulateTo(this.getMinDist(indicatingUpFront), distanceIndicating, 4));
 				// if fewer cars right than left
 				if (moreCarsLeftThanRight(game))
 					error = Math.min(error, this.regulateTo(safetyDistance * 1.5, distanceCarUpFront, 6));
@@ -106,6 +102,10 @@ public class CMcorrectCar extends Car {
 			if (isRightLane) {
 				// area VI
 				// TODO
+				Car indicatingUpFront = carsUpFront[1];
+				double distanceIndicating = this.getDistance(indicatingUpFront);
+				// make some space for cars that indicate
+				error = Math.min(error, this.regulateTo(this.getMinDist(indicatingUpFront), distanceIndicating, 0.2f));
 				// let the correct car pass
 				if (moreCarsLeftThanRight(game)) {
 					error = Math.min(error, this.regulateTo(getMinDist(carsUpFront[1]), distanceCarUpFront, 6));
