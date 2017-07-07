@@ -35,7 +35,7 @@ public class Game extends BasicGame {
 	// TODO: Make these variable during runtime
 	public static float SCALE = 0.09f;
 	public static float timeFactor = 1.0f;
-	public static double TOTAL_SIMULATION_DISTANCE = 2400; // in meter
+	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
 
 	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
 																		// meter
