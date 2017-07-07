@@ -75,10 +75,10 @@ public class CMcorrectCar extends Car {
 			delay = 0;
 		}
 
-		System.out.println("This is car " + this);
-		System.out.println("Car ahaed is " + carsUpFront[0]);
-		System.out.println("Car next to ahaed is " + carsUpFront[1]);
-		System.out.println("Car next to behind is " + carsUpFront[2]);
+//		System.out.println("This is car " + this);
+//		System.out.println("Car ahaed is " + carsUpFront[0]);
+//		System.out.println("Car next to ahaed is " + carsUpFront[1]);
+//		System.out.println("Car next to behind is " + carsUpFront[2]);
 		double distanceCarUpFront = this.getDistance(carUpFront);
 		double minDistance = currentPanic * getMinDist(carUpFront);
 		double safetyDistance = currentPanic * getSafetyDistance(carUpFront);
@@ -99,8 +99,8 @@ public class CMcorrectCar extends Car {
 			this.currentSpeed = 0;
 		}
 
-		System.out.println(isRightLane ? "Right lane" : " Left lane");
-		System.out.println(isChangingLane ? "Is changing Lane" : "is not changing lane");
+//		System.out.println(isRightLane ? "Right lane" : " Left lane");
+//		System.out.println(isChangingLane ? "Is changing Lane" : "is not changing lane");
 
 		// priority 1: preserve critical distance to car&obstacle
 		double error = this.regulateTo(minDistance, distanceCarUpFront, 10);
@@ -145,7 +145,6 @@ public class CMcorrectCar extends Car {
 				// distanceIndicating, 0.2f));
 				// let the correct car pass
 				if (moreCarsLeftThanRight(game) && this.getDistance(indicatingUpFront) > 6) {
-					System.out.println("Distance is " + this.getDistance(indicatingUpFront));
 					error = Math.min(error, this.regulateTo(getMinDist(indicatingUpFront), distanceIndicating, 6));
 				}
 
@@ -180,7 +179,17 @@ public class CMcorrectCar extends Car {
 
 	private Gap findGap(Game game, double Safe_Space) {
 		int carsLeft = this.countCars(0, 300, false, game);
-		TreeSet<Car> relevantCarsSet = (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
+		TreeSet<Car> relevantCarsSet = null;
+		try {
+		relevantCarsSet = (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
+		} catch (IllegalArgumentException e) {
+//			e.printStackTrace();
+//			System.err.println("First Car is " + game.getCarsLeft().first());
+//			System.err.println("This is " + this);
+//			System.err.println("First Car meter" + game.getCarsLeft().first().getMeterDistance());
+//			System.err.println("This meter " + this.meter);
+			return null;
+		}
 		Car[] relevantCars = new Car[relevantCarsSet.size()];
 		Iterator<Car> itr = relevantCarsSet.iterator();
 		for (int i = 0; i < relevantCars.length; i++) {
@@ -234,9 +243,6 @@ public class CMcorrectCar extends Car {
 
 		int carsLeft = this.countCars(0, 300, false, game);
 		int carsRight = this.countCars(0, 300, true, game);
-		System.out.println("This is car " + this);
-		System.out.println(carsLeft + " cars left");
-		System.out.println(carsRight + " cars right");
 		return carsLeft + 1 > carsRight;
 	}
 

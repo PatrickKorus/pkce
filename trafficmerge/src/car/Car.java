@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 
 import game.Game;
 import game.GameObject;
+import game.GameUI;
 import game.Obstacle;
 
 public abstract class Car extends GameObject implements Comparable<Car> {
@@ -70,7 +71,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	@Override
 	public void draw(Graphics g) {
 
-		if (true) {
+		if (GameUI.carData) {
 			String speedString = (this.currentSpeed * 36 / 10) + "";
 			String accString = (this.currentAcc) + "";
 			g.drawString(this.toString().substring(20), this.x, this.y + 20);
@@ -169,7 +170,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		if (isRightLane) {
 			return;
 		}
-		laneMover += Math.round((delta / 1000.0) * Game.SPACE_BETWEEN_LANES);
+		laneMover += Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
 		if (laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
 		} else {

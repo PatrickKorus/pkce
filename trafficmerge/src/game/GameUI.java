@@ -10,7 +10,7 @@ import car.Car;
 import game.spawner.EntitySpawner;
 
 public class GameUI {
-	public boolean carData = false;
+	public static boolean carData = false;
 	
 	private TextField scaler;
 	private TextField timeControler;
