@@ -59,7 +59,8 @@ public class Game extends BasicGame {
 	EntitySpawner spawner;
 
 	public int carsEndCounter = 0;
-
+	public double[] averageLaneSpeed = new double[]{ 0.0 , 0.0};
+	
 	public Game() {
 		super("Traffic Merge Simulation");
 		setConstants(SCALE);
@@ -149,7 +150,7 @@ public class Game extends BasicGame {
 		carsLeft.removeAll(carsToRemoveLeft);
 		carsToRemoveLeft.clear();
 
-		gameUi.update();
+		gameUi.update(newDelta);
 	}
 
 	public void rescale(float scale) throws SlickException {
