@@ -10,14 +10,22 @@ import car.Car;
 import game.spawner.EntitySpawner;
 
 public class GameUI {
+	
+	private Game game;
+	private GameContainer container;
+	private EntitySpawner spawner;
+	
 	public boolean carData = false;
+	public static double aggressivePers = 0.33;
+	public static double passivePers = 0.33;
 	
 	private TextField scaler;
 	private TextField timeControler;
 	private TextField trafficDensity;
-	private EntitySpawner spawner;
-	private Game game;
-	private GameContainer container;
+	private TextField aggressiveDriver;
+	private TextField passiveDriver;
+
+
 	private int time = 0;
 	//for average in-/output:
 	private double outgoingTraffic = 0;
@@ -35,6 +43,8 @@ public class GameUI {
 		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
 		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
 		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
+		aggressiveDriver = new TextField(container, container.getDefaultFont(), 50, 200, 100, 20);
+		passiveDriver = new TextField(container, container.getDefaultFont(), 50, 250, 100, 20);
 	}
 	
 	public void render(GameContainer container, Graphics g){
@@ -44,7 +54,11 @@ public class GameUI {
 		timeControler.render(container, g);
 		g.drawString("Verkehrsdichte: " + Math.round(spawner.getTrafficDensity()*100)/100.0, trafficDensity.getX(), trafficDensity.getY()-20);
 		trafficDensity.render(container, g);
-		g.drawString("D -> Zeige Autoinformationen",50, 175);
+		g.drawString("Anteil an aggressiven Fahrern: " + Math.round(aggressivePers * 100)/100.0, aggressiveDriver.getX(), aggressiveDriver.getY()-20);
+		aggressiveDriver.render(container, g);
+		g.drawString("Anteil an passiven Fahrern: " + Math.round(passivePers * 100)/100.0, passiveDriver.getX(), passiveDriver.getY()-20);
+		passiveDriver.render(container, g);
+		g.drawString("D -> Zeige Autoinformationen",50, 275);
 		
 		//Data:
 		//Counting cars:
@@ -96,6 +110,26 @@ public class GameUI {
 			float newDensity = Float.parseFloat(value);
 			if (newDensity <= 1.0 && newDensity > 0)
 				spawner.setTrafficDensity(newDensity);
+		} catch (NumberFormatException e) {
+			//TODO: Handle exceptions
+		}
+		
+		// change aggressive percentage
+		try {
+			String value = aggressiveDriver.getText();
+			float newPercentage = Float.parseFloat(value);
+			if (newPercentage + passivePers <= 1.0 && newPercentage >= 0)
+				aggressivePers = newPercentage;
+		} catch (NumberFormatException e) {
+			//TODO: Handle exceptions
+		}
+
+		// change passive percentage
+		try {
+			String value = passiveDriver.getText();
+			float newPercentage = Float.parseFloat(value);
+			if (newPercentage + aggressivePers <= 1.0 && newPercentage >= 0)
+				passivePers = newPercentage;
 		} catch (NumberFormatException e) {
 			//TODO: Handle exceptions
 		}
