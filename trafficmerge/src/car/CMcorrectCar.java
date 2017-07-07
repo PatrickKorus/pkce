@@ -55,9 +55,9 @@ public class CMcorrectCar extends Car {
 		}
 
 		//TODO: in public function auskoppeln.
-		double minDistance = (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
+		double minDistance = minDist(speed);
 
-		double safetyDistance = minDistance + this.currentSpeed / 2;
+		double safetyDistance = safetyDist(minDistance);
 
 		//
 		// System.out.println("minimum distance = " + minDistance);
@@ -89,7 +89,26 @@ public class CMcorrectCar extends Car {
 //		 System.out.println(speedLimit * 36/10);
 //		 System.out.println(this.currentSpeed * 36/10);
 	}
+	
+	/**
+	 * calculates the minimal distance to stop
+	 * @param speed -speed of the car in the front
+	 * @return
+	 */
+	public 	double minDist(double speed){
+		return (this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speed) + 6;
+	}
+	
+	/**
+	 * returns safty distance to the front car
+	 * @param minDistance - minimal distance to stop
+	 * @return 
+	 */
+	public double safetyDist(double minDistance){
+		return 	minDistance + this.currentSpeed / 2;
+	}
 
+	
 	public void regulateTo(double goal, double current, float importance) {
 		double error = goal - current;
 		if (error < 0.001 && error > -0.001) {
