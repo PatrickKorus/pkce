@@ -167,21 +167,27 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 * @param delta
 	 */
 	public void changeLane(int delta, Game game) {
-		if (isRightLane) {
-			return;
-		}
-		laneMover += Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
+
+		int sign = isRightLane? -1 : 1;
+		
+//		if (isRightLane != toLeft) {
+//			return;
+//		}
+		laneMover += sign * Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
 		if (laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
 		} else {
 			this.y += laneMover;
+			laneMover = 0;
 			isChangingLane = false;
 			isRightLane = true;
 			game.removeCarLeft(this);
 			game.addCarRight(this);
 		}
 	}
+	
 
+	
 	/**
 	 * calculates the minimal distance to stop
 	 * 
