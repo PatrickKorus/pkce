@@ -184,6 +184,8 @@ public class CMSpawner implements EntitySpawner  {
 		
 		
 		//TODO:test variation for speed
+		if(LaneSpd <= 0.5 * maxSpd)
+			LaneSpd = 2 * maxSpd / 3;
 		LaneSpd += Math.abs((maxSpd-LaneSpd)/3.0);
 
 		
