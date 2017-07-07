@@ -138,6 +138,7 @@ public class CMSpawner implements EntitySpawner  {
 				}
 				else{//no car on the lane
 					maxSpd[1] = 0;
+					rightSpawnFree = true;
 				}
 				
 				//limit right speed to left speed
@@ -206,20 +207,17 @@ public class CMSpawner implements EntitySpawner  {
 		double goalSpd = 130; //random value. gets replaced
 		Car car;
 
-		//chooses a driver type. Right now with equal chances for each type.
+		//choose a driver type. Right now with equal chances for each type.
 		//TODO: Improve the type variation 
 		int type = (int)(randomGenerator.nextFloat()*3);
 		
 		
-		//TODO:test variation for speed
 		if(LaneSpd <= 0.5 * maxSpd)
 			LaneSpd = 2 * maxSpd / 3;
 		LaneSpd += Math.abs((maxSpd-LaneSpd)/3.0);
-
-		
 		
 		/*
-		 * Standard deviation is :
+		 * Standard deviation:
 		 * (maxSpdLane-actLaneSpd)/1 -> 1 Sigma for aggressive driver. a lot drive more aggressive, with evtl to small distance
 		 * (maxSpdLane-actLaneSpd)/2 -> 2 Sigma for standard driver. most drive ok
 		 * (maxSpdLane-actLaneSpd)/3 -> 3 Sigma for careful driver. nearly anyone drives in a good range
@@ -321,23 +319,30 @@ public class CMSpawner implements EntitySpawner  {
 	 */
 	private double calcTrigger(boolean lane){
 		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*1000;
+		double[] carDens = carDensity();
+		double diffDens = carDens[0] - carDens[1];
 		//TODO: For testing
-		if(lane == false ){ //&& laneSpd[0] <= laneSpd[1]){
-			trigger *= 1.5;
+		if(lane){//&& laneSpd[0] <= laneSpd[1]){
+			trigger *= (1-diffDens);
+		}
+		else{
+			trigger *= (1+diffDens);
+			trigger *= 1.5; //buffering left lane a little bit
 		}			
 		return trigger;
 	}
 
 	/**
 	 * counts the cars on each lane
-	 * @return
+	 * @return [left , right]
 	 */
 	private double[] carDensity(){
+		double countDist = 50 * Game.VEHICLE_LENGTH_M; 
 		double[] carDens = new double[2];
-		if(!game.getCarsLeft().isEmpty())
-			carDens[0] = (double) game.getCarsLeft().size();
-		if(!game.getCarsRight().isEmpty())
-			carDens[1] = (double) game.getCarsRight().size();
+
+		carDens[0] = (double)phantomCarL.countCars(0, countDist, false, game)/50.0;
+		carDens[1] = (double)phantomCarR.countCars(0, countDist, true, game)/50.0;		
+		
 		return carDens;
 	}
 	

@@ -211,7 +211,7 @@ public class CMcorrectCar extends Car {
 	 * @param game
 	 * @return
 	 */
-	private int countCars(double metersBehind, double metersAhead, boolean rightLane, Game game) {
+	public int countCars(double metersBehind, double metersAhead, boolean rightLane, Game game) {
 		int counter = 0;
 		Collection<Car> cars = isRightLane ? game.getCarsRight() : game.getCarsLeft();
 		for (Car car : cars) {
