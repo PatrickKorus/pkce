@@ -190,7 +190,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 */
 	public double getMinDist(GameObject carUpFront) {
 
-		double speedCarUpFront = 400.0;
+		double speedCarUpFront = 300.0;
 		if (carUpFront instanceof Car && carUpFront != null) {
 			speedCarUpFront = ((Car) carUpFront).getCurrentSpeed();
 		} else if (carUpFront instanceof Obstacle) {
@@ -241,25 +241,28 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 
 	public void setColor(Color color, float scale) throws SlickException {
 		this.color = color;
+		String name = "basicCar";
 		switch (color) {
 		// TODO: Other colors
 		case BLUE:
-			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
-			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
-			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(scale);
-			normback = new Image("res/basicCar/normal_back.png");
-			breakback = new Image("res/basicCar/breaking_back.png");
-			indback = new Image("res/basicCar/indicating_back.png");
+			name = "basicCar";
+			break;
+		case AGGRESSIVE:
+			name = "aggressiveCar";
+			break;
+		case PASSIVE:
+			name = "passiveCar";
 			break;
 		default:
-			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
-			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
-			indicateImage = new Image("res/basicCar/indicating.png").getScaledCopy(scale);
-			normback = new Image("res/basicCar/normal_back.png");
-			breakback = new Image("res/basicCar/breaking_back.png");
-			indback = new Image("res/basicCar/indicating_back.png");
 			break;
 		}
+
+		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy(scale);
+		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy(scale);
+		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy(scale);
+		normback = new Image("res/" + name + "/normal_back.png");
+		breakback = new Image("res/" + name + "/breaking_back.png");
+		indback = new Image("res/" + name + "/indicating_back.png");
 	}
 
 	@Override
