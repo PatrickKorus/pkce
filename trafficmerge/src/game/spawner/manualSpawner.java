@@ -3,7 +3,6 @@ package game.spawner;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import car.BasicCar;
 import car.CMcorrectCar;
 import car.Car;
 import game.Game;
@@ -18,12 +17,12 @@ public class manualSpawner implements EntitySpawner {
 	public void init(Game game) throws SlickException {
 		initSigns(game);
 
-		game.addCar(new BasicCar(0, true, 100, game));
+//		game.addCar(new BasicCar(0, true, 60, game));
 		
 		
 	}
 	
-	
+	private double trafficDensity = 0.6;  
 	private int deltaCOunter = 0;
 	private boolean spawncar = true;
 
@@ -51,7 +50,7 @@ public class manualSpawner implements EntitySpawner {
 	boolean laneSetter = true;
 	
 	private void moreCars(int mausX, int mausY, Game game) throws SlickException {
-		Car car = new CMcorrectCar(0, laneSetter, 90.0, game);
+		Car car = new CMcorrectCar(0, laneSetter, 90.0, 90.0, game);
 		laneSetter = !laneSetter;
 		game.addCar(car);
 	}
@@ -67,6 +66,24 @@ public class manualSpawner implements EntitySpawner {
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));
 		}
+	}
+	
+	@Override
+	/**
+	 * Sets the traffic density to another value
+	 * @param Density - 0 < Density <= 1
+	 */
+	public void setTrafficDensity ( double Density){
+			trafficDensity = Density;
+		}
+	
+	@Override
+	/**
+	 * returns current traffic density
+	 * @return - 0 < Density <= 1
+	 */
+	public double getTrafficDensity() {
+		return trafficDensity;
 	}
 
 }

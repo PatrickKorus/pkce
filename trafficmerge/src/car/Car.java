@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import game.Game;
 import game.GameObject;
 
-public abstract class Car extends GameObject {
+public abstract class Car extends GameObject implements Comparable<Car> {
 
 	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
 	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
@@ -20,7 +20,7 @@ public abstract class Car extends GameObject {
 	private Color color;
 
 	// current data
-	protected double goalSpeed, currentAcc, currentSpeed;
+	double goalSpeed, currentAcc, currentSpeed;
 	protected boolean isIndicating, isChangingLane;
 	// boolean isBreaking; // redundant since true when currentACC < 0
 
@@ -52,8 +52,30 @@ public abstract class Car extends GameObject {
 		isChangingLane = false;
 	}
 
+	public Car(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game, Color color)
+			throws SlickException {
+		super(meter, isRightLane);
+		this.game = game;
+		this.currentSpeed = kmhTOmps(initSpeed);
+		this.goalSpeed = kmhTOmps(initGoalSpeed);
+		this.currentAcc = 0.0;
+		this.setColor(color, Game.SCALE);
+		super.setImage(basicImage);
+		backimage = normback;
+		isIndicating = false;
+		isChangingLane = false;
+	}
+
 	@Override
 	public void draw(Graphics g) {
+
+		if (true) {
+			String speedString = (this.currentSpeed * 36 / 10) + "";
+			String accString = (this.currentAcc) + "";
+			g.drawString(this.toString().substring(20), this.x, this.y + 20);
+			g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
+			g.drawString(accString.substring(0, 3), this.x, this.y + 60);
+		}
 		backimage.drawCentered(x, y);
 		image.drawCentered(x, y);
 	}
@@ -70,7 +92,7 @@ public abstract class Car extends GameObject {
 		if (indicatingLightsOn) {
 			backimage = indback;
 			super.image = indicateImage;
-		} else if (this.currentAcc < -0.09) {
+		} else if (this.currentAcc < -0.1) {
 			backimage = breakback;
 			super.image = breakImage;
 		} else {
@@ -79,18 +101,23 @@ public abstract class Car extends GameObject {
 		}
 
 		// control
-		regulate(this.game);
+		regulate(this.game, delta);
 
 		// apply changes
 		move(delta);
 		super.updateCoordinates();
 		// vertical position
 		if (isChangingLane) {
-			changeLane(delta);
+			changeLane(delta, game);
 		}
 
 		// invoke superclass
-//		super.update(delta);
+		// super.update(delta);
+	}
+
+	protected void stopInidicating() {
+		this.indicatingLightsOn = false;
+		this.isIndicating = false;
 	}
 
 	/**
@@ -105,7 +132,7 @@ public abstract class Car extends GameObject {
 		this.meter += currentSpeed * delta / 1000.0;
 	}
 
-	// TODO there is probably a better way to do this
+	// TODO: There is probably a better way to do this
 	private int deltaCounter = 400;
 	private boolean indicatingLightsOn = false;
 
@@ -125,8 +152,10 @@ public abstract class Car extends GameObject {
 	/**
 	 * Here the car makes its choices manipulating only currentACC, isIndicating
 	 * & isChangingLane!
+	 * 
+	 * @param delta
 	 */
-	public abstract void regulate(Game game);
+	public abstract void regulate(Game game, int delta);
 
 	private int laneMover = 0;
 
@@ -135,7 +164,7 @@ public abstract class Car extends GameObject {
 	 * 
 	 * @param delta
 	 */
-	public void changeLane(int delta) {
+	public void changeLane(int delta, Game game) {
 		if (isRightLane) {
 			return;
 		}
@@ -146,7 +175,37 @@ public abstract class Car extends GameObject {
 			this.y += laneMover;
 			isChangingLane = false;
 			isRightLane = true;
+			game.removeCarLeft(this);
+			game.addCarRight(this);
 		}
+	}
+
+	/**
+	 * calculates the minimal distance to stop
+	 * 
+	 * @param carUpFront
+	 *            - car ahead
+	 * @return
+	 */
+	public double getMinDist(Car carUpFront) {
+
+		double speedCarUpFront = 400.0;
+		if (carUpFront != null) {
+			speedCarUpFront = carUpFront.getCurrentSpeed();
+		}
+		return Math.max(
+				(this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
+	}
+
+	/**
+	 * Returns safety distance by Distance that is safe to drive + reaction time
+	 * ("halber Tacho")
+	 * 
+	 * @param carUpFront
+	 * @return
+	 */
+	public double getSafetyDistance(Car carUpFront) {
+		return this.currentSpeed / 2.0 + this.getMinDist(carUpFront);
 	}
 
 	/**
@@ -155,7 +214,7 @@ public abstract class Car extends GameObject {
 	 *            - speed in km/h
 	 */
 	public void setSpeed(double kmh) {
-		this.currentSpeed = kmhTOmpers(kmh);
+		this.currentSpeed = kmhTOmps(kmh);
 		this.goalSpeed = this.currentSpeed;
 	}
 
@@ -169,14 +228,18 @@ public abstract class Car extends GameObject {
 		return 1000.0 / (36.0 * Noughtto100);
 	}
 
-	protected double kmhTOmpers(double kmh) {
-		return kmh * 10.0 / 36.0;
+	protected double kmhTOmps(double kmh) {
+		return kmh / 3.60;
+	}
+
+	protected double mpsTOkmh(double mps) {
+		return mps * 3.60;
 	}
 
 	public void setColor(Color color, float scale) throws SlickException {
 		this.color = color;
 		switch (color) {
-		// TODO other colors
+		// TODO: Other colors
 		case BLUE:
 			basicImage = new Image("res/basicCar/normal.png").getScaledCopy(scale);
 			breakImage = new Image("res/basicCar/breaking.png").getScaledCopy(scale);
@@ -201,12 +264,40 @@ public abstract class Car extends GameObject {
 		setColor(color, scale);
 	}
 
+	@Override
+	public int compareTo(Car otherCar) {
+		if (this.meter < otherCar.meter) {
+			return 1;
+		} else if (this.meter > otherCar.meter) {
+			return -1;
+		}
+		return 0;
+	}
+
 	public double getCurrentAcc() {
 		return currentAcc;
 	}
 
+	/**
+	 * 
+	 * @return max breaking force
+	 */
+	public double getMaxBreak() {
+		return MAX_BREAKING_FORCE;
+	}
+
+	/**
+	 * returns current speed
+	 * 
+	 * @return - in kmh
+	 */
 	public double getCurrentSpeed() {
-		return currentSpeed;
+		// *3.6 to get kmh instead of mph
+		return mpsTOkmh(currentSpeed);
+	}
+
+	public boolean isBreaking() {
+		return this.currentAcc < -0.1;
 	}
 
 	public boolean isIndicating() {

@@ -1,6 +1,9 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.TreeSet;
 
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
@@ -8,10 +11,10 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.gui.TextField;
 
 //import game.Punkte;
 import car.Car;
+import game.spawner.CMSpawner;
 import game.spawner.EntitySpawner;
 import game.spawner.manualSpawner;
 import sign.Sign;
@@ -29,11 +32,13 @@ public class Game extends BasicGame {
 	public static final int height = 768;
 	public static final int width = 1024;
 
-	// TODO make these variable during runtime
-	public static float SCALE = 0.05f;
+	// TODO: Make these variable during runtime
+	public static float SCALE = 0.09f;
 	public static float timeFactor = 1.0f;
 	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
-	public static double END_OF_LANE = 1100; // in meter
+
+	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
+																		// meter
 
 	/* ---------------- END PRESET ---------------- */
 
@@ -42,24 +47,22 @@ public class Game extends BasicGame {
 	public static double meter_per_width;
 
 	private Image background;
-	// private Punkte punkte;
+	private GameUI gameUi;
 	private ArrayList<Sign> signs;
-	private ArrayList<Car> cars;
+	private TreeSet<Car> carsLeft;
+	private TreeSet<Car> carsRight;
 	private ArrayList<Sign> delineators;
 	private Obstacle obstacle;
+	// private LinkedList<Car> carsToRemoveRight;
+	private LinkedList<Car> carsToRemoveLeft;
 
 	EntitySpawner spawner;
-	TextField scaler;
-	TextField timeControler;
 
-	// TODO this already counts passing cars but is unused so far
-	@SuppressWarnings("unused")
-	private int carsEndCounter;
+	public int carsEndCounter = 0;
 
 	public Game() {
 		super("Traffic Merge Simulation");
 		setConstants(SCALE);
-		System.out.println(meter_out_of_window + "m not visible");
 	}
 
 	private void setConstants(float scale) {
@@ -72,8 +75,11 @@ public class Game extends BasicGame {
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		background.draw();
 		obstacle.draw(g);
-
-		for (Car car : cars) {
+		
+		for (Car car : carsLeft) {
+			car.drawWithCulling(g);
+		}
+		for (Car car : carsRight) {
 			car.drawWithCulling(g);
 		}
 		for (Sign delineator : delineators) {
@@ -82,28 +88,29 @@ public class Game extends BasicGame {
 		for (Sign sign : signs) {
 			sign.drawWithCulling(g);
 		}
-
-		scaler.render(container, g);
-		timeControler.render(container, g);
+		gameUi.render(container, g);
 	}
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
 		signs = new ArrayList<>();
-		cars = new ArrayList<>();
-		delineators = new ArrayList<>();
+		carsLeft = new TreeSet<>();
+		carsRight = new TreeSet<>();
+		delineators = new ArrayList<>(50);
+		carsToRemoveLeft = new LinkedList<>();
+		// carsToRemoveRight = new LinkedList<>();
 		background = new Image("res/background_stripes.jpg");
 		obstacle = new Obstacle(END_OF_LANE);
-		spawner = new manualSpawner();
+		// spawner = new manualSpawner();
+		spawner = new CMSpawner();
 		spawner.init(this);
+		gameUi = new GameUI(this, container, spawner);
+
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
 		 * new Image( "res/fonts/score_numer_font.png")); punkte = new
 		 * Punkte(container.getWidth() - 180, 10, fontPunkte);
 		 */
-		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
-		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
-
 	}
 
 	@Override
@@ -113,56 +120,44 @@ public class Game extends BasicGame {
 		Input input = container.getInput();
 		spawner.spawn(newDelta, input, this);
 
-		// update cars / remove them if they are past the obstacle
-		if (cars.size() > 0) {
-			for (int i = 0; i < cars.size(); i++) {
-				if (cars.get(i).meter > Game.TOTAL_SIMULATION_DISTANCE + 50) {
-					cars.remove(i);
-					carsEndCounter++;
-				} else {
-					cars.get(i).update(newDelta);
-				}
-			}
+		for (Car car : carsLeft) {
+			car.update(newDelta);
 		}
-		
+		for (Car car : carsRight) {
+			car.update(newDelta);
+		}
+
+		// update cars / remove them if they are past the obstacle
+
+		Car firstCar = null;
+		if (!carsRight.isEmpty())
+			firstCar = carsRight.first();
+		if (firstCar != null && firstCar.meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
+			carsRight.pollFirst();
+			carsEndCounter++;
+		}
+
 		for (Sign sign : signs) {
 			sign.update(newDelta);
 		}
-		
+
 		for (Sign delineator : delineators) {
 			delineator.update(newDelta);
 		}
 
-		// TODO in einen Parser auskoppeln?
-		try {
-			String value = scaler.getText();
-			float newscale = Float.parseFloat(value);
-			if (newscale > 0.01)
-				this.rescale(newscale);
-		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
-		}
-		
-		try {
-			String value = timeControler.getText();
-			float newFactor = Float.parseFloat(value);
-			if (newFactor > 0.1)
-				Game.timeFactor = newFactor;
-		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
-		}
 
-		// Fenster mit ESC sclieﬂen
-		if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-			container.exit();
-		}
+		carsLeft.removeAll(carsToRemoveLeft);
+		carsToRemoveLeft.clear();
+
+		gameUi.update();
 	}
 
 	public void rescale(float scale) throws SlickException {
 		this.setConstants(scale);
-		for (Car car : cars) {
+		for (Car car : carsRight) {
+			car.rescale(scale);
+		}
+		for (Car car : carsLeft) {
 			car.rescale(scale);
 		}
 		obstacle.rescale(scale);
@@ -185,12 +180,34 @@ public class Game extends BasicGame {
 		return signs;
 	}
 
-	public ArrayList<Car> getCars() {
-		return cars;
+	public TreeSet<Car> getCarsLeft() {
+		return carsLeft;
 	}
 
-	public void addCar(Car car) {
-		this.cars.add(car);
+	public TreeSet<Car> getCarsRight() {
+		return carsRight;
+	}
+
+	public void addCarLeft(Car car) {
+		this.carsLeft.add(car);
+	}
+
+	public void addCarRight(Car car) {
+		this.carsRight.add(car);
+	}
+
+	public void removeCarLeft(Car car) {
+		this.carsToRemoveLeft.add(car);
+	}
+
+	// public void removeCarRight(Car car){
+	// this.carsToRemoveRight.add(car);
+	// }
+
+	public Collection<Car> getCars() {
+		ArrayList<Car> result = new ArrayList<>(carsLeft);
+		result.addAll(carsRight);
+		return result;
 	}
 
 	public void addSign(Sign sign) {
@@ -199,6 +216,18 @@ public class Game extends BasicGame {
 
 	public void addDelineator(Sign delineator) {
 		this.delineators.add(delineator);
+	}
+
+	public GameObject getObstacle() {
+		return this.obstacle;
+	}
+
+	public void addCar(Car car) {
+		if (car.isRightLane) {
+			carsRight.add(car);
+		} else {
+			carsLeft.add(car);
+		}
 	}
 
 }

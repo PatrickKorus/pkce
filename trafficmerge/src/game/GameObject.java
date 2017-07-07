@@ -129,7 +129,7 @@ public abstract class GameObject {
 	 * positive Value if given Object lies in front of this.
 	 */
 	public double getDistance(GameObject object) {
-		return object.meter - this.meter;
+		return object == null ? Double.MAX_VALUE : object.meter - this.meter;
 	}
 
 	public boolean isRightLane() {
@@ -145,7 +145,10 @@ public abstract class GameObject {
 	}
 	
 	public void rescale(float scale) throws SlickException {
-		// TODO this is not working at all.
 	};
+	
+	public double getMeterDistance() {
+		return meter;
+	}
 
 }
