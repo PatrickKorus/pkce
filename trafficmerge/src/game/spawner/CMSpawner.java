@@ -9,7 +9,6 @@ import car.CMaggressiveCar;
 import car.CMcorrectCar;
 import car.CMpassiveCar;
 import car.Car;
-import car.ObstacleCar;
 import game.Game;
 import sign.Delineator;
 import sign.LaneEndsSign;
@@ -17,11 +16,12 @@ import sign.Sign_Type;
 import sign.SpeedLimitSign;
 
 public class CMSpawner implements EntitySpawner  {
-	
+	//variables for calculations:
 	/**
 	 * generates random numbers 
 	 */
 	private Random randomGenerator = new Random();
+	private Game game;
 	
 	//phantomCars for the calculation
 	private CMcorrectCar phantomCarR;
@@ -55,6 +55,7 @@ public class CMSpawner implements EntitySpawner  {
 	@Override
 	public void init(Game game) throws SlickException {
 		initSigns(game);
+		this.game = game;
 		phantomCarR = new CMcorrectCar(0,true,0,0, game);
 		phantomCarL = new CMcorrectCar(0,false,0,0, game);
 		startPos = new CMcorrectCar(0,true,0,0,game);
@@ -97,6 +98,7 @@ public class CMSpawner implements EntitySpawner  {
 				}
 				else{//no car on the lane
 					maxSpd[0] = 0;
+					leftSpawnFree = true;
 				}
 					
 				//spawn if enough space and reset timer
@@ -162,7 +164,34 @@ public class CMSpawner implements EntitySpawner  {
 //===========================================================================================================		
 		}
 	
+	@Override
+	/**
+	 * Sets the traffic density to another value
+	 * @param Density - 0 < Density <= 1
+	 */
+	public void setTrafficDensity ( double Density){
+		if(Density <= 1.0 && Density > 0){
+			if(trafficDensity != Density){
+				leftTime = 0;
+				rightTime = 0;
+				leftTTrigger = calcTrigger(false);
+				rightTTrigger = calcTrigger(true);
+			}
+			trafficDensity = Density;
+			sigma = (1.0/trafficDensity);
 
+		}
+	}
+	
+	@Override
+	/**
+	 * returns current traffic density
+	 * @return - 0 < Density <= 1
+	 */
+	public double getTrafficDensity() {
+		return trafficDensity;
+	}
+	
 	/**
 	 * spawns a random car with various behaviour and initial spd. 
 	 * @param maxSpd - in km/h  ->  highest possible spd, so that the car wont crash if the car in the front is slowing down.
@@ -295,38 +324,21 @@ public class CMSpawner implements EntitySpawner  {
 		//TODO: For testing
 		if(lane == false ){ //&& laneSpd[0] <= laneSpd[1]){
 			trigger *= 1.5;
-		}
-//			System.out.println("Idiot" + (double)laneSpd[1]/ (double)laneSpd[0]);
-			
+		}			
 		return trigger;
 	}
 
-	@Override
 	/**
-	 * Sets the traffic density to another value
-	 * @param Density - 0 < Density <= 1
+	 * counts the cars on each lane
+	 * @return
 	 */
-	public void setTrafficDensity ( double Density){
-		if(Density <= 1.0 && Density > 0){
-			if(trafficDensity != Density){
-				leftTime = 0;
-				rightTime = 0;
-				leftTTrigger = calcTrigger(false);
-				rightTTrigger = calcTrigger(true);
-			}
-			trafficDensity = Density;
-			sigma = (1.0/trafficDensity);
-
-		}
-	}
-	
-	@Override
-	/**
-	 * returns current traffic density
-	 * @return - 0 < Density <= 1
-	 */
-	public double getTrafficDensity() {
-		return trafficDensity;
+	private double[] carDensity(){
+		double[] carDens = new double[2];
+		if(!game.getCarsLeft().isEmpty())
+			carDens[0] = (double) game.getCarsLeft().size();
+		if(!game.getCarsRight().isEmpty())
+			carDens[1] = (double) game.getCarsRight().size();
+		return carDens;
 	}
 	
 	private void initSigns(Game game) throws SlickException {
@@ -335,7 +347,7 @@ public class CMSpawner implements EntitySpawner  {
 		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
 		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
 		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_60));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
 		
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));
