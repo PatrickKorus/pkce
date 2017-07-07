@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 
 import game.Game;
 import game.GameObject;
+import game.Obstacle;
 
 public abstract class Car extends GameObject implements Comparable<Car> {
 
@@ -187,11 +188,13 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 *            - car ahead
 	 * @return
 	 */
-	public double getMinDist(Car carUpFront) {
+	public double getMinDist(GameObject carUpFront) {
 
 		double speedCarUpFront = 400.0;
-		if (carUpFront != null) {
-			speedCarUpFront = carUpFront.getCurrentSpeed();
+		if (carUpFront instanceof Car && carUpFront != null) {
+			speedCarUpFront = ((Car) carUpFront).getCurrentSpeed();
+		} else if (carUpFront instanceof Obstacle) {
+			speedCarUpFront = 0;
 		}
 		return Math.max(
 				(this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);

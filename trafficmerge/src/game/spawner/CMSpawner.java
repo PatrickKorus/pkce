@@ -58,7 +58,6 @@ public class CMSpawner implements EntitySpawner  {
 		phantomCarR = new CMcorrectCar(0,true,0,0, game);
 		phantomCarL = new CMcorrectCar(0,false,0,0, game);
 		startPos = new CMcorrectCar(0,true,0,0,game);
-		game.addCar(new ObstacleCar(game));
 		spawnRandomCar(150, 130, true, game);
 		spawnRandomCar(300, 250, false, game);
 		leftTTrigger = calcTrigger();
