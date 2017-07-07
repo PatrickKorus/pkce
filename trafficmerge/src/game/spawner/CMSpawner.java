@@ -10,6 +10,7 @@ import car.CMcorrectCar;
 import car.CMpassiveCar;
 import car.Car;
 import game.Game;
+import game.GameUI;
 import sign.Delineator;
 import sign.LaneEndsSign;
 import sign.Sign_Type;
@@ -206,11 +207,18 @@ public class CMSpawner implements EntitySpawner  {
 		double sigma = 6; //random value. gets replaced
 		double goalSpd = 130; //random value. gets replaced
 		Car car;
-
+		int type;
 		//choose a driver type. Right now with equal chances for each type.
 		//TODO: Improve the type variation 
-		int type = (int)(randomGenerator.nextFloat()*3);
+		double typeVal = randomGenerator.nextDouble();
 		
+		if(typeVal <= GameUI.aggressivePers){
+			type = 0;
+		}else if(typeVal <= 1-GameUI.passivePers){
+			type = 1;
+		}else{
+			type = 2;
+		}
 		
 		if(LaneSpd <= 0.5 * maxSpd)
 			LaneSpd = 2 * maxSpd / 3;
