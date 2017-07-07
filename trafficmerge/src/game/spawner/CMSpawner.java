@@ -27,7 +27,7 @@ public class CMSpawner implements EntitySpawner  {
 	private CMcorrectCar phantomCarR;
 	private CMcorrectCar phantomCarL;
 	private CMcorrectCar startPos;
-	
+		
 	//variables for spawning:
 	private double trafficDensity = 0.6;  
 	private double sigma = (1.0/trafficDensity);	
@@ -60,10 +60,9 @@ public class CMSpawner implements EntitySpawner  {
 		startPos = new CMcorrectCar(0,true,0,0,game);
 		spawnRandomCar(150, 130, true, game);
 		spawnRandomCar(300, 250, false, game);
-		leftTTrigger = calcTrigger();
-		rightTTrigger = calcTrigger();
-
-	}
+		leftTTrigger = calcTrigger(false);
+		rightTTrigger = calcTrigger(true);
+		}
 	
 	@Override
 	public void spawn(int delta, Input input, Game game) throws SlickException {
@@ -72,8 +71,8 @@ public class CMSpawner implements EntitySpawner  {
 			
 			
 			maxSpd[0] = 150.0;
-			laneSpd[0] = 130.0;
 			maxSpd[1] = 0.75 * maxSpd[0];
+			laneSpd[0] = 170.0;
 			laneSpd[1] = 0.75 * laneSpd[0];
 			
 //===left lane==============================================================================================					
@@ -86,9 +85,10 @@ public class CMSpawner implements EntitySpawner  {
 					phantomCarL.setSpeed(lastCars[0].getCurrentSpeed());
 					double minDist = phantomCarL.getSafetyDistance(lastCars[0]);
 					if(actDist >= minDist+12){
-						
 						// convert laneSpd to mps for the calculation
 						maxSpd[0] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[0])) + Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[0]) , 2)/4)+ 2* phantomCarL.getMaxBreak() * (actDist - 6)));
+						if(maxSpd[0] > 200)
+							maxSpd[0] = 0;
 						leftSpawnFree = true;
 					}else{
 						//not enough space -> no cars spawning
@@ -101,11 +101,15 @@ public class CMSpawner implements EntitySpawner  {
 					
 				//spawn if enough space and reset timer
 				if(leftSpawnFree){
-					spawnRandomCar(maxSpd[0], laneSpd[0], false, game);
-					leftSpawnFree = false;
-					leftTime = 0;
-					leftTTrigger = calcTrigger();
-	
+					if(rightTime <= 0.8 * rightTTrigger){
+						spawnRandomCar(maxSpd[0], laneSpd[0], false, game);
+						leftSpawnFree = false;
+						leftTime = 0;
+						leftTTrigger = calcTrigger(false);
+					}
+					else{
+						rightTime = (int) rightTTrigger + 1;
+					}
 				}
 			}
 			else{
@@ -137,8 +141,8 @@ public class CMSpawner implements EntitySpawner  {
 				//limit right speed to left speed
 				if(laneSpd[0] <= maxSpd[1]){
 					maxSpd[1] = laneSpd[0];
-					if(laneSpd[1] >= maxSpd[1]-10){
-						laneSpd[1] = maxSpd[1] - 10;
+					if(laneSpd[1] >= maxSpd[1]*0.75){
+						laneSpd[1] = maxSpd[1];
 					}
 				}
 				
@@ -148,7 +152,7 @@ public class CMSpawner implements EntitySpawner  {
 					spawnRandomCar(maxSpd[1], laneSpd[1], true, game);
 					rightSpawnFree = false;
 					rightTime = 0;
-					rightTTrigger = calcTrigger();
+					rightTTrigger = calcTrigger(true);
 	
 				}
 			}
@@ -158,7 +162,7 @@ public class CMSpawner implements EntitySpawner  {
 //===========================================================================================================		
 		}
 	
-	
+
 	/**
 	 * spawns a random car with various behaviour and initial spd. 
 	 * @param maxSpd - in km/h  ->  highest possible spd, so that the car wont crash if the car in the front is slowing down.
@@ -170,6 +174,7 @@ public class CMSpawner implements EntitySpawner  {
 	private void spawnRandomCar(double maxSpd, double LaneSpd, boolean rightLane, Game game)throws SlickException{
 		double initSpd = 60.0;
 		double sigma = 6; //random value. gets replaced
+		double goalSpd = 130; //random value. gets replaced
 		Car car;
 
 		//chooses a driver type. Right now with equal chances for each type.
@@ -178,7 +183,9 @@ public class CMSpawner implements EntitySpawner  {
 		
 		
 		//TODO:test variation for speed
-		LaneSpd += (maxSpd-LaneSpd)/3.0;
+		LaneSpd += Math.abs((maxSpd-LaneSpd)/3.0);
+
+		
 		
 		/*
 		 * Standard deviation is :
@@ -215,18 +222,25 @@ public class CMSpawner implements EntitySpawner  {
 				initSpd = 0.8 * laneSpd[0];
 			}
 		}
-
-	
+		
+		//calculate goal spd
+		if(rightLane){
+			goalSpd = (randomGenerator.nextGaussian()*sigma) + 110;		
+		}
+		else{
+			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
+		}
+		
 		switch(type){
 		case 0: //CMaggressiveCar	
-			car = new CMaggressiveCar(0, rightLane, initSpd, 130, game);
+			car = new CMaggressiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 		case 1: //CMcorrectCar
-			car = new CMcorrectCar(0, rightLane, initSpd, 130, game);
+			car = new CMcorrectCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 
 		default: //CMpassiveCar	
-			car = new CMpassiveCar(0, rightLane, initSpd, 130, game);
+			car = new CMpassiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 		}
 		game.addCar(car);
@@ -248,24 +262,6 @@ public class CMSpawner implements EntitySpawner  {
 			lastcar[0] = game.getCarsLeft().last();
 		if(!game.getCarsRight().isEmpty())
 			lastcar[1] = game.getCarsRight().last();
-// Old code
-//		
-//		for(Car car : game.getCars()){
-//			//checkout right lane
-//						
-//			if(car.isRightLane()){
-//				//check out for cars closer to spawn
-//				if(car != null && (lastcar[1] == null || startPos.getDistance(car) <= startPos.getDistance(lastcar[1]))){
-//					lastcar[1] = car;
-//				}
-//			}
-//			//checkout left lane
-//			else{
-//				if(car != null && (lastcar[0] == null  ||  startPos.getDistance(car) <= startPos.getDistance(lastcar[0]))){
-//					lastcar[0] = car;
-//				}
-//			}
-//		}
 		return lastcar;
 		
 	}
@@ -292,9 +288,14 @@ public class CMSpawner implements EntitySpawner  {
 	 * Calculates the trigger times for new cars
 	 * @return
 	 */
-	private double calcTrigger(){
+	private double calcTrigger(boolean lane){
 		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*1000;
-//		System.out.println(trigger);
+		//TODO: For testing
+		if(lane == false ){ //&& laneSpd[0] <= laneSpd[1]){
+			trigger *= 1.5;
+		}
+//			System.out.println("Idiot" + (double)laneSpd[1]/ (double)laneSpd[0]);
+			
 		return trigger;
 	}
 
@@ -308,8 +309,8 @@ public class CMSpawner implements EntitySpawner  {
 			if(trafficDensity != Density){
 				leftTime = 0;
 				rightTime = 0;
-				leftTTrigger = calcTrigger();
-				rightTTrigger = calcTrigger();
+				leftTTrigger = calcTrigger(false);
+				rightTTrigger = calcTrigger(true);
 			}
 			trafficDensity = Density;
 			sigma = (1.0/trafficDensity);
@@ -332,7 +333,7 @@ public class CMSpawner implements EntitySpawner  {
 		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
 		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
 		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_60));
 		
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));

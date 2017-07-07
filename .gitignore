@@ -18,3 +18,7 @@ doc/tex/main\.pdf
 *.dvi
 
 doc/tex/\.texpadtmp/
+
+trafficmerge/\.idea/
+
+trafficmerge/trafficmerge\.iml

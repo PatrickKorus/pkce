@@ -1,4 +1,4 @@
-\documentclass[12pt,paper=a4, colorback, accentcolor=tud9c, bigchapter]{tudreport}
+\documentclass[12pt,accentcolor=tud2c, longdoc, colorback, bigchapter]{tudreport}
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel}
 \usepackage{amsmath}
@@ -10,20 +10,41 @@
 \usepackage{numprint}
 \usepackage[ngerman]{cleveref}
 \usepackage{csquotes}
-\definecolor{mygreen}{RGB}{28,172,0}
-\definecolor{mylilas}{RGB}{170,55,241}
+\usepackage{apacite}
+\usepackage{svg}
+\usepackage{pstricks}
+\usepackage{float}
+\usepackage{geometry}
+\usepackage{microtype}
+
 \selectlanguage{ngerman}
-
-%\renewcommand{\thesection}{\thechapter \alph{section})}
-
-\author{}
+\graphicspath{{img/}}
+\author{Johannes Beck, Christian Bergfried, Patrick Korus, Robin Menzenbach und Greta Ruppert}
 \title{Ein neues Reißverschlußsystem}
 \subtitle{Projektkurs CE – SS 2017}
 \subsubtitle{}
+
 \begin{document}
-\input{lstsettings}
 \maketitle
+\cleardoublepage
+\pagenumbering{Roman}
+\setcounter{page}{3}
 \tableofcontents
-\appendix
 \listoffigures
+%\listoftables
+% Eigentlicher Text mit arabischen Seitenzahlen
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\include{Aufgabenstellung}
+\include{Reissverschlussverfahren}
+\include{Programmierung}
+\include{Fazit}
+%Literaturverzeichnis
+%\bibliographystyle{plaindin}
+\bibliographystyle{apacite}
+\bibliography{literatur}
+%Appendix
+\appendix
+%\include{appendix}
 \end{document}
