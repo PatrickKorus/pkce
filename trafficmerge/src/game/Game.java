@@ -57,8 +57,10 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToRemoveLeft;
 
 	EntitySpawner spawner;
+	boolean classicMerge;
 
 	public int carsEndCounter = 0;
+	public int time = 0;
 	public double[] averageLaneSpeed = new double[]{ 0.0 , 0.0};
 	
 	public Game() {
@@ -104,7 +106,8 @@ public class Game extends BasicGame {
 		obstacle = new Obstacle(END_OF_LANE);
 		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
-		spawner.init(this);
+		classicMerge = true;
+		spawner.init(this , classicMerge);
 		gameUi = new GameUI(this, container, spawner);
 
 		/*

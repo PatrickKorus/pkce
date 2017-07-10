@@ -20,9 +20,21 @@
 \end{addmargin}
 
 \section{Spawner}
-\textbf{Schwierigkeit:} Wie schafft man es Fahrzeuge zu erzeugen, die mit einem realistischen Verkehrsverhalten an das Stauende fahren.
+\textbf{Schwierigkeit:} Wie schafft man es einen realistischen Verkehrsfluss zu erzeugen, um den Eingangsverkehr in das Simulationsgebiet zu Simulieren.
+%Wie schafft man es Fahrzeuge zu erzeugen, die mit einem realistischen Verkehrsverhalten an das Stauende fahren.
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Bevor ein neues Fahrzeug gespawnt werden kann, müssen mehrere Bedingungen erfüllt sein. Dazu gehört zu aller erst der Sicherheitsabstand. Dieser wird aus der Geschwindigkeit des vorrausfahrenden Fahrzeuges und dem Tempolimit errechnet. Erst wenn gewährleistet ist, das genug Sicherheitsabstand existiert wird der Spawner freigegeben. Je nach gewünschter Verkehrsdichte spawnt dann nach einer gewissen Zeit ein neues Auto. Dieses Auto besitzt eine zufällige Geschwindigkeit. Diese Geschwindigkeit orientiert sich am vorrausfahrendem Fahrzeug. So liegt der Erwartungswert der Geschwindigkeit bei der Bahngeschwindigkeit des Vordermann plus ein Drittel der Differenz der Höchstgeschwindigkeit und der Bahngeschwindigkeit. Zudem ist geregelt, das Autos die auf der linke Spur erzeugt werden mindestens 80\% der aktuellen Bahngeschwindigkeit besitzen und auf der rechten mindestens 60\%. Dies verhindert das ein viel zu langsames Auto spawnt, was zum einen Realitätsfern wäre und zum Andern den Verkehrsfluss unnötigerweise verlangsamt.\\
+	\item \textbf{Lösungsansatz:} Hierzu muss eine Vielzahl von Aspekten beachtet werden. So zeichnet sich der Verkehrsfluss unter anderem dadurch aus, dass die einzelnen Autos genügend Abstand halten, sowie eine ähnliche (nicht exakt gleiche) Geschwindigkeiten halten. Ebenfalls wichtig ist es, die Verteilung auf die Fahrbahnen realitätsnah darzustellen und in diesem Zusammenhang die Verkehrsdichte variabel simulieren zu können.
+	
+	Um dies zu erreichen wurde als oberste Hürde die Verkehrsdichte(in \%) eingearbeitet. Hierzu wird eine normalverteilte Zufallszahl gewählt, wobei Erwartungswert und Standardabweichung umgekehrt proportional zur gewünschten Verkehrsdichte sind. Diese Zufallszahl gibt an, in welchem Intervall Autos erzeugt werden und wird nach jedem Auto neu berechnet. 
+	
+	ready for Spawn:
+			-> safety_Dist \&\& Max_Spd
+			-> lane free?
+			-> spawn
+	
+	spawn: 
+			-> 		
+	%Bevor ein neues Fahrzeug gespawnt werden kann, müssen mehrere Bedingungen erfüllt sein. Dazu gehört zu aller erst der Sicherheitsabstand. Dieser wird aus der Geschwindigkeit des vorrausfahrenden Fahrzeuges und dem Tempolimit errechnet. Erst wenn gewährleistet ist, das genug Sicherheitsabstand existiert wird der Spawner freigegeben. Je nach gewünschter Verkehrsdichte spawnt dann nach einer gewissen Zeit ein neues Auto. Dieses Auto besitzt eine zufällige Geschwindigkeit. Diese Geschwindigkeit orientiert sich am vorrausfahrendem Fahrzeug. So liegt der Erwartungswert der Geschwindigkeit bei der Bahngeschwindigkeit des Vordermann plus ein Drittel der Differenz der Höchstgeschwindigkeit und der Bahngeschwindigkeit. Zudem ist geregelt, das Autos die auf der linke Spur erzeugt werden mindestens 80\% der aktuellen Bahngeschwindigkeit besitzen und auf der rechten mindestens 60\%. Dies verhindert das ein viel zu langsames Auto spawnt, was zum einen Realitätsfern wäre und zum Andern den Verkehrsfluss unnötigerweise verlangsamt.\\
 \end{addmargin}
 
 \section{Fahrer}

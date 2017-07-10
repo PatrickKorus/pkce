@@ -14,8 +14,8 @@ import sign.SpeedLimitSign;
 public class manualSpawner implements EntitySpawner {
 
 	@Override
-	public void init(Game game) throws SlickException {
-		initSigns(game);
+	public void init(Game game, boolean classicMerge) throws SlickException {
+		initSigns(game,classicMerge);
 
 //		game.addCar(new BasicCar(0, true, 60, game));
 		
@@ -55,18 +55,29 @@ public class manualSpawner implements EntitySpawner {
 		game.addCar(car);
 	}
 
-	private void initSigns(Game game) throws SlickException {
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+	private void initSigns(Game game , boolean classicMerge) throws SlickException {
+		if(classicMerge){
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		}
+		else{
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 810, Sign_Type.LINE_END_0));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 1000, Sign_Type.SPD_100));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_80));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		}
 		
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));
 		}
 	}
+
 	
 	@Override
 	/**
