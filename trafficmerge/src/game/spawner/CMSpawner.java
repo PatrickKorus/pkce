@@ -54,8 +54,8 @@ public class CMSpawner implements EntitySpawner  {
 
 	
 	@Override
-	public void init(Game game) throws SlickException {
-		initSigns(game);
+	public void init(Game game, boolean classicMerge) throws SlickException {
+		initSigns(game, classicMerge);
 		this.game = game;
 		phantomCarR = new CMcorrectCar(0,true,0,0, game);
 		phantomCarL = new CMcorrectCar(0,false,0,0, game);
@@ -88,7 +88,8 @@ public class CMSpawner implements EntitySpawner  {
 					double minDist = phantomCarL.getSafetyDistance(lastCars[0]);
 					if(actDist >= minDist+12){
 						// convert laneSpd to mps for the calculation
-						maxSpd[0] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[0])) + Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[0]) , 2)/4)+ 2* phantomCarL.getMaxBreak() * (actDist - 6)));
+						maxSpd[0] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[0])) 
+								+ Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[0]) , 2)/4)+ 2* phantomCarL.getMaxBreak() * (actDist - 6)));
 						if(maxSpd[0] > 200)
 							maxSpd[0] = 0;
 						leftSpawnFree = true;
@@ -104,7 +105,7 @@ public class CMSpawner implements EntitySpawner  {
 					
 				//spawn if enough space and reset timer
 				if(leftSpawnFree){
-					if(rightTime <= 0.8 * rightTTrigger){
+					if(rightTime <= 0.75 * rightTTrigger || laneSpd[1] <= 60){
 						spawnRandomCar(maxSpd[0], laneSpd[0], false, game);
 						leftSpawnFree = false;
 						leftTime = 0;
@@ -130,7 +131,8 @@ public class CMSpawner implements EntitySpawner  {
 					if(actDist >= safetyDist+12){
 						
 						// convert laneSpd to mps for the calculation
-						maxSpd[1] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[1])) + Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[1]) , 2)/4)+ 2* phantomCarR.getMaxBreak() * (actDist - 6)));
+						maxSpd[1] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[1])) 
+								+ Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[1]) , 2)/4)+ 2* phantomCarR.getMaxBreak() * (actDist - 6)));
 						rightSpawnFree = true;
 					}else{
 						//not enough space -> no cars spawning
@@ -168,7 +170,7 @@ public class CMSpawner implements EntitySpawner  {
 	
 	@Override
 	/**
-	 * Sets the traffic density to another value
+	 * Set the traffic density to another value
 	 * @param Density - 0 < Density <= 1
 	 */
 	public void setTrafficDensity ( double Density){
@@ -209,7 +211,6 @@ public class CMSpawner implements EntitySpawner  {
 		Car car;
 		int type;
 		//choose a driver type. Right now with equal chances for each type.
-		//TODO: Improve the type variation 
 		double typeVal = randomGenerator.nextDouble();
 		
 		if(typeVal <= GameUI.aggressivePers){
@@ -246,7 +247,6 @@ public class CMSpawner implements EntitySpawner  {
 		
 		
 		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd+(maxSpd-LaneSpd)/3.0;
-//		initSpd = Math.abs(randomGenerator.nextGaussian()*sigma)+ LaneSpd;
 		
 		//TODO: Testwise: lower speedlimit matching with the current traffic
 		if(rightLane){
@@ -323,19 +323,18 @@ public class CMSpawner implements EntitySpawner  {
 	
 	/**
 	 * Calculates the trigger times for new cars
-	 * @return
+	 * @return -sek
 	 */
 	private double calcTrigger(boolean lane){
 		double trigger = Math.abs(((randomGenerator.nextGaussian()*sigma)+sigma))*1000;
 		double[] carDens = carDensity();
 		double diffDens = carDens[0] - carDens[1];
-		//TODO: For testing
 		if(lane){//&& laneSpd[0] <= laneSpd[1]){
 			trigger *= (1-diffDens);
 		}
 		else{
 			trigger *= (1+diffDens);
-			trigger *= 1.5; //buffering left lane a little bit
+			trigger *= 1.5; //buffing left lane a little bit
 		}			
 		return trigger;
 	}
@@ -354,13 +353,23 @@ public class CMSpawner implements EntitySpawner  {
 		return carDens;
 	}
 	
-	private void initSigns(Game game) throws SlickException {
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
-		game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
-		game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+	private void initSigns(Game game , boolean classicMerge) throws SlickException {
+		if(classicMerge){
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_100));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 400, Sign_Type.SPD_80));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		}
+		else{
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
+			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 810, Sign_Type.LINE_END_0));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 1000, Sign_Type.SPD_100));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_80));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
+		}
 		
 		for (double d = 5; d < Game.TOTAL_SIMULATION_DISTANCE; d += 50) {
 			game.addDelineator(new Delineator(d));
