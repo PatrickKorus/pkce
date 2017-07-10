@@ -16,7 +16,6 @@ import org.newdawn.slick.SlickException;
 import car.Car;
 import game.spawner.CMSpawner;
 import game.spawner.EntitySpawner;
-import game.spawner.manualSpawner;
 import sign.Sign;
 
 public class Game extends BasicGame {
@@ -53,14 +52,16 @@ public class Game extends BasicGame {
 	private TreeSet<Car> carsRight;
 	private ArrayList<Sign> delineators;
 	private Obstacle obstacle;
-	// private LinkedList<Car> carsToRemoveRight;
+	private LinkedList<Car> carsToRemoveRight;
 	private LinkedList<Car> carsToRemoveLeft;
+	private LinkedList<Car> carsToAddRight;
+	private LinkedList<Car> carsToAddLeft;
 
 	EntitySpawner spawner;
 
 	public int carsEndCounter = 0;
-	public double[] averageLaneSpeed = new double[]{ 0.0 , 0.0};
-	
+	public double[] averageLaneSpeed = new double[] { 0.0, 0.0 };
+
 	public Game() {
 		super("Traffic Merge Simulation");
 		setConstants(SCALE);
@@ -76,7 +77,7 @@ public class Game extends BasicGame {
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		background.draw();
 		obstacle.draw(g);
-		
+
 		for (Car car : carsLeft) {
 			car.drawWithCulling(g);
 		}
@@ -99,7 +100,10 @@ public class Game extends BasicGame {
 		carsRight = new TreeSet<>();
 		delineators = new ArrayList<>(50);
 		carsToRemoveLeft = new LinkedList<>();
-		// carsToRemoveRight = new LinkedList<>();
+		carsToRemoveRight = new LinkedList<>();
+		carsToAddLeft = new LinkedList<>();
+		carsToAddRight = new LinkedList<>();
+
 		background = new Image("res/background_stripes.jpg");
 		obstacle = new Obstacle(END_OF_LANE);
 		// spawner = new manualSpawner();
@@ -146,9 +150,14 @@ public class Game extends BasicGame {
 			delineator.update(newDelta);
 		}
 
-
 		carsLeft.removeAll(carsToRemoveLeft);
 		carsToRemoveLeft.clear();
+		carsRight.removeAll(carsToRemoveRight);
+		carsToRemoveRight.clear();
+		carsLeft.addAll(carsToAddLeft);
+		carsToAddLeft.clear();
+		carsRight.addAll(carsToAddRight);
+		carsToAddRight.clear();
 
 		gameUi.update(newDelta);
 	}
@@ -190,20 +199,20 @@ public class Game extends BasicGame {
 	}
 
 	public void addCarLeft(Car car) {
-		this.carsLeft.add(car);
+		this.carsToAddLeft.add(car);
 	}
 
 	public void addCarRight(Car car) {
-		this.carsRight.add(car);
+		this.carsToAddRight.add(car);
 	}
 
 	public void removeCarLeft(Car car) {
 		this.carsToRemoveLeft.add(car);
 	}
 
-	// public void removeCarRight(Car car){
-	// this.carsToRemoveRight.add(car);
-	// }
+	public void removeCarRight(Car car) {
+		this.carsToRemoveRight.add(car);
+	}
 
 	public Collection<Car> getCars() {
 		ArrayList<Car> result = new ArrayList<>(carsLeft);
