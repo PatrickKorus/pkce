@@ -1,17 +1,32 @@
 \chapter{Programmierung}
 \section{Attribute Fahrzeug}
-\textbf{Schwierigkeit:} Welche Eigenschaften müssen einem Auto übergeben werden damit eine realistische Simulation möglich ist?\\
-\textbf{Unser Lösungsansatz:} Beim Erstellen erhält das Auto eine Position und eine Geschwindigkeit. Die Position besteht aus einer Meteranzeige, wo auf der Strecke es sich aufhält und einer Abfrage auf welcher Spur es sich befindet. Zudem hat es die Möglichkeit zu beschleunigen bezeihungsweise zu bremsen und kann die Höchstgeschwindigkeit abfragen. \\
+\textbf{Schwierigkeit:} Welche Eigenschaften müssen einem Auto übergeben werden damit eine realistische Simulation möglich ist?
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Unser Lösungsansatz:} Beim Erstellen erhält das Auto eine Position und eine Geschwindigkeit. Die Position besteht aus einer Meteranzeige, wo auf der Strecke es sich aufhält und einer Abfrage auf welcher Spur es sich befindet. Zudem hat es die Möglichkeit zu beschleunigen bezeihungsweise zu bremsen und kann die Höchstgeschwindigkeit abfragen. \\
+\end{addmargin}
+
 \section{Visualisierung}
-\textbf{Schwierigkeit:} Wie lässt sich das Reißverschlussverfahren am besten Simulieren?\\
-\textbf{Unser Lösungsansatz:} Wir haben uns für Slick entschieden, da alle Gruppenmitlieder schon mehrere Erfahrungen mit Java gesammelt haben und Slick die Spieloberfläche von Java ist. Um einen leichteren Einstieg in Slick zu erhalten, haben wir uns ein bereits laufendes Spiel namens "'UfoInvasion"' runtergeladen um zu überprüfen, ob Slick auf allen unseren Computern läuft. Daraufhin haben wir die neues Programm geschrieben, in dem lediglich die Slick-library übernommen wurde. \\\\
-\textbf{Schwierigkeit:} Wie groß muss die Fahrbahn sein?\\
-\textbf{Unser Lösungsansatz:} Wir betrachten eine Fahrbahn von 1200m. Das liegt daran das es lang genug ist um die Auswirkungen des Reißverschlussverfahren zu beurteilen, aber zugleich nicht zu groß, damit man noch die einzelnen Autos erkennen kann. Sollte man einen kleineren Abschnitt betrachten wollen gibt es auch die Möglichkeit ranzuzoomen.\\\\
-\textbf{Schwierigkeit:} Was für visuelle Eigenschaften muss das Auto besitzen.\\
-\textbf{Unser Lösungsansatz:} Um zu erkennen was jedes einzelne Auto vorhat, haben wir den Autos Bremslichter und Blinker gegeben.
+\textbf{Schwierigkeit:} Wie lässt sich das Reißverschlussverfahren am besten Simulieren?
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Unser Lösungsansatz:} Wir haben uns für Slick entschieden, da alle Gruppenmitlieder schon mehrere Erfahrungen mit Java gesammelt haben und Slick bereits eine graphische Oberfläche für Java besitzt, auf die wir zurück greifen konnten. Somit konnten wir gleich mit der Implementierung des Reißverschlussverfahren beginnen und mussten nicht erst eine graphisch Umgebung erstellen. Um einen leichteren Einstieg in Slick zu erhalten, haben wir uns ein bereits laufendes Spiel namens "'UfoInvasion"' runtergeladen um zu überprüfen, ob Slick auf allen unseren Computern läuft. Daraufhin haben wir die neues Programm geschrieben, in dem lediglich die Slick-library übernommen wurde. \\
+\end{addmargin}
+\textbf{Schwierigkeit:} Wie sollte die Fahrbahn aufgebaut sein?
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Unser Lösungsansatz:} Wir betrachten eine Fahrbahnlänge von 1200m entschieden. Das liegt daran, dass es lang genug ist um die Auswirkungen des Reißverschlussverfahren zu beurteilen, aber zugleich nicht zu groß, damit man noch die einzelnen Autos erkennen kann. Sollte man einen kleineren Abschnitt betrachten wollen gibt es auch die Möglichkeit herranzuzoomen.\\
+\end{addmargin}
+\textbf{Schwierigkeit:} Was für visuelle Eigenschaften muss das Auto besitzen?
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Unser Lösungsansatz:} Um die Handlung jedes einzelne Auto zu erkennen, haben wir den Autos Bremslichter und Blinker gegeben.\\
+\end{addmargin}
+
 \section{Spawner}
-\textbf{Schwierigkeit:} Wie schafft man es Fahrzeuge zu erzeugen, die mit einem realistischen Verhalten an das Stauende fahren.\\
-\textbf{Unser Lösungsansatz:} Bevor ein neues Fahrzeug gespawnt werden kann, müssen mehrere Bedingungen erfüllt sein. Dazu gehört zu aller erst der Sicherheitsabstand. Dieser wird aus der Geschwindigkeit des vorrausfahrenden Fahrzeuges und dem Tempolimit errechnet. Erst wenn gewährleistet ist, das genug Sicherheitsabstand existiert wird der Spawner freigegeben. Je nach gewünschter Verkehrsdichte spawnt dann nach einer gewissen Zeit ein neues Auto. Dieses Auto besitzt eine zufällige Geschwindigkeit. Diese Geschwindigkeit orientiert sich am vorrausfahrendem Fahrzeug. So liegt der Erwartungswert der Geschwindigkeit bei der Bahngeschwindigkeit des Vordermann plus ein Drittel der Differenz der Höchstgeschwindigkeit und der Bahngeschwindigkeit. Zudem ist geregelt, das Autos die auf der linke Spur erzeugt werden mindestens 80\% der aktuellen Bahngeschwindigkeit besitzen und auf der rechten mindestens 60\%. Dies verhindert das ein viel zu langsames Auto spawnt, was zum einen Realitätsfern wäre und zum Andern den Verkehrsfluss unnötigerweise verlangsamt.\\
+\textbf{Schwierigkeit:} Wie schafft man es Fahrzeuge zu erzeugen, die mit einem realistischen Verkehrsverhalten an das Stauende fahren.
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Unser Lösungsansatz:} Bevor ein neues Fahrzeug gespawnt werden kann, müssen mehrere Bedingungen erfüllt sein. Dazu gehört zu aller erst der Sicherheitsabstand. Dieser wird aus der Geschwindigkeit des vorrausfahrenden Fahrzeuges und dem Tempolimit errechnet. Erst wenn gewährleistet ist, das genug Sicherheitsabstand existiert wird der Spawner freigegeben. Je nach gewünschter Verkehrsdichte spawnt dann nach einer gewissen Zeit ein neues Auto. Dieses Auto besitzt eine zufällige Geschwindigkeit. Diese Geschwindigkeit orientiert sich am vorrausfahrendem Fahrzeug. So liegt der Erwartungswert der Geschwindigkeit bei der Bahngeschwindigkeit des Vordermann plus ein Drittel der Differenz der Höchstgeschwindigkeit und der Bahngeschwindigkeit. Zudem ist geregelt, das Autos die auf der linke Spur erzeugt werden mindestens 80\% der aktuellen Bahngeschwindigkeit besitzen und auf der rechten mindestens 60\%. Dies verhindert das ein viel zu langsames Auto spawnt, was zum einen Realitätsfern wäre und zum Andern den Verkehrsfluss unnötigerweise verlangsamt.\\
+\end{addmargin}
+
 \section{Fahrer}
-\textbf{Schwierigkeit:} Es gibt in der Realität viele unterschiedliche Fahrertype. Jeder Fahrer hat einen individuellen Fahrstyle. Diese lassen sich häufig in Kategorien wie zum Beispiel aggressive oder übervorsichtigen Fahrer einsoritern. Zudem müsste man auch LKWs betrachtet werden. Ganz ohne die Unterscheidung von Fahrertypen wäre die Simulation nicht Realitätsgetreu. Jedoch ist die Programmierung von sehr vielen Fahrertypen zeitaufwendig und alle psychologischen Aspekte sowieso nicht darstellbar.\\
-\textbf{Unsere Lösung:} Wir haben uns für drei Fahrertypen entschieden. Diese drei Fahrertypen unterscheiden sich hauptsächlich im Bezug auf Mindestabstand und Spawngeschwindigkeit. So hat der aggressive Fahrer eine deutlich höhere Wahrscheinlichkeit, dass er mit einer erhöhten Geschwindigkeit erzeugt wird, als der vorsichtige oder der durchschnittliche Fahrer.
+\textbf{Schwierigkeit:} Es gibt in der Realität viele unterschiedliche Fahrertype. Jeder Fahrer hat einen individuellen Fahrstyle. Diese lassen sich häufig in Kategorien wie zum Beispiel aggressive oder übervorsichtigen Fahrer einsoritern. Zudem müsste man auch LKWs betrachtet werden. Ganz ohne die Unterscheidung von Fahrertypen wäre die Simulation nicht Realitätsgetreu. Jedoch ist die Programmierung von sehr vielen Fahrertypen zeitaufwendig und alle psychologischen Aspekte sowieso nicht darstellbar.
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Unsere Lösung:} Die Programmierung von sehr vielen Fahrertypen ist zeitaufwendig und alle psychologischen Aspekte sind nicht darstellbar. Wir haben uns für drei Fahrertypen entschieden. Diese drei Fahrertypen unterscheiden sich hauptsächlich im Bezug auf Mindestabstand und Spawngeschwindigkeit. So hat der aggressive Fahrer eine deutlich höhere Wahrscheinlichkeit, dass er mit einer erhöhten Geschwindigkeit erzeugt wird, als der vorsichtige oder der durchschnittliche Fahrer.\\
+\end{addmargin}
