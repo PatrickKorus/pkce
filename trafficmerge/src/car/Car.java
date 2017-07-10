@@ -23,7 +23,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 
 	// current data
 	double goalSpeed, currentAcc, currentSpeed;
-	protected boolean isIndicating, isChangingLane;
+	protected boolean isIndicating, isChangingLane, isBlockingBothLanes = false;
 	// boolean isBreaking; // redundant since true when currentACC < 0
 
 	// pointer to the game this car is in
@@ -167,20 +167,40 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 * @param delta
 	 */
 	public void changeLane(int delta, Game game) {
-		if (isRightLane) {
-			return;
+
+		int sign = isRightLane ? -1 : 1;
+
+		// if (isRightLane != toLeft) {
+		// return;
+		// }
+		if (isBlockingBothLanes) {
+			if (laneMover >= Math.round(Game.SPACE_BETWEEN_LANES / 2.0)) {
+				this.y += laneMover;
+				this.isIndicating = false;
+				return;
+			}				
 		}
-		laneMover += Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
-		if (laneMover <= Game.SPACE_BETWEEN_LANES) {
+		
+		laneMover += sign * Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
+		if (sign * laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
-		} else {
+		} else if (sign == 1 ){
 			this.y += laneMover;
+			laneMover = 0;
 			isChangingLane = false;
 			isRightLane = true;
 			game.removeCarLeft(this);
 			game.addCarRight(this);
+		} else if (sign == -1) {
+			this.y += laneMover;
+			laneMover = 0;
+			isChangingLane = false;
+			isRightLane = false;
+			game.removeCarRight(this);
+			game.addCarLeft(this);
 		}
 	}
+	
 
 	/**
 	 * calculates the minimal distance to stop
@@ -198,7 +218,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			speedCarUpFront = 0;
 		}
 		return Math.max(
-				(this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
+				(4*this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
 	}
 
 	/**

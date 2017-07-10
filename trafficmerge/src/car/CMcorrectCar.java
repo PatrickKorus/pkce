@@ -2,6 +2,7 @@ package car;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.TreeSet;
 
 import org.newdawn.slick.SlickException;
@@ -19,6 +20,9 @@ public class CMcorrectCar extends Car {
 	double SPEEDING = 1.1;
 	double SAFE_SPACE = 5;
 	int REACTION_DELAY = 250;
+	// This is the improvement, this car finds to change to the quicker lane
+	// earlier
+	protected double speedImprovementFactor = 1.5;
 
 	/**
 	 * Car that behaves correctly w.r.t. classic merge
@@ -38,10 +42,15 @@ public class CMcorrectCar extends Car {
 	public CMcorrectCar(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game)
 			throws SlickException {
 		super(meter, isRightLane, initSpeed, initGoalSpeed, game, Color.BLUE);
+		Random r = new Random();
 		MAX_ACC = acc(7);
 		MAX_BREAKING_FORCE = acc(3);
-		areaI = Game.END_OF_LANE - 500;
-		areaII = Game.END_OF_LANE - 200;
+		areaI = Game.END_OF_LANE - 500+ Math.round(r.nextGaussian()*50.0);
+		areaII = Game.END_OF_LANE - 200 + Math.round(r.nextGaussian()*50.0);
+		PANIC_FACTOR = 1.5 + r.nextGaussian()*0.2;
+		SPEEDING = 1.1 + r.nextGaussian()*0.1;
+		SAFE_SPACE = 8 + r.nextGaussian()*3;
+		speedImprovementFactor = 1.5 + r.nextGaussian()*0.2;
 	}
 
 	private boolean crashed = false;
@@ -49,119 +58,63 @@ public class CMcorrectCar extends Car {
 	int delay = 0;
 	double currentPanic = 1;
 	Gap gapAimedFor;
-
+	double speeding = SPEEDING;
+	private boolean driveThrough;
 
 	@Override
 	public void regulate(Game game, int delta) {
 
-		//
-		// System.out.println(iteration++);
-		// System.out.println(isRightLane);
-
 		delay += delta;
-		Car[] carsUpFront = getCarUpFront(game);
-		Car carUpFront = carsUpFront[0];
-		double speeding = SPEEDING;
+		Car[] surroundingCars = getSurroundingCars(game);
+		Car carUpFront = surroundingCars[0];
 
 		// keep driving if you didn't manage to let a car in
-		if (this.meter > Game.END_OF_LANE - 25 && this.getDistance(carsUpFront[0]) > this.getMinDist(carsUpFront[0])
-				&& this.currentSpeed == 0 && carsUpFront[1] != null && carsUpFront[1].currentSpeed == 0) {
+		// TODO this is a hard coded fix
+		if (driveThrough || (this.meter > Game.END_OF_LANE - 25
+				&& this.getDistance(surroundingCars[0]) > this.getMinDist(surroundingCars[0]) && this.currentSpeed == 0
+				&& surroundingCars[1] != null && surroundingCars[1].currentSpeed == 0)) {
 			this.currentAcc = this.MAX_ACC;
+			this.driveThrough = true;
 			return;
 		}
 
+		// This causes that if the car ahead is breaking this car is in "panic"
 		if (delay >= REACTION_DELAY) {
-			currentPanic = carsUpFront[0] != null && carsUpFront[0].isBreaking() ? PANIC_FACTOR : 1;
+			currentPanic = surroundingCars[0] != null && surroundingCars[0].isBreaking() ? PANIC_FACTOR : 1;
 			delay = 0;
 		}
 
-//		System.out.println("This is car " + this);
-//		System.out.println("Car ahaed is " + carsUpFront[0]);
-//		System.out.println("Car next to ahaed is " + carsUpFront[1]);
-//		System.out.println("Car next to behind is " + carsUpFront[2]);
 		double distanceCarUpFront = this.getDistance(carUpFront);
-		double minDistance = currentPanic * getMinDist(carUpFront);
 		double safetyDistance = currentPanic * getSafetyDistance(carUpFront);
 
 		// stop if crashed
-
 		if (distanceCarUpFront < 5 && !crashed) {
 			this.currentSpeed = 0;
 			crashed = true;
-			System.err.println("crash");
-			// TODO: Debugg-Output
-			System.out.println(
-					"Back: \t Acc->" + this.currentAcc + " Speed->" + this.currentSpeed + " goal->" + this.goalSpeed);
-			System.out.println("Front: \t Acc->" + carUpFront.currentAcc + " Speed->" + carUpFront.currentSpeed
-					+ " goal->" + carUpFront.goalSpeed);
-			System.out.println(
-					"=================================================================================================");
+			errorPrint(carUpFront);
 			this.currentSpeed = 0;
 		}
 
-//		System.out.println(isRightLane ? "Right lane" : " Left lane");
-//		System.out.println(isChangingLane ? "Is changing Lane" : "is not changing lane");
-
 		// priority 1: preserve critical distance to car&obstacle
-		double error = this.regulateTo(minDistance, distanceCarUpFront, 10);
+		double error = this.regulateTo(safetyDistance, distanceCarUpFront, 10);
 		if (!isRightLane)
 			error = Math.min(error,
 					this.regulateTo(this.getMinDist(game.getObstacle()), this.getDistance(game.getObstacle()), 50));
-		// System.out.println("critical Distance = " + error );
-
-		// priority 2: drive safe distance
-		error = Math.min(error, this.regulateTo(safetyDistance, distanceCarUpFront, 10));
-		// System.out.println("rec Distance = " + error);
 
 		// priority 3: position dependent
-		if (this.meter > this.areaI && this.meter < this.areaII) {
-			if (isRightLane) {
-				// // area V
-				// if fewer cars right than left
-				if (moreCarsLeftThanRight(game))
-					error = Math.min(error, this.regulateTo(safetyDistance * 1.5, distanceCarUpFront, 6));
-				//
-
-			} else {
-				// area II
-				// TODO
-				// find gap
-				gapAimedFor = this.findGap(game, SAFE_SPACE);
-				if (gapAimedFor != null) {
-					error = Math.max(error, this.regulateTo(this.meter, gapAimedFor.getPosition(), 6));
-					speeding = 1.2;
-				}
-				this.isIndicating = true;
-			}
-		} else if (this.meter > this.areaII && this.meter < Game.END_OF_LANE) {
-			if (isRightLane) {
-				// area VI
-				// TODO
-				Car indicatingUpFront = carsUpFront[1];
-				double distanceIndicating = this.getDistance(indicatingUpFront);
-				// make some space for cars that indicate
-				// error = Math.min(error,
-				// this.regulateTo(this.getMinDist(indicatingUpFront),
-				// distanceIndicating, 0.2f));
-				// let the correct car pass
-				if (moreCarsLeftThanRight(game) && this.getDistance(indicatingUpFront) > 6) {
-					error = Math.min(error, this.regulateTo(getMinDist(indicatingUpFront), distanceIndicating, 6));
-				}
-
-			} else {
-				// area III
-				error = Math.min(error,
-						this.regulateTo(this.getMinDist(carsUpFront[1]), this.getDistance(carsUpFront[1]), 5));
-				// if no car will crash
-				Gap gap = new Gap(carsUpFront[1], carsUpFront[2]);
-				if (gap.isSafe(this, SAFE_SPACE + this.currentSpeed / 30))
-					this.isChangingLane = true;
-			}
+		if (this.meter < this.areaI) {
+			error = this.reactAreaI(game, surroundingCars, error);
+		} else if (this.meter >= this.areaI && this.meter < this.areaII) {
+			error = this.reactAreaII(game, surroundingCars, error);
+		} else if (this.meter >= this.areaII && this.meter < Game.END_OF_LANE) {
+			error = this.reactAreaIII(game, surroundingCars, error);
 		}
 
 		// lowest priority: regulate to SpeedLimit
 		double speedLimit = Math.min(kmhTOmps(this.getSpeedLimit(game)), this.goalSpeed);
-		if (this.currentSpeed > speedLimit * speeding) {
+		this.goalSpeed = speedLimit * speeding;
+		if (this.currentSpeed > this.goalSpeed) {
+
 			error = Math.min(error, this.regulateTo(currentSpeed, speeding * speedLimit, 4));
 		}
 
@@ -170,24 +123,98 @@ public class CMcorrectCar extends Car {
 			this.stopInidicating();
 		}
 
+		// apply new acceleration
 		this.currentAcc = error;
-		// System.out.println("applied " + error);
-		// System.out.println("speed Limit" + speedLimit * 36 / 10);
-		// System.out.println("current speed " + this.currentSpeed * 36 / 10);
-		// System.out.println("goal speed " + this.goalSpeed *36/10);
 	}
 
+	protected double reactAreaI(Game game, Car[] surroundingCars, double currentErr) {
+		// if average speed of the other lane is considerably quicker - change
+		// lane
+		if (this.isRightLane && Math.min(game.averageLaneSpeed[0], this.goalSpeed) > speedImprovementFactor
+				* game.averageLaneSpeed[1] && this.getDistance(surroundingCars[0]) < 400) {
+			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
+			if (gap.isSafe(this, SAFE_SPACE)) {
+				this.isChangingLane = true;
+			}
+		}
+		return currentErr;
+	}
+
+	protected double reactAreaII(Game game, Car[] surroundingCars, double currentErr) {
+
+		double error = currentErr;
+		if (isRightLane) {
+			// // area V
+			// if fewer cars right than left
+			if (moreCarsLeftThanRight(game))
+				error = Math.min(error, this.regulateTo(this.getSafetyDistance(surroundingCars[0]) * 1.5,
+						this.getDistance(surroundingCars[0]), 6));
+			//
+
+		} else {
+			// area II
+			// TODO
+			// find gap
+			gapAimedFor = this.findGap(game, SAFE_SPACE);
+			if (gapAimedFor != null) {
+				error = Math.max(error, this.regulateTo(this.meter, gapAimedFor.getPosition(), 6));
+				speeding = 1.2;
+			}
+			this.isIndicating = true;
+		}
+
+		return error;
+	}
+
+	protected double reactAreaIII(Game game, Car[] surroundingCars, double currentErr) {
+
+		double error = currentErr;
+
+		if (isRightLane) {
+			// area VI
+			// TODO
+			Car indicatingUpFront = surroundingCars[1];
+			double distanceIndicating = this.getDistance(indicatingUpFront);
+			// make some space for cars that indicate
+			// error = Math.min(error,
+			// this.regulateTo(this.getMinDist(indicatingUpFront),
+			// distanceIndicating, 0.2f));
+			// let the correct car pass
+			if (moreCarsLeftThanRight(game) && this.getDistance(indicatingUpFront) > 6) {
+				error = Math.min(error, this.regulateTo(getMinDist(indicatingUpFront), distanceIndicating, 6));
+			}
+
+		} else {
+			// area III
+			error = Math.min(error,
+					this.regulateTo(this.getMinDist(surroundingCars[1]), this.getDistance(surroundingCars[1]), 5));
+			// if no car will crash
+			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
+			if (gap.isSafe(this, SAFE_SPACE + this.currentSpeed / 30))
+				this.isChangingLane = true;
+		}
+
+		return error;
+	}
+
+	/**
+	 * This returns the Gap this car should aim for
+	 * 
+	 * @param game
+	 * @param Safe_Space
+	 *            the amount of space a gap requires to be referred to as safe
+	 * @return
+	 */
 	private Gap findGap(Game game, double Safe_Space) {
+
 		int carsLeft = this.countCars(0, 300, false, game);
+
+		// transfer relevant cars for gap search in to an array
+		// TODO this should be solved better.
 		TreeSet<Car> relevantCarsSet = null;
 		try {
-		relevantCarsSet = (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
+			relevantCarsSet = (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
 		} catch (IllegalArgumentException e) {
-//			e.printStackTrace();
-//			System.err.println("First Car is " + game.getCarsLeft().first());
-//			System.err.println("This is " + this);
-//			System.err.println("First Car meter" + game.getCarsLeft().first().getMeterDistance());
-//			System.err.println("This meter " + this.meter);
 			return null;
 		}
 		Car[] relevantCars = new Car[relevantCarsSet.size()];
@@ -240,14 +267,13 @@ public class CMcorrectCar extends Car {
 	 * @return
 	 */
 	private boolean moreCarsLeftThanRight(Game game) {
-
 		int carsLeft = this.countCars(0, 300, false, game);
 		int carsRight = this.countCars(0, 300, true, game);
 		return carsLeft + 1 > carsRight;
 	}
 
 	/**
-	 * regulate to goal speed
+	 * regulate to goal speed TODO diff eq?
 	 * 
 	 * @param goal
 	 *            - goal speed
@@ -269,9 +295,15 @@ public class CMcorrectCar extends Car {
 		return newacc;
 	}
 
-	int it = 0;
-
+	/**
+	 * Gives the current Speed limit (least speed limit that this car has passed
+	 * or is within a range of 50 meters.
+	 * 
+	 * @param game
+	 * @return
+	 */
 	double getSpeedLimit(Game game) {
+
 		double speedLimit = 180 * 36 / 10;
 		for (Sign sign : game.getSigns()) {
 			if (sign instanceof SpeedLimitSign && this.getDistance(sign) < 50.0 && sign.getValue() < speedLimit)
@@ -281,12 +313,14 @@ public class CMcorrectCar extends Car {
 	}
 
 	/**
+	 * Returns surrounding cars
 	 * 
 	 * @param game
 	 * @return [car ahead; car ahead on the other lane; car behind on the other
 	 *         lane]
 	 */
-	Car[] getCarUpFront(Game game) {
+	Car[] getSurroundingCars(Game game) {
+
 		Car[] carUpFront = new Car[3];
 
 		TreeSet<Car> itrThisLane = null;
@@ -304,6 +338,7 @@ public class CMcorrectCar extends Car {
 		carUpFront[1] = itrOtherLane.lower(this);
 		carUpFront[2] = itrOtherLane.ceiling(this);
 
+		// cars that change lane are treated as if they are on both lanes
 		if (this.isRightLane && carUpFront[1] != null && carUpFront[1].isChangingLane
 				&& this.getDistance(carUpFront[1]) < this.getDistance(carUpFront[0]))
 			carUpFront[0] = carUpFront[1];
@@ -312,6 +347,23 @@ public class CMcorrectCar extends Car {
 				&& this.getDistance(carUpFront[1]) < this.getDistance(carUpFront[0]))
 			carUpFront[0] = carUpFront[1];
 		return carUpFront;
+	}
+
+	/**
+	 * For debugging purposes
+	 * 
+	 * @param carUpFront
+	 *            the Car crashed into
+	 */
+	private void errorPrint(Car carUpFront) {
+		System.err.println("crash");
+		// TODO: Debugg-Output
+		System.out.println("Back: \t Acc->" + this.currentAcc + " Speed->" + this.currentSpeed + " goal->"
+				+ this.goalSpeed + "\t ID " + this);
+		System.out.println("Front: \t Acc->" + carUpFront.currentAcc + " Speed->" + carUpFront.currentSpeed + " goal->"
+				+ carUpFront.goalSpeed + "\t ID " + carUpFront);
+		System.out.println(
+				"=================================================================================================");
 	}
 
 }

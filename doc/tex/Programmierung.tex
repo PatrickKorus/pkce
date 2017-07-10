@@ -20,9 +20,32 @@
 \end{addmargin}
 
 \section{Spawner}
-\textbf{Schwierigkeit:} Wie schafft man es Fahrzeuge zu erzeugen, die mit einem realistischen Verkehrsverhalten an das Stauende fahren.
+\textbf{Schwierigkeit:} Wie schafft man es einen realistischen Verkehrsfluss zu erzeugen, um den Eingangsverkehr in das Simulationsgebiet zu Simulieren.
+%Wie schafft man es Fahrzeuge zu erzeugen, die mit einem realistischen Verkehrsverhalten an das Stauende fahren.
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Bevor ein neues Fahrzeug gespawnt werden kann, müssen mehrere Bedingungen erfüllt sein. Dazu gehört zu aller erst der Sicherheitsabstand. Dieser wird aus der Geschwindigkeit des vorrausfahrenden Fahrzeuges und dem Tempolimit errechnet. Erst wenn gewährleistet ist, das genug Sicherheitsabstand existiert wird der Spawner freigegeben. Je nach gewünschter Verkehrsdichte spawnt dann nach einer gewissen Zeit ein neues Auto. Dieses Auto besitzt eine zufällige Geschwindigkeit. Diese Geschwindigkeit orientiert sich am vorrausfahrendem Fahrzeug. So liegt der Erwartungswert der Geschwindigkeit bei der Bahngeschwindigkeit des Vordermann plus ein Drittel der Differenz der Höchstgeschwindigkeit und der Bahngeschwindigkeit. Zudem ist geregelt, das Autos die auf der linke Spur erzeugt werden mindestens 80\% der aktuellen Bahngeschwindigkeit besitzen und auf der rechten mindestens 60\%. Dies verhindert das ein viel zu langsames Auto spawnt, was zum einen Realitätsfern wäre und zum Andern den Verkehrsfluss unnötigerweise verlangsamt.\\
+	\item \textbf{Lösungsansatz:} Da die Simulation lediglich ein beschränktes Gebiet betrachten, ist es notwendig das in das Gebiet hineinfließende Verkehrsverhalten möglichst realistisch darzustellen. Hierbei wird die Realität auf folgende Aspekte beschränkt: 
+	\begin{itemize}
+		\item Fahrzeuge werden mit ähnlicher Geschwindigkeit erzeugt
+		\item der Sicherheitsabstand wird eingehalten
+		\item auf der rechten Fahrspur gibt es eine höhere Verkehrsdichte
+		\item Fahrzeuge fahren links schneller, aufgrund des rechtsseitigen Überholverbots
+	\end{itemize}
+	
+	
+%	Hierzu muss eine Vielzahl von Aspekten beachtet werden. So zeichnet sich der Verkehrsfluss unter anderem dadurch aus, dass die einzelnen Autos genügend Abstand halten, sowie eine ähnliche Geschwindigkeiten besitzen. Ebenfalls wichtig ist es, die Verteilung auf den Fahrbahnen realitätsnah darzustellen.
+%	Dazu ist es wichtig die Verkehrsdichte zu berücksichtigen. Hierzu wurde eine normal verteilte Zufallszahl gewählt, welche den Zeitpunkt für die Erzeugung nächsten Autos beschreibt. Erwartungswert und Standardabweichung verhalten sich umgekehrt proportional zur gewünschten Verkehrsdichte.	
+%	Ist dieser Zeitpunkt erreicht, wird anhand der fahrenden Autos der vorhandene Platz, sowie die maximale Geschwindigkeitsbeschränkung des Autos berechnet. Zu verhindern gelten Geschwindigkeiten, bei denen das Auto nicht mehr rechtzeitig bremsen kann. Ist genügend Platz vorhanden, wird ein neues Auto mit zufällig gewähltem Fahrertyp(aggressiv, neutral, passiv) erzeugt. Als Initialwerte werden gleichmäßige Anteile aller Typen angenommen.
+%	Die Initialgeschwindigkeit des Fahrzeugs berechnet sich in Abhängigkeit der derzeitigen Verkehrsgeschwindigkeit. Die Wahrscheinlichkeiten der einzelnen Fahrertypen können während der Simulation geändert werden. Im Anschluss wird das Auto erzeugt und ein neues deltaT für das nächste Auto. Dies wir für jede Bahn durchgeführt.
+%
+%	Mithilfe dieses Verfahrens ist es möglich zufällig Autos auf beiden Fahrbahnen zu erzeugen, ohne dass diese Aufgrund zu hoher Initialgescshwindigkeiten aufeinander auffahren. Dies spiegelt allerdings kein realistisches Verkehrsbild wieder, da noch nicht geregelt wird, dass die Geschwindigkeit der linken Bahn im fließenden Verkehr in der Regel höher ist als die der rechten Fahrbahn (Überholverbot rechts%TODO
+%	). Hierfür wurde eingeführt, dass zum einen auf der linken Bahn mindestens so schnell gefahren werden muss wie auf der rechten Bahn, falls dies in der derzeitigen Verkehrslage möglich ist, sowie dass die rechte Bahn bei nicht stockendem linken Verkehr langsamer fahren muss(erzeugt wird),als die rechte.
+%	
+%	Des weiteren galt es die Mindestgeschwindigkeit der Autos zu regeln, da es aufgrund der zufälligen Generierung zu sehr hohen ausschlägen nach sowohl unten, wie auch oben kommen kann. 
+%	Hierfür wurde lediglich eine unterer Grenzwert der Geschwindigkeit in abhängigkeit der Bahngeschwindigkeit eingeführt. Bei entsprechend niedriger Bahngeschwindigkeit ist es dadurch immernoch möglich sehr langsame Autos zu erzeugen.
+%	
+%	Neben der Initialgeschwindigkeit, werden den Autos ebenfalls eine initial Zielgeschwindigkeit zugewiesen(Berechnung über normalverteilte Zufallszahlen), auf welche sie gerne beschleunigen würden, falls der Verkehr es zulässt. Dies war wichtig, da es ansonsten zu Problemen kam, wenn ein Auto direkt mit sehr niedriger Geschwindigkeit erzeugt wird(zum beispiel direkt am Stauende), da diese Autos nach auflösung des Staus auf ihrer niedrigen Geschwindigkeit geblieben sind, anstatt auf ein angemessenes Tempo zu beschleunigen.
+	
+	%Bevor ein neues Fahrzeug gespawnt werden kann, müssen mehrere Bedingungen erfüllt sein. Dazu gehört zu aller erst der Sicherheitsabstand. Dieser wird aus der Geschwindigkeit des vorrausfahrenden Fahrzeuges und dem Tempolimit errechnet. Erst wenn gewährleistet ist, das genug Sicherheitsabstand existiert wird der Spawner freigegeben. Je nach gewünschter Verkehrsdichte spawnt dann nach einer gewissen Zeit ein neues Auto. Dieses Auto besitzt eine zufällige Geschwindigkeit. Diese Geschwindigkeit orientiert sich am vorrausfahrendem Fahrzeug. So liegt der Erwartungswert der Geschwindigkeit bei der Bahngeschwindigkeit des Vordermann plus ein Drittel der Differenz der Höchstgeschwindigkeit und der Bahngeschwindigkeit. Zudem ist geregelt, das Autos die auf der linke Spur erzeugt werden mindestens 80\% der aktuellen Bahngeschwindigkeit besitzen und auf der rechten mindestens 60\%. Dies verhindert das ein viel zu langsames Auto spawnt, was zum einen Realitätsfern wäre und zum Andern den Verkehrsfluss unnötigerweise verlangsamt.\\
 \end{addmargin}
 
 \section{Bedienung}
