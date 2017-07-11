@@ -260,7 +260,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		return mps * 3.60;
 	}
 
-	public void setColor(Color color, float scale) throws SlickException {
+	public void setColor(Color color, double sCALE) throws SlickException {
 		this.color = color;
 		String name = "basicCar";
 		switch (color) {
@@ -278,9 +278,9 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			break;
 		}
 
-		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy(scale);
-		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy(scale);
-		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy(scale);
+		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy((float) sCALE);
+		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy((float) sCALE);
+		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy((float) sCALE);
 		normback = new Image("res/" + name + "/normal_back.png");
 		breakback = new Image("res/" + name + "/breaking_back.png");
 		indback = new Image("res/" + name + "/indicating_back.png");

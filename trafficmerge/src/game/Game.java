@@ -31,10 +31,11 @@ public class Game extends BasicGame {
 	public static final int height = 768;
 	public static final int width = 1024;
 
-	// TODO: Make these variable during runtime
-	public static float SCALE = 0.09f;
+	//to switch between classic and normal merge
+	public static boolean classicMerge = true;
 	public static float timeFactor = 1.0f;
 	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
+	public static double SCALE = 0.09253012048192771;//2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;
 
 	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
 																		// meter
@@ -58,7 +59,6 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToAddLeft;
 
 	EntitySpawner spawner;
-	boolean classicMerge;
 
 	public int carsEndCounter = 0;
 	public int time = 0;
@@ -69,7 +69,7 @@ public class Game extends BasicGame {
 		setConstants(SCALE);
 	}
 
-	private void setConstants(float scale) {
+	private void setConstants(double scale) {
 		meterToPixel = scale * Game.VEHICLE_LENGTH_PIX / Game.VEHICLE_LENGTH_M;
 		meter_per_width = Game.width / meterToPixel;
 		meter_out_of_window = Game.TOTAL_SIMULATION_DISTANCE - (Game.meter_per_width * 2);
@@ -110,10 +110,9 @@ public class Game extends BasicGame {
 		obstacle = new Obstacle(END_OF_LANE);
 		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
-		classicMerge = true;
-		spawner.init(this , classicMerge);
+		spawner.init(this);
 		gameUi = new GameUI(this, container, spawner);
-
+		
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
 		 * new Image( "res/fonts/score_numer_font.png")); punkte = new
@@ -163,6 +162,33 @@ public class Game extends BasicGame {
 		carsToAddRight.clear();
 
 		gameUi.update(newDelta);
+	}
+	
+	public void reset(GameContainer cont) throws SlickException{
+		//Works but hardcoded
+		
+		//clear cars
+		carsLeft.clear();
+		carsRight.clear();
+		
+		//reset variables
+		SCALE = 0.09253012048192771;//2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
+		timeFactor = 1.0f;
+		spawner.setTrafficDensity(0.6);
+		time = 0;
+		carsEndCounter = 0;
+		averageLaneSpeed = new double[]{ 0.0 , 0.0};
+		GameUI.aggressivePers = 0.33;
+		GameUI.passivePers = 0.33;
+		GameUI.incomingTraffic = 0;
+		GameUI.outgoingTraffic = 0;
+		
+		//clean TextFields
+		gameUi.scaler.setText("");
+		gameUi.timeControler.setText("");
+		gameUi.trafficDensity.setText("");
+		gameUi.aggressiveDriver.setText("");
+		gameUi.passiveDriver.setText("");
 	}
 
 	public void rescale(float scale) throws SlickException {
