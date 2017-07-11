@@ -83,14 +83,15 @@ public class GameUI {
 
 	//Shortcuts:
 		g.drawString("D -> Zeige Autoinformationen",50, container.getHeight()-125);
-		g.drawString("R -> Reset",50, container.getHeight()-100);
+		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);//TODO: andere beschriftung
+		g.drawString("R -> Reset der Simulation",50, container.getHeight()-75);
 		if(Game.classicMerge){
-		g.drawString("T -> Alternatives Verfahren",50, container.getHeight()-75);	
+		g.drawString("T -> Alternatives Verfahren",50, container.getHeight()-50);	
 		}else{
-		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-75);
+		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-50);
 		}
-		g.drawString("L -> Listen aktualisieren",(float) (container.getWidth()/3.0), container.getHeight()-125);
-		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/3.0), container.getHeight()-100);
+		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/2.5), container.getHeight()-125);
+//		g.drawString("L -> Listen aktualisieren",(float) (container.getWidth()/2.5), container.getHeight()-100);
 
 	}
 
@@ -161,20 +162,24 @@ public class GameUI {
 		
 		//reset simulation
 		if(container.getInput().isKeyPressed(Input.KEY_R)){
-			game.reset(container);
+			game.reset();
+		}
+		//reset visual params
+		if(container.getInput().isKeyPressed(Input.KEY_E)){
+			game.resetParams();
 		}
 		
 		//change Merge method: (reset before changing)
 		if(container.getInput().isKeyPressed(Input.KEY_T)){
 			Game.classicMerge = !Game.classicMerge;
-			game.reset(container);
+			game.reset();
 		}
 		
 		//update/resort list
 		if(container.getInput().isKeyPressed(Input.KEY_L)){
 			//TODO: Listen aktualisieren!
-//			game.resortList(game.getCarsLeft());
-//			game.resortList(game.getCarsRight());
+			game.resortList(game.getCarsLeft());
+			game.resortList(game.getCarsRight());
 		}
 		
 		//pause simulation
@@ -211,8 +216,8 @@ public class GameUI {
 		
 		//update System Time
 		if(systemTimer >= 1000.0){
-			game.time++;
-			systemTimer -= 1000.0;
+			game.time += systemTimer/1000;
+			systemTimer = systemTimer%1000;
 		}
 		else{
 			systemTimer += delta;
@@ -220,13 +225,21 @@ public class GameUI {
 	}
 	
 	private double[] averageSpeed(){
-		double[] avSpd = new double[2];
+		double[] avSpd = new double[]{0.0 , 0.0};
 		double totalSpd = 0;
+		int leftCars = 0;
 		for(Car car : game.getCarsLeft()){
-			totalSpd += car.getCurrentSpeed();
+			if(car.meter < Game.TOTAL_SIMULATION_DISTANCE){
+				totalSpd += car.getCurrentSpeed();
+				leftCars++;
+			}
 		}
-		avSpd[0] = totalSpd / game.getCarsLeft().size();
+		if(leftCars != 0)
+			avSpd[0] = totalSpd / leftCars;
+		else
+			avSpd[0] = 0;
 		totalSpd = 0;
+		leftCars = 0;
 		for(Car car : game.getCarsRight()){
 			totalSpd += car.getCurrentSpeed();
 		}

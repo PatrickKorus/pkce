@@ -51,7 +51,6 @@ public class Game extends BasicGame {
 	private ArrayList<Sign> signs;
 	private TreeSet<Car> carsLeft;
 	private TreeSet<Car> carsRight;
-	private comparator comparator;
 	private ArrayList<Sign> delineators;
 	private Obstacle obstacle;
 	private LinkedList<Car> carsToRemoveRight;
@@ -98,12 +97,9 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		comparator = new comparator();
 		signs = new ArrayList<>();
-		carsLeft = new TreeSet<>(comparator);
-		carsRight = new TreeSet<>(comparator);
-//		carsLeft = new TreeSet<>();
-//		carsRight = new TreeSet<>();
+		carsLeft = new TreeSet<>();
+		carsRight = new TreeSet<>();
 		delineators = new ArrayList<>(50);
 		carsToRemoveLeft = new LinkedList<>();
 		carsToRemoveRight = new LinkedList<>();
@@ -169,11 +165,13 @@ public class Game extends BasicGame {
 	
 	public void resortList(TreeSet<Car> list){
 		TreeSet<Car> newlist = new TreeSet<Car>();
-		newlist.addAll(list);
+//		newlist.addAll(list);
+		for(Car car : list)
+			newlist.add(car);
 		list = newlist;
 	}
 	
-	public void reset(GameContainer cont) throws SlickException{
+	public void reset() throws SlickException{
 		//Works but hardcoded
 		
 		//clear cars
@@ -182,15 +180,19 @@ public class Game extends BasicGame {
 		
 		//reset variables
 		SCALE = 0.09253012048192771;//2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
-		timeFactor = 1.0f;
-		spawner.setTrafficDensity(0.6);
 		time = 0;
 		carsEndCounter = 0;
 		averageLaneSpeed = new double[]{ 0.0 , 0.0};
-		GameUI.aggressivePers = 0.33;
-		GameUI.passivePers = 0.33;
 		GameUI.incomingTraffic = 0;
 		GameUI.outgoingTraffic = 0;
+	}
+	
+	public void resetParams()throws SlickException{
+		rescale((float) SCALE);
+		timeFactor = 1.0f;
+		spawner.setTrafficDensity(0.6);
+		GameUI.aggressivePers = 0.33;
+		GameUI.passivePers = 0.33;
 		
 		//clean TextFields
 		gameUi.scaler.setText("");

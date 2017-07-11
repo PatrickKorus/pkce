@@ -31,7 +31,7 @@ public class CMSpawner implements EntitySpawner  {
 	private CMcorrectCar startPos;
 		
 	//variables for spawning:
-	private double trafficDensity = 0.6;  
+	private double trafficDensity = 0.333;  
 	private double sigma = (1.0/trafficDensity);	
 	/**
 	 * [left , right] - in km/h
@@ -263,10 +263,12 @@ public class CMSpawner implements EntitySpawner  {
 		
 		//calculate goal spd
 		if(rightLane){
-			goalSpd = (randomGenerator.nextGaussian()*sigma) + 110;		
+//			goalSpd = (randomGenerator.nextGaussian()*sigma) + 110;
+			goalSpd = (randomGenerator.nextGaussian()*10) + 110;
 		}
 		else{
-			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
+//			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
+			goalSpd = (randomGenerator.nextGaussian()*20) + 130;
 		}
 		
 		switch(type){
