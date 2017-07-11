@@ -110,7 +110,17 @@
 	Der Zeitraffer dient dazu Langzeitentlicklungen schneller darstellen zu können. Hierbei ist jedoch zu beachten, dass durch die Verwendung des Zeitraffers die Abtastrate sinkt. Dadurch ist die Genauigkeit nicht mehr gewährleistet. Bis zur fünffachen Geschwindigkeit sind die Ergebnisse noch recht genau, bei einer schnelleren Betrachtung dient das Ergebnis lediglich als Annäherung.\\
 	Durch die Verkehrsdichte kann man die Erzeugungswahrscheinlichkeit von Fahrzeugen verändern. Die Verkehrsdichte hat massgeblichen Einfluss auf die Effektivität des Reißverschlussverfahren. Diesen Einfluss kann der Benutzer anhand der ausgegebenen Durchschnittsgeschwindigkeit, der Eingangsverkehrsdichte, sowie der Ausgangsverkehrdichte ablesen.\\
 	Zu guter letzt kann der Benutzer noch den Anteil der Fahrertypen variieren. Standardmäßig gibt es 33\% aggressive (rosa), 33\% passive (grün) und 33\% neutrale Fahrer (blau). Die Anteile addieren sich immer zu 100\% auf, wobei die aggressiven und passiven Anteile durch Eingabefelder veränderbar sind und der neutrale Fahrer die restlichen Anteile bekommt.\\
-	Solle der Benutzer zusätzliche Informationen zu den jeweiligen Autos bekommen wollen, kann er durch Betätigung des "'D"' auf der Tastertur sich zu jedem Auto dessen ID, die derzeitige Geschwindigkeit, sowie die Beschleunigung anzeigen lassen. Diese Funktion wurde zum Debuggen erstellt, wodurch kein großer Wert auf die Lesbarkeit gelegt wurde und somit sich die Datenausgaben überlagern können.\\
+	Zusätzlich wurden mehrere Shortcuts implementiert:
+	\begin{itemize}
+		\item \textbf{Verfahren wechseln}\\
+		Mithilfe von "'T"' lässt sich das Reißverschlussverfahren wechseln. Hierbei wird zusätzlich alle Daten wieder resetet.
+		\item \textbf{Fahrzeugdaten anzeigen}\\
+		Solle der Benutzer zusätzliche Informationen zu den jeweiligen Autos bekommen wollen, kann er durch Betätigung des "'D"' auf der Tastertur sich zu jedem Auto dessen ID, die derzeitige Geschwindigkeit, sowie die Beschleunigung anzeigen lassen. Diese Funktion wurde zum Debuggen erstellt, wodurch kein großer Wert auf die Lesbarkeit gelegt wurde und somit sich die Datenausgaben überlagern können.
+		\item \textbf{Reset}\\
+		Mithilfe von "'R"' kann man die Simulation reseten. Dabei werden alle Fahrzeuge entfernt und alle getroffenen Einstellungen wieder auf die Standardeinstellung gesetzt
+		\item \textbf{Pause}\\
+		"'P"' pausiert und setzt die Simulation fort.
+	\end{itemize}
 \end{addmargin}
 
 \section{Fahrer}
