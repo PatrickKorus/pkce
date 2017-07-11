@@ -7,7 +7,7 @@ import game.Game;
 
 public interface EntitySpawner {
 	
-	void init(Game game, boolean classicMerge) throws SlickException;
+	void init(Game game) throws SlickException;
 	
 	void spawn(int delta, Input input, Game game) throws SlickException;
 	

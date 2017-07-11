@@ -74,9 +74,15 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		if (GameUI.carData) {
 			String speedString = (this.currentSpeed * 36 / 10) + "";
 			String accString = (this.currentAcc) + "";
-			g.drawString(this.toString().substring(20), this.x, this.y + 20);
-			g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
-			g.drawString(accString.substring(0, 3), this.x, this.y + 60);
+			if(isRightLane){
+				g.drawString(this.toString().substring(20), this.x, this.y + 20);
+				g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
+				g.drawString(accString.substring(0, 3), this.x, this.y + 60);
+			}else{
+				g.drawString(this.toString().substring(20), this.x, this.y - 75);
+				g.drawString(speedString.substring(0, 3), this.x, this.y - 55);
+				g.drawString(accString.substring(0, 3), this.x, this.y - 35);
+			}
 		}
 		backimage.drawCentered(x, y);
 		image.drawCentered(x, y);
@@ -260,7 +266,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		return mps * 3.60;
 	}
 
-	public void setColor(Color color, float scale) throws SlickException {
+	public void setColor(Color color, double sCALE) throws SlickException {
 		this.color = color;
 		String name = "basicCar";
 		switch (color) {
@@ -278,9 +284,9 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			break;
 		}
 
-		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy(scale);
-		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy(scale);
-		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy(scale);
+		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy((float) sCALE);
+		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy((float) sCALE);
+		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy((float) sCALE);
 		normback = new Image("res/" + name + "/normal_back.png");
 		breakback = new Image("res/" + name + "/breaking_back.png");
 		indback = new Image("res/" + name + "/indicating_back.png");

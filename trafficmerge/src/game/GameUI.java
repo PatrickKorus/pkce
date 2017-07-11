@@ -14,22 +14,24 @@ public class GameUI {
 	private Game game;
 	private GameContainer container;
 	private EntitySpawner spawner;
+	private boolean isPaused;
 	
 	public static boolean carData = false;
 	public static double aggressivePers = 0.33;
 	public static double passivePers = 0.33;
 	
-	private TextField scaler;
-	private TextField timeControler;
-	private TextField trafficDensity;
-	private TextField aggressiveDriver;
-	private TextField passiveDriver;
+	public TextField scaler;
+	public TextField timeControler;
+	public TextField trafficDensity;
+	public TextField aggressiveDriver;
+	public TextField passiveDriver;
 
 	private int systemTimer = 0;
 	private int AverageSpeedTimer = 0;
-	//for average in-/output:
-	private double outgoingTraffic = 0;
-	private double incomingTraffic = 0;	
+	
+	//average in-/output:
+	public static double outgoingTraffic = 0;
+	public static double incomingTraffic = 0;	
 	private int inOutTimer = 0;
 	private int totalCountStart = 0;
 	private int totalCarsStart = 0;
@@ -45,10 +47,11 @@ public class GameUI {
 		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
 		aggressiveDriver = new TextField(container, container.getDefaultFont(), 50, 200, 100, 20);
 		passiveDriver = new TextField(container, container.getDefaultFont(), 50, 250, 100, 20);
+		isPaused = false;
 	}
 	
 	public void render(GameContainer container, Graphics g){
-		//change variables:
+	//Input:
 		g.drawString("Skalierung: " + Math.round(Game.SCALE*100)/100.0, scaler.getX(), scaler.getY()-20);
 		scaler.render(container, g);
 		g.drawString("Zeitraffer: " + Math.round(Game.timeFactor*100)/100.0, timeControler.getX(), timeControler.getY()-20);
@@ -59,29 +62,39 @@ public class GameUI {
 		aggressiveDriver.render(container, g);
 		g.drawString("Anteil an passiven Fahrern: " + Math.round(passivePers * 100)/100.0, passiveDriver.getX(), passiveDriver.getY()-20);
 		passiveDriver.render(container, g);
-		g.drawString("D -> Zeige Autoinformationen",50, 275);
 		
-		//Data-Output:
-		//Counting cars:
-		g.drawString("Simulationsdauer: " + game.time/3600 + " h " + (game.time/60)%60 + " min " + (game.time%60) + " sek", container.getWidth()-350, 25);
-		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-350, 50);
+	//Data-Output:
+		//general data:
+		if(Game.classicMerge)
+			g.drawString("Aktiv: Reissverschlussverfahren", container.getWidth()-350, 25);
+		else
+			g.drawString("Aktiv: Alternatives Verfahren", container.getWidth()-350, 25);
+		g.drawString("Simulationsdauer: " + game.time/3600 + " h " + (game.time/60)%60 + " min " + (game.time%60) + " sek", container.getWidth()-350, 50);
+		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-350, 75);
 		
 		//Average lane speed:
-		g.drawString("Durchschnittsgeschwindigkeit:", container.getWidth()-350 , 75);
-		g.drawString("~>Linke Bahn: " + Math.round(game.averageLaneSpeed[0]*100)/100.0 + " km/h", container.getWidth()-300 , 95);
-		g.drawString("~>Rechte Bahn:" + Math.round(game.averageLaneSpeed[1]*100)/100.0 + " km/h", container.getWidth()-300 , 115);
+		g.drawString("Durchschnittsgeschwindigkeit:", container.getWidth()-350 , 100);
+		g.drawString("~>Linke Bahn: " + Math.round(game.averageLaneSpeed[0]*100)/100.0 + " km/h", container.getWidth()-300 , 120);
+		g.drawString("~>Rechte Bahn:" + Math.round(game.averageLaneSpeed[1]*100)/100.0 + " km/h", container.getWidth()-300 , 140);
 
 		//average In-/Output
-		g.drawString("Eingangsverkehrsdichte: " + Math.round(incomingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 140);
-		g.drawString("Ausgangsverkehrsdichte: " + Math.round(outgoingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 165);
+		g.drawString("Eingangsverkehrsdichte: " + Math.round(incomingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 165);
+		g.drawString("Ausgangsverkehrsdichte: " + Math.round(outgoingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 190);
 
-		
+	//Shortcuts:
+		g.drawString("D -> Zeige Autoinformationen",50, container.getHeight()-125);
+		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);//TODO: andere beschriftung
+		g.drawString("R -> Reset der Simulation",50, container.getHeight()-75);
+		if(Game.classicMerge){
+		g.drawString("T -> Alternatives Verfahren",50, container.getHeight()-50);	
+		}else{
+		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-50);
+		}
+		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/2.5), container.getHeight()-125);
+//		g.drawString("L -> Listen aktualisieren",(float) (container.getWidth()/2.5), container.getHeight()-100);
+
 	}
-	
-	public void draw(){
-		
-	}
-	
+
 	public void update(int delta) throws SlickException{
 		// TODO: In einen Parser auskoppeln?
 		// rescaling
@@ -130,6 +143,7 @@ public class GameUI {
 		try {
 			String value = passiveDriver.getText();
 			float newPercentage = Float.parseFloat(value);
+			
 			if (newPercentage + aggressivePers <= 1.0 && newPercentage >= 0)
 				passivePers = newPercentage;
 		} catch (NumberFormatException e) {
@@ -145,6 +159,40 @@ public class GameUI {
 		if (container.getInput().isKeyPressed(Input.KEY_D)) {
 			carData = !carData;
 		}
+		
+		//reset simulation
+		if(container.getInput().isKeyPressed(Input.KEY_R)){
+			game.reset();
+		}
+		//reset visual params
+		if(container.getInput().isKeyPressed(Input.KEY_E)){
+			game.resetParams();
+		}
+		
+		//change Merge method: (reset before changing)
+		if(container.getInput().isKeyPressed(Input.KEY_T)){
+			Game.classicMerge = !Game.classicMerge;
+			game.reset();
+		}
+		
+		//update/resort list
+		if(container.getInput().isKeyPressed(Input.KEY_L)){
+			//TODO: Listen aktualisieren!
+			game.resortList(game.getCarsLeft());
+			game.resortList(game.getCarsRight());
+		}
+		
+		//pause simulation
+		if(container.getInput().isKeyPressed(Input.KEY_P)){
+
+			if(isPaused){
+				container.resume();
+				isPaused = false;
+			}else{
+				container.pause();
+				isPaused = true;
+			}
+			}
 		
 		//update average speed:
 		if(AverageSpeedTimer >= 1000){
@@ -168,8 +216,8 @@ public class GameUI {
 		
 		//update System Time
 		if(systemTimer >= 1000.0){
-			game.time++;
-			systemTimer -= 1000.0;
+			game.time += systemTimer/1000;
+			systemTimer = systemTimer%1000;
 		}
 		else{
 			systemTimer += delta;
@@ -177,18 +225,27 @@ public class GameUI {
 	}
 	
 	private double[] averageSpeed(){
-		double[] avSpd = new double[2];
+		double[] avSpd = new double[]{0.0 , 0.0};
 		double totalSpd = 0;
+		int leftCars = 0;
 		for(Car car : game.getCarsLeft()){
-			totalSpd += car.getCurrentSpeed();
+			if(car.meter < Game.TOTAL_SIMULATION_DISTANCE){
+				totalSpd += car.getCurrentSpeed();
+				leftCars++;
+			}
 		}
-		avSpd[0] = totalSpd / game.getCarsLeft().size();
+		if(leftCars != 0)
+			avSpd[0] = totalSpd / leftCars;
+		else
+			avSpd[0] = 0;
 		totalSpd = 0;
+		leftCars = 0;
 		for(Car car : game.getCarsRight()){
 			totalSpd += car.getCurrentSpeed();
 		}
 		avSpd[1] = totalSpd / game.getCarsRight().size();
 		return avSpd;
 	}
+	
 }
 

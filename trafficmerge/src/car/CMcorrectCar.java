@@ -17,7 +17,7 @@ public class CMcorrectCar extends Car {
 	protected double areaI;
 	protected double areaII;
 	double PANIC_FACTOR = 1.5;
-	double SPEEDING = 1.1;
+	double SPEEDING = 1.0; //TODO: changed from 1.1
 	double SAFE_SPACE = 5;
 	int REACTION_DELAY = 250;
 	// This is the improvement, this car finds to change to the quicker lane
@@ -93,6 +93,9 @@ public class CMcorrectCar extends Car {
 			crashed = true;
 			errorPrint(carUpFront);
 			this.currentSpeed = 0;
+			//TODO: right now for testing
+			game.resortList(game.getCarsLeft());
+			game.resortList(game.getCarsRight());
 		}
 
 		// priority 1: preserve critical distance to car&obstacle

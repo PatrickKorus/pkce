@@ -9,6 +9,7 @@ import car.CMaggressiveCar;
 import car.CMcorrectCar;
 import car.CMpassiveCar;
 import car.Car;
+import car.NMCorrectCar;
 import game.Game;
 import game.GameUI;
 import sign.Delineator;
@@ -30,7 +31,7 @@ public class CMSpawner implements EntitySpawner  {
 	private CMcorrectCar startPos;
 		
 	//variables for spawning:
-	private double trafficDensity = 0.6;  
+	private double trafficDensity = 0.333;  
 	private double sigma = (1.0/trafficDensity);	
 	/**
 	 * [left , right] - in km/h
@@ -54,8 +55,8 @@ public class CMSpawner implements EntitySpawner  {
 
 	
 	@Override
-	public void init(Game game, boolean classicMerge) throws SlickException {
-		initSigns(game, classicMerge);
+	public void init(Game game) throws SlickException {
+		initSigns(game);
 		this.game = game;
 		phantomCarR = new CMcorrectCar(0,true,0,0, game);
 		phantomCarL = new CMcorrectCar(0,false,0,0, game);
@@ -262,18 +263,23 @@ public class CMSpawner implements EntitySpawner  {
 		
 		//calculate goal spd
 		if(rightLane){
-			goalSpd = (randomGenerator.nextGaussian()*sigma) + 110;		
+//			goalSpd = (randomGenerator.nextGaussian()*sigma) + 110;
+			goalSpd = (randomGenerator.nextGaussian()*10) + 110;
 		}
 		else{
-			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
+//			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
+			goalSpd = (randomGenerator.nextGaussian()*20) + 130;
 		}
 		
 		switch(type){
-		case 0: //CMaggressiveCar	
+		case 0: //aggressiveCar	
 			car = new CMaggressiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;
-		case 1: //CMcorrectCar
-			car = new CMcorrectCar(0, rightLane, initSpd, goalSpd, game);
+		case 1: //correctCar
+			if(Game.classicMerge)
+				car = new CMcorrectCar(0, rightLane, initSpd, goalSpd, game);
+			else
+				car = new NMCorrectCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 		default: //CMpassiveCar	
 			car = new CMpassiveCar(0, rightLane, initSpd, goalSpd, game);
@@ -352,8 +358,8 @@ public class CMSpawner implements EntitySpawner  {
 		return carDens;
 	}
 	
-	private void initSigns(Game game , boolean classicMerge) throws SlickException {
-		if(classicMerge){
+	private void initSigns(Game game) throws SlickException {
+		if(Game.classicMerge){
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
