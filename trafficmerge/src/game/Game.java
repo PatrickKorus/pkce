@@ -51,6 +51,7 @@ public class Game extends BasicGame {
 	private ArrayList<Sign> signs;
 	private TreeSet<Car> carsLeft;
 	private TreeSet<Car> carsRight;
+	private comparator comparator;
 	private ArrayList<Sign> delineators;
 	private Obstacle obstacle;
 	private LinkedList<Car> carsToRemoveRight;
@@ -97,9 +98,12 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
+		comparator = new comparator();
 		signs = new ArrayList<>();
-		carsLeft = new TreeSet<>();
-		carsRight = new TreeSet<>();
+		carsLeft = new TreeSet<>(comparator);
+		carsRight = new TreeSet<>(comparator);
+//		carsLeft = new TreeSet<>();
+//		carsRight = new TreeSet<>();
 		delineators = new ArrayList<>(50);
 		carsToRemoveLeft = new LinkedList<>();
 		carsToRemoveRight = new LinkedList<>();
@@ -122,7 +126,6 @@ public class Game extends BasicGame {
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
-
 		int newDelta = (int) Math.round(delta * timeFactor);
 		Input input = container.getInput();
 		spawner.spawn(newDelta, input, this);
@@ -162,6 +165,12 @@ public class Game extends BasicGame {
 		carsToAddRight.clear();
 
 		gameUi.update(newDelta);
+	}
+	
+	public void resortList(TreeSet<Car> list){
+		TreeSet<Car> newlist = new TreeSet<Car>();
+		newlist.addAll(list);
+		list = newlist;
 	}
 	
 	public void reset(GameContainer cont) throws SlickException{

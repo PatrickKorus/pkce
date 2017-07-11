@@ -74,9 +74,15 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		if (GameUI.carData) {
 			String speedString = (this.currentSpeed * 36 / 10) + "";
 			String accString = (this.currentAcc) + "";
-			g.drawString(this.toString().substring(20), this.x, this.y + 20);
-			g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
-			g.drawString(accString.substring(0, 3), this.x, this.y + 60);
+			if(isRightLane){
+				g.drawString(this.toString().substring(20), this.x, this.y + 20);
+				g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
+				g.drawString(accString.substring(0, 3), this.x, this.y + 60);
+			}else{
+				g.drawString(this.toString().substring(20), this.x, this.y - 75);
+				g.drawString(speedString.substring(0, 3), this.x, this.y - 55);
+				g.drawString(accString.substring(0, 3), this.x, this.y - 35);
+			}
 		}
 		backimage.drawCentered(x, y);
 		image.drawCentered(x, y);

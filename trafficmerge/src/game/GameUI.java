@@ -14,6 +14,7 @@ public class GameUI {
 	private Game game;
 	private GameContainer container;
 	private EntitySpawner spawner;
+	private boolean isPaused;
 	
 	public static boolean carData = false;
 	public static double aggressivePers = 0.33;
@@ -27,7 +28,8 @@ public class GameUI {
 
 	private int systemTimer = 0;
 	private int AverageSpeedTimer = 0;
-	//for average in-/output:
+	
+	//average in-/output:
 	public static double outgoingTraffic = 0;
 	public static double incomingTraffic = 0;	
 	private int inOutTimer = 0;
@@ -45,6 +47,7 @@ public class GameUI {
 		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
 		aggressiveDriver = new TextField(container, container.getDefaultFont(), 50, 200, 100, 20);
 		passiveDriver = new TextField(container, container.getDefaultFont(), 50, 250, 100, 20);
+		isPaused = false;
 	}
 	
 	public void render(GameContainer container, Graphics g){
@@ -86,7 +89,9 @@ public class GameUI {
 		}else{
 		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-75);
 		}
-		g.drawString("L -> Listen aktualisieren",50, container.getHeight()-50);
+		g.drawString("L -> Listen aktualisieren",(float) (container.getWidth()/3.0), container.getHeight()-125);
+		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/3.0), container.getHeight()-100);
+
 	}
 
 	public void update(int delta) throws SlickException{
@@ -164,6 +169,25 @@ public class GameUI {
 			Game.classicMerge = !Game.classicMerge;
 			game.reset(container);
 		}
+		
+		//update/resort list
+		if(container.getInput().isKeyPressed(Input.KEY_L)){
+			//TODO: Listen aktualisieren!
+//			game.resortList(game.getCarsLeft());
+//			game.resortList(game.getCarsRight());
+		}
+		
+		//pause simulation
+		if(container.getInput().isKeyPressed(Input.KEY_P)){
+
+			if(isPaused){
+				container.resume();
+				isPaused = false;
+			}else{
+				container.pause();
+				isPaused = true;
+			}
+			}
 		
 		//update average speed:
 		if(AverageSpeedTimer >= 1000){
