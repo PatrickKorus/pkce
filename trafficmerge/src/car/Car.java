@@ -218,7 +218,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			speedCarUpFront = 0;
 		}
 		return Math.max(
-				(4*this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
+				(this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
 	}
 
 	/**

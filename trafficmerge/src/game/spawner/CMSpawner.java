@@ -275,7 +275,6 @@ public class CMSpawner implements EntitySpawner  {
 		case 1: //CMcorrectCar
 			car = new CMcorrectCar(0, rightLane, initSpd, goalSpd, game);
 			break;
-
 		default: //CMpassiveCar	
 			car = new CMpassiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;

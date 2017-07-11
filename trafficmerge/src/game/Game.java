@@ -120,10 +120,11 @@ public class Game extends BasicGame {
 		 * Punkte(container.getWidth() - 180, 10, fontPunkte);
 		 */
 	}
+	
+	
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
-
 		int newDelta = (int) Math.round(delta * timeFactor);
 		Input input = container.getInput();
 		spawner.spawn(newDelta, input, this);
@@ -153,6 +154,7 @@ public class Game extends BasicGame {
 			delineator.update(newDelta);
 		}
 
+		// update lists
 		carsLeft.removeAll(carsToRemoveLeft);
 		carsToRemoveLeft.clear();
 		carsRight.removeAll(carsToRemoveRight);

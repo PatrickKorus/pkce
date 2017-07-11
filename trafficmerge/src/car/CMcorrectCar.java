@@ -45,12 +45,12 @@ public class CMcorrectCar extends Car {
 		Random r = new Random();
 		MAX_ACC = acc(7);
 		MAX_BREAKING_FORCE = acc(3);
-		areaI = Game.END_OF_LANE - 500+ Math.round(r.nextGaussian()*50.0);
-		areaII = Game.END_OF_LANE - 200 + Math.round(r.nextGaussian()*50.0);
-		PANIC_FACTOR = 1.5 + r.nextGaussian()*0.2;
-		SPEEDING = 1.1 + r.nextGaussian()*0.1;
-		SAFE_SPACE = 8 + r.nextGaussian()*3;
-		speedImprovementFactor = 1.5 + r.nextGaussian()*0.2;
+		areaI = Game.END_OF_LANE - 500 + Math.round(r.nextGaussian() * 50.0);
+		areaII = Game.END_OF_LANE - 200 + Math.round(r.nextGaussian() * 50.0);
+		PANIC_FACTOR = 1.5 + r.nextGaussian() * 0.2;
+		SPEEDING = 1.1 + r.nextGaussian() * 0.1;
+		SAFE_SPACE = 8 + r.nextGaussian() * 3;
+		speedImprovementFactor = 1.5 + r.nextGaussian() * 0.2;
 	}
 
 	private boolean crashed = false;
@@ -96,10 +96,16 @@ public class CMcorrectCar extends Car {
 		}
 
 		// priority 1: preserve critical distance to car&obstacle
-		double error = this.regulateTo(safetyDistance, distanceCarUpFront, 10);
+		double error = 0;
+//				this.regulateTo(safetyDistance, distanceCarUpFront, 50);
+		if (carUpFront != null ) {
+			error = this.regulateTo(carUpFront.getMeterDistance() - safetyDistance, carUpFront.currentSpeed, -acc(1), 10);
+//			this.currentAcc = error;
+//			return;
+		}
 		if (!isRightLane)
 			error = Math.min(error,
-					this.regulateTo(this.getMinDist(game.getObstacle()), this.getDistance(game.getObstacle()), 50));
+					this.regulateTo(game.getObstacle().getMeterDistance(), 0, 0, 10));
 
 		// priority 3: position dependent
 		if (this.meter < this.areaI) {
@@ -114,7 +120,6 @@ public class CMcorrectCar extends Car {
 		double speedLimit = Math.min(kmhTOmps(this.getSpeedLimit(game)), this.goalSpeed);
 		this.goalSpeed = speedLimit * speeding;
 		if (this.currentSpeed > this.goalSpeed) {
-
 			error = Math.min(error, this.regulateTo(currentSpeed, speeding * speedLimit, 4));
 		}
 
@@ -128,16 +133,21 @@ public class CMcorrectCar extends Car {
 	}
 
 	protected double reactAreaI(Game game, Car[] surroundingCars, double currentErr) {
+		double error = currentErr;
 		// if average speed of the other lane is considerably quicker - change
 		// lane
-		if (this.isRightLane && Math.min(game.averageLaneSpeed[0], this.goalSpeed) > speedImprovementFactor
-				* game.averageLaneSpeed[1] && this.getDistance(surroundingCars[0]) < 400) {
+		if (this.isRightLane
+				&& Math.min(game.averageLaneSpeed[0], this.goalSpeed) > speedImprovementFactor
+						* game.averageLaneSpeed[1]
+				&& this.getDistance(surroundingCars[0]) < 400 && surroundingCars[1] != null
+				&& surroundingCars[0].getCurrentSpeed() > this.currentSpeed * speedImprovementFactor) {
 			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
 			if (gap.isSafe(this, SAFE_SPACE)) {
+				error = this.regulateTo(gap.getPosition(), gap.getSpeed(), gap.getAcc(), 1);
 				this.isChangingLane = true;
 			}
 		}
-		return currentErr;
+		return error;
 	}
 
 	protected double reactAreaII(Game game, Car[] surroundingCars, double currentErr) {
@@ -146,25 +156,27 @@ public class CMcorrectCar extends Car {
 		if (isRightLane) {
 			// // area V
 			// if fewer cars right than left
-			if (moreCarsLeftThanRight(game))
-				error = Math.min(error, this.regulateTo(this.getSafetyDistance(surroundingCars[0]) * 1.5,
-						this.getDistance(surroundingCars[0]), 6));
-			//
-
+			if (moreCarsLeftThanRight(game)) {
+				if (surroundingCars[0] == null) {
+					error = this.regulateTo(game.getCarsLeft().first(), 1, 10);
+				} else {
+				error = this.regulateTo(surroundingCars[0], 1.5*currentPanic, 5);
+				}
+			}
 		} else {
 			// area II
-			// TODO
 			// find gap
 			gapAimedFor = this.findGap(game, SAFE_SPACE);
 			if (gapAimedFor != null) {
-				error = Math.max(error, this.regulateTo(this.meter, gapAimedFor.getPosition(), 6));
-				speeding = 1.2;
+				speeding *= 1.1;
+				error = Math.max(error, this.regulateTo(gapAimedFor.getPosition(), gapAimedFor.getSpeed(), gapAimedFor.getAcc(), 6));
 			}
 			this.isIndicating = true;
 		}
 
 		return error;
 	}
+
 
 	protected double reactAreaIII(Game game, Car[] surroundingCars, double currentErr) {
 
@@ -181,7 +193,7 @@ public class CMcorrectCar extends Car {
 			// distanceIndicating, 0.2f));
 			// let the correct car pass
 			if (moreCarsLeftThanRight(game) && this.getDistance(indicatingUpFront) > 6) {
-				error = Math.min(error, this.regulateTo(getMinDist(indicatingUpFront), distanceIndicating, 6));
+				error = Math.min(error, this.regulateTo(indicatingUpFront, currentPanic, 6));
 			}
 
 		} else {
@@ -190,7 +202,7 @@ public class CMcorrectCar extends Car {
 					this.regulateTo(this.getMinDist(surroundingCars[1]), this.getDistance(surroundingCars[1]), 5));
 			// if no car will crash
 			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
-			if (gap.isSafe(this, SAFE_SPACE + this.currentSpeed / 30))
+			if (gap.isSafe(this, SAFE_SPACE + currentSpeed / 30))
 				this.isChangingLane = true;
 		}
 
@@ -290,9 +302,52 @@ public class CMcorrectCar extends Car {
 		if (error < 0) {
 			newacc = Math.max(0.1 * importance * error, -MAX_BREAKING_FORCE);
 		} else {
-			newacc = Math.min(0.2 * error, MAX_ACC);
+			newacc = Math.min(0.05 * error, MAX_ACC);
 		}
 		return newacc;
+	}
+
+	/**
+	 * 
+	 * @param p0
+	 *            this cars position
+	 * @param p1
+	 *            position seek
+	 * @param v0
+	 *            this cars speed
+	 * @param v1
+	 *            speed of the seeked position
+	 * @param a1
+	 *            acc of seeked position
+	 * @param importance
+	 *            parameter that increases the value of accelerating
+	 * @return
+	 */
+	public double regulateTo(double p1, double v1, double a1, float importance) {
+
+		double p0 = this.meter;
+		double v0 = this.currentSpeed;
+
+		double x = p1 - p0;
+		double xdot = v1 - v0;
+		// TODO choose wisely
+		double b = 2 + 1/importance;
+		double m = 1;
+
+		double newAcc = a1 + (b / m) * (xdot + (b / (4 * m)) * x);
+		if (newAcc < 0) {
+			newAcc = Math.max(newAcc, -MAX_BREAKING_FORCE);
+		} else {
+			newAcc = Math.min(newAcc, MAX_ACC);
+		}
+		return newAcc;	}
+	
+
+	private double regulateTo(Car car, double distanceFactor, float importance) {
+		if (car == null) {
+			return this.MAX_ACC;
+		}
+		return regulateTo(car.getMeterDistance() - distanceFactor * this.getSafetyDistance(car), car.getCurrentSpeed(), car.getCurrentAcc(), importance);
 	}
 
 	/**
