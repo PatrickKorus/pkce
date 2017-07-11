@@ -14,8 +14,8 @@ import sign.SpeedLimitSign;
 public class manualSpawner implements EntitySpawner {
 
 	@Override
-	public void init(Game game, boolean classicMerge) throws SlickException {
-		initSigns(game,classicMerge);
+	public void init(Game game) throws SlickException {
+		initSigns(game);
 
 //		game.addCar(new BasicCar(0, true, 60, game));
 		
@@ -55,8 +55,8 @@ public class manualSpawner implements EntitySpawner {
 		game.addCar(car);
 	}
 
-	private void initSigns(Game game , boolean classicMerge) throws SlickException {
-		if(classicMerge){
+	private void initSigns(Game game) throws SlickException {
+		if(Game.classicMerge){
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 410, Sign_Type.LINE_END_0));
