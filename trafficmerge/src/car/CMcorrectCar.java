@@ -17,7 +17,7 @@ public class CMcorrectCar extends Car {
 	protected double areaI;
 	protected double areaII;
 	double PANIC_FACTOR = 1.5;
-	double SPEEDING = 1.0; // TODO: changed from 1.1
+	double SPEEDING = 1.0;
 	double SAFE_SPACE = 5;
 	int REACTION_DELAY = 250;
 	// This is the improvement, this car finds to change to the quicker lane
@@ -100,8 +100,6 @@ public class CMcorrectCar extends Car {
 			crashed = true;
 			this.currentSpeed = 0;
 			return;
-			// TODO: right now for testing
-			// game.resortLists();
 		}
 
 		// priority 1: preserve critical distance to car&obstacle
@@ -287,7 +285,7 @@ public class CMcorrectCar extends Car {
 //
 //		Gap result = null;
 //		for (int i = 0; i < relevantCars.length -1; i++) {
-//			result = new Gap(relevantCars[i], relevantCars[i+1]);//TODO: from 0 & 1 -> i & i+1
+//			result = new Gap(relevantCars[0], relevantCars[1]);
 //			// TODO make accurate
 //			if (result.isValid(Safe_Space)) {
 //				if (--carsLeft <= 0) {
@@ -335,7 +333,7 @@ public class CMcorrectCar extends Car {
 	}
 
 	/**
-	 * regulate to goal speed TODO diff eq?
+	 * regulate to goal speed 
 	 * 
 	 * @param goal
 	 *            - goal speed

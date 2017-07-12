@@ -241,7 +241,6 @@ public class CMSpawner implements EntitySpawner  {
 		
 		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd+(maxSpd-LaneSpd)/3.0;
 		
-		//TODO: Testwise: lower speedlimit matching with the current traffic
 		if(rightLane){
 			if(initSpd <= 0.6 * laneSpd[1]){
 				initSpd = 0.6 * laneSpd[1];
