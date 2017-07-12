@@ -3,6 +3,7 @@ package car;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.newdawn.slick.SlickException;
@@ -46,7 +47,7 @@ public class CMcorrectCar extends Car {
 		MAX_ACC = acc(7);
 		MAX_BREAKING_FORCE = acc(3);
 		areaI = Game.END_OF_LANE - 500 + Math.round(r.nextGaussian() * 50.0);
-		areaII = Game.END_OF_LANE - 200 + Math.round(r.nextGaussian() * 50.0);
+		areaII = Game.END_OF_LANE - 150  /*+ Math.round(r.nextGaussian() * 50.0)*/;
 		PANIC_FACTOR = 1.5 + r.nextGaussian() * 0.2;
 		SPEEDING = 1.0 + r.nextGaussian() * 0.1;
 		SAFE_SPACE = 8 + r.nextGaussian() * 3;
@@ -119,23 +120,24 @@ public class CMcorrectCar extends Car {
 				error = this.MAX_ACC;
 			}
 		}
-		
+
 		// priority 3: position dependent
-		if (this.meter < this.areaI) {
-			error = this.reactAreaI(game, surroundingCars, error);
-		} else if (this.meter >= this.areaI && this.meter < this.areaII) {
-			error = this.reactAreaII(game, surroundingCars, error);
-		} else if (this.meter >= this.areaII && this.meter < Game.END_OF_LANE) {
-			error = this.reactAreaIII(game, surroundingCars, error);
-		}
+		 if (this.meter < this.areaI) {
+		 error = this.reactAreaI(game, surroundingCars, error);
+		 } else if (this.meter >= this.areaI && this.meter < this.areaII) {
+		 error = this.reactAreaII(game, surroundingCars, error);
+		 } else if (this.meter >= this.areaII && this.meter <
+		 Game.END_OF_LANE) {
+		 error = this.reactAreaIII(game, surroundingCars, error);
+		 }
 
 		// lowest priority: regulate to SpeedLimit
 		double speedLimit = Math.min(kmhTOmps(this.getSpeedLimit(game)), this.goalSpeed);
 		this.goalSpeed = speedLimit * speeding;
-//		if (this.currentSpeed > speedLimit) {
-			error = Math.min(error, this.regulateTo(currentSpeed, speeding * speedLimit, 4));
-//			System.out.println(speeding >);
-//		}
+		// if (this.currentSpeed > speedLimit) {
+		error = Math.min(error, this.regulateTo(currentSpeed, speeding * speedLimit, 4));
+		// System.out.println(speeding >);
+		// }
 
 		// stop indicating after lane has changed
 		if (this.isRightLane == true) {
@@ -179,12 +181,18 @@ public class CMcorrectCar extends Car {
 		} else {
 			// area II
 			// find gap
-			gapAimedFor = this.findGap(game, 1.1 * speeding, 10.0);
+			Double speedLimit = getSpeedLimit(game);
+			try {
+				gapAimedFor = this.findGap(SAFE_SPACE, surroundingCars[0], 1.1 * speeding * speedLimit);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+
 			if (gapAimedFor != null) {
 				speeding *= 1.1;
-				double newerror = 0.1 * this.regulateTo(gapAimedFor.getPosition(), gapAimedFor.getSpeedMpS(),
+				double newerror = 0.1*regulateTo(gapAimedFor.getPosition(), gapAimedFor.getSpeedMpS(),
 						gapAimedFor.getAcc(), 6);
-				if (newerror + currentSpeed < 0.8 * this.goalSpeed) {
+				if (newerror + currentSpeed > 0.8 * this.goalSpeed) {
 					error = newerror;
 				}
 			}
@@ -209,13 +217,13 @@ public class CMcorrectCar extends Car {
 			// distanceIndicating, 0.2f));
 			// let the correct car pass
 			if (moreCarsLeftThanRight(game) && this.getDistance(indicatingUpFront) > 6) {
-				error = Math.min(error, this.regulateTo(indicatingUpFront, currentPanic, 6));
+				error = Math.min(error, this.regulateTo(indicatingUpFront, 1.5, 6));
 			}
 
 		} else {
 			// area III
 			error = Math.min(error,
-					this.regulateTo(this.getMinDist(surroundingCars[1]), this.getDistance(surroundingCars[1]), 5));
+					this.regulateTo(surroundingCars[1], currentPanic, 5));
 			// if no car will crash
 			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
 			if (gap.isSafe(this, 0))
@@ -233,69 +241,104 @@ public class CMcorrectCar extends Car {
 	 *            the amount of space a gap requires to be referred to as safe
 	 * @return
 	 */
-	private Gap findGap(Game game, double Safe_Space, double maxSpeed) {
+//	 private Gap findGap(Game game, double Safe_Space, double maxSpeed) {
+//	
+//	 int carsLeft = this.countCars(0, 300, false, game);
+//	
+//	 // transfer relevant cars for gap search in to an array
+//	 // TODO this should be solved better.
+//	 TreeSet<Car> relevantCarsSet = null;
+//	 try {
+//	 relevantCarsSet = isRightLane ? (TreeSet<Car>)
+//	 game.getCarsLeft().subSet(game.getCarsLeft().first(), this)
+//	 : (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(),
+//	 this);
+//	 } catch (IllegalArgumentException e) {
+//	 return null;
+//	 }
+//	 Car[] relevantCars = new Car[relevantCarsSet.size()];
+//	 Iterator<Car> itr = relevantCarsSet.iterator();
+//	 for (int i = 0; i < relevantCars.length; i++) {
+//	 relevantCars[i] = itr.next();
+//	 }
+//	
+//	 Gap result = null;
+//	 for (int i = 0; i < relevantCars.length - 1; i++) {
+//	 result = new Gap(relevantCars[0], relevantCars[1]);
+//	 // TODO make accurate
+//	 if (result.isValid(Safe_Space)) {
+//	 if (--carsLeft <= 0 && result.isReachable(this.meter, maxSpeed, areaII,
+//	 Safe_Space)) {
+//	 return result;
+//	 }
+//	 }
+//	 }
+//	 return result;
+//	 }
 
-		int carsLeft = this.countCars(0, 300, false, game);
+	private Gap findGap(double safe_space, Car ahead, double maxSpeed) throws SlickException {
 
-		// transfer relevant cars for gap search in to an array
-		// TODO this should be solved better.
-		TreeSet<Car> relevantCarsSet = null;
-		try {
-			relevantCarsSet = isRightLane ? (TreeSet<Car>) game.getCarsLeft().subSet(game.getCarsLeft().first(), this)
-					: (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-		Car[] relevantCars = new Car[relevantCarsSet.size()];
+		double METERS_BEHIND = 100;
+
+		Gap gap = null;
+		Car from = ahead == null ? new BasicCar(areaII, false, 0, game) : ahead;
+		Car to = new BasicCar(this.meter - METERS_BEHIND, false, 0, game);
+		SortedSet<Car> relevantCarsSet = game.getCarsRight().subSet(from, to);
 		Iterator<Car> itr = relevantCarsSet.iterator();
-		for (int i = 0; i < relevantCars.length; i++) {
-			relevantCars[i] = itr.next();
+
+		Car headCar = null;
+		if (!itr.hasNext())
+			return null;
+		Car tailCar = itr.next();
+		
+		while (itr.hasNext()) {
+
+			// next gap
+			headCar = tailCar;
+			tailCar = itr.next();
+
+			gap = new Gap(headCar, tailCar);
+			if (gap.isReachable(meter, maxSpeed, areaII,
+					safe_space) /* && gap.isValid(safe_space) */) {
+				return gap;
+			}
+
 		}
 
-		Gap result = null;
-		for (int i = 0; i < relevantCars.length - 1; i++) {
-			result = new Gap(relevantCars[0], relevantCars[1]);
-			// TODO make accurate
-			if (result.isValid(Safe_Space)) {
-				if (--carsLeft <= 0 && result.isReachable(this.meter, maxSpeed, areaII, Safe_Space)) {
-					return result;
-				}
-			}
-		}
-		return result;
+		return null;
 	}
 
-	private Gap findGapAgr(Game game, double Safe_Space) {
-
-		int carsLeft = this.countCars(0, 300, false, game);
-
-		// transfer relevant cars for gap search in to an array
-		// TODO this should be solved better.
-		TreeSet<Car> relevantCarsSet = null;
-		try {
-			relevantCarsSet = isRightLane ? (TreeSet<Car>) game.getCarsLeft().subSet(game.getCarsLeft().first(), this)
-					: (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-		Car[] relevantCars = new Car[relevantCarsSet.size()];
-		Iterator<Car> itr = relevantCarsSet.iterator();
-		for (int i = 0; i < relevantCars.length; i++) {
-			relevantCars[i] = itr.next();
-		}
-
-		Gap result = null;
-		for (int i = 0; i < relevantCars.length - 1; i++) {
-			result = new Gap(relevantCars[0], relevantCars[1]);
-			// TODO make accurate
-			if (result.isValid(Safe_Space)) {
-				if (--carsLeft <= 0) {
-					return result;
-				}
-			}
-		}
-		return result;
-	}
+//	private Gap findGapAgr(Game game, double Safe_Space) {
+//
+//		int carsLeft = this.countCars(0, 300, false, game);
+//
+//		// transfer relevant cars for gap search in to an array
+//		// TODO this should be solved better.
+//		TreeSet<Car> relevantCarsSet = null;
+//		try {
+//			relevantCarsSet = isRightLane ? (TreeSet<Car>) game.getCarsLeft().subSet(game.getCarsLeft().first(), this)
+//					: (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
+//		} catch (IllegalArgumentException e) {
+//			return null;
+//		}
+//		Car[] relevantCars = new Car[relevantCarsSet.size()];
+//		Iterator<Car> itr = relevantCarsSet.iterator();
+//		for (int i = 0; i < relevantCars.length; i++) {
+//			relevantCars[i] = itr.next();
+//		}
+//
+//		Gap result = null;
+//		for (int i = 0; i < relevantCars.length - 1; i++) {
+//			result = new Gap(relevantCars[0], relevantCars[1]);
+//			// TODO make accurate
+//			if (result.isValid(Safe_Space)) {
+//				if (--carsLeft <= 0) {
+//					return result;
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
 	/**
 	 * Counts all cars that are up to metersBehind behind and up to metersAhead
