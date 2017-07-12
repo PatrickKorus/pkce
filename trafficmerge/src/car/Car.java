@@ -11,6 +11,7 @@ import game.Obstacle;
 
 public abstract class Car extends GameObject implements Comparable<Car> {
 
+	protected final static double MAX_POSSIBLE_BREAKING_FORCE = acc(1.5);
 	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
 	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
 
@@ -42,18 +43,6 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 * @throws SlickException
 	 */
 
-	public Car(double meter, boolean isRightLane, double initSpeed, Game game, Color color) throws SlickException {
-		super(meter, isRightLane);
-		this.game = game;
-		this.setSpeed(initSpeed);
-		this.currentAcc = 0.0;
-		this.setColor(color, Game.SCALE);
-		super.setImage(basicImage);
-		backimage = normback;
-		isIndicating = false;
-		isChangingLane = false;
-	}
-
 	public Car(double meter, boolean isRightLane, double initSpeed, double initGoalSpeed, Game game, Color color)
 			throws SlickException {
 		super(meter, isRightLane);
@@ -66,6 +55,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		backimage = normback;
 		isIndicating = false;
 		isChangingLane = false;
+		this.MAX_ACC = acc(2);
 	}
 
 	@Override
@@ -74,14 +64,16 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		if (GameUI.carData) {
 			String speedString = (this.currentSpeed * 36 / 10) + "";
 			String accString = (this.currentAcc) + "";
-			if(isRightLane){
+//			String position = this.meter + "";
+			if (isRightLane) {
 				g.drawString(this.toString().substring(20), this.x, this.y + 20);
 				g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
 				g.drawString(accString.substring(0, 3), this.x, this.y + 60);
-			}else{
+			} else {
 				g.drawString(this.toString().substring(20), this.x, this.y - 75);
 				g.drawString(speedString.substring(0, 3), this.x, this.y - 55);
 				g.drawString(accString.substring(0, 3), this.x, this.y - 35);
+//				g.drawString(position, this.x, this.y - 95);
 			}
 		}
 		backimage.drawCentered(x, y);
@@ -184,13 +176,13 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 				this.y += laneMover;
 				this.isIndicating = false;
 				return;
-			}				
+			}
 		}
-		
+
 		laneMover += sign * Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
 		if (sign * laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
-		} else if (sign == 1 ){
+		} else if (sign == 1) {
 			this.y += laneMover;
 			laneMover = 0;
 			isChangingLane = false;
@@ -206,7 +198,6 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			game.addCarLeft(this);
 		}
 	}
-	
 
 	/**
 	 * calculates the minimal distance to stop
@@ -224,7 +215,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			speedCarUpFront = 0;
 		}
 		return Math.max(
-				(4*this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
+				(this.currentSpeed / (2 * this.MAX_BREAKING_FORCE)) * (this.currentSpeed - speedCarUpFront) + 10, 10.0);
 	}
 
 	/**
@@ -254,15 +245,15 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	 *            - Seconds needed to get from 0 to 100 or 100 to 0
 	 * @return equivalent acceleration in m/s^2
 	 */
-	public double acc(double Noughtto100) {
+	public static double acc(double Noughtto100) {
 		return 1000.0 / (36.0 * Noughtto100);
 	}
 
-	protected double kmhTOmps(double kmh) {
+	protected static double kmhTOmps(double kmh) {
 		return kmh / 3.60;
 	}
 
-	protected double mpsTOkmh(double mps) {
+	protected static double mpsTOkmh(double mps) {
 		return mps * 3.60;
 	}
 
