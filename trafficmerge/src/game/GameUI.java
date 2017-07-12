@@ -77,7 +77,10 @@ public class GameUI {
 
 		//average In-/Output
 		g.drawString("Eingangsverkehrsdichte: " + Math.round(incomingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 165);
-		g.drawString("Ausgangsverkehrsdichte: " + Math.round(outgoingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 190);
+		g.drawString("~>Total:" + Math.round((game.carsSpawnedCounter/(float)game.time)*100)/100.0 + " Autos/s", container.getWidth()-300 , 185);
+		g.drawString("Ausgangsverkehrsdichte: " + Math.round(outgoingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 210);
+		g.drawString("~>Total:" + Math.round((game.carsEndCounter/(float)game.time)*100)/100.0 + " Autos/s", container.getWidth()-300 , 230);
+
 
 	//Shortcuts:
 		g.drawString("D -> Zeige Autoinformationen",50, container.getHeight()-125);

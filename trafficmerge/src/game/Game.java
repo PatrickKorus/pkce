@@ -59,8 +59,9 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToAddLeft;
 
 	EntitySpawner spawner;
-
+	
 	public int carsEndCounter = 0;
+	public int carsSpawnedCounter = 0;
 	public int time = 0;
 	public double[] averageLaneSpeed = new double[] { 0.0, 0.0 };
 

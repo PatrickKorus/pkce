@@ -259,7 +259,7 @@ public class CMSpawner implements EntitySpawner  {
 		}
 		else{
 //			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
-			goalSpd = (randomGenerator.nextGaussian()*20) + 130;
+			goalSpd = (randomGenerator.nextGaussian()*20) + 140;
 		}
 		
 		switch(type){
@@ -277,7 +277,7 @@ public class CMSpawner implements EntitySpawner  {
 			break;
 		}
 		game.addCar(car);
-		
+		game.carsSpawnedCounter++;
 	}
 
 	/**

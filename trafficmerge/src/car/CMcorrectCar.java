@@ -188,7 +188,7 @@ public class CMcorrectCar extends Car {
 			}
 
 			if (gapAimedFor != null) {
-				speeding *= 1.1;
+				speeding = 1.5 * SPEEDING;
 				double newerror = 0.1*regulateTo(gapAimedFor.getPosition(), gapAimedFor.getSpeedMpS(),
 						gapAimedFor.getAcc(), 6);
 				if (newerror + currentSpeed > 0.8 * this.goalSpeed) {
