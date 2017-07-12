@@ -166,12 +166,21 @@ public class Game extends BasicGame {
 		gameUi.update(newDelta);
 	}
 	
-	public void resortList(TreeSet<Car> list){
-		TreeSet<Car> newlist = new TreeSet<Car>();
-//		newlist.addAll(list);
-		for(Car car : list)
-			newlist.add(car);
-		list = newlist;
+//	public void resortList(TreeSet<Car> list){
+//		TreeSet<Car> newlist = new TreeSet<Car>();
+////		newlist.addAll(list);
+//		for(Car car : list)
+//			newlist.add(car);
+//		list = newlist;
+//	}
+	
+	public void resortLists() {
+		TreeSet<Car> sortedSetLeft = new TreeSet<>();
+		sortedSetLeft.addAll(carsLeft);
+		TreeSet<Car> sortedSetRight = new TreeSet<>();
+		sortedSetRight.addAll(carsRight);
+		carsLeft = sortedSetLeft;
+		carsRight = sortedSetRight;
 	}
 	
 	public void reset() throws SlickException{

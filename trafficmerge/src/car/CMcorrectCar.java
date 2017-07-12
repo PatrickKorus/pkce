@@ -48,7 +48,7 @@ public class CMcorrectCar extends Car {
 		areaI = Game.END_OF_LANE - 500 + Math.round(r.nextGaussian() * 50.0);
 		areaII = Game.END_OF_LANE - 200 + Math.round(r.nextGaussian() * 50.0);
 		PANIC_FACTOR = 1.5 + r.nextGaussian() * 0.2;
-		SPEEDING = 1.1 + r.nextGaussian() * 0.1;
+		SPEEDING = 1.0 + r.nextGaussian() * 0.1;
 		SAFE_SPACE = 8 + r.nextGaussian() * 3;
 		speedImprovementFactor = 1.5 + r.nextGaussian() * 0.2;
 	}
@@ -59,7 +59,7 @@ public class CMcorrectCar extends Car {
 	double currentPanic = 1;
 	Gap gapAimedFor;
 	double speeding = SPEEDING;
-	private boolean driveThrough;
+//	private boolean driveThrough;
 
 	@Override
 	public void regulate(Game game, int delta) {
@@ -70,13 +70,13 @@ public class CMcorrectCar extends Car {
 
 		// keep driving if you didn't manage to let a car in
 		// TODO this is a hard coded fix
-		if (driveThrough || (this.meter > Game.END_OF_LANE - 25
-				&& this.getDistance(surroundingCars[0]) > this.getMinDist(surroundingCars[0]) && this.currentSpeed == 0
-				&& surroundingCars[1] != null && surroundingCars[1].currentSpeed == 0)) {
-			this.currentAcc = this.MAX_ACC;
-			this.driveThrough = true;
-			return;
-		}
+//		if (driveThrough || (this.meter > Game.END_OF_LANE - 25
+//				&& this.getDistance(surroundingCars[0]) > this.getMinDist(surroundingCars[0]) && this.currentSpeed == 0
+//				&& surroundingCars[1] != null && surroundingCars[1].currentSpeed == 0)) {
+//			this.currentAcc = this.MAX_ACC;
+//			this.driveThrough = true;
+//			return;
+//		}
 
 		// This causes that if the car ahead is breaking this car is in "panic"
 		if (delay >= REACTION_DELAY) {
@@ -94,15 +94,14 @@ public class CMcorrectCar extends Car {
 			errorPrint(carUpFront);
 			this.currentSpeed = 0;
 			//TODO: right now for testing
-			game.resortList(game.getCarsLeft());
-			game.resortList(game.getCarsRight());
+//			game.resortLists();
 		}
 
 		// priority 1: preserve critical distance to car&obstacle
 		double error = 0;
 //				this.regulateTo(safetyDistance, distanceCarUpFront, 50);
 		if (carUpFront != null ) {
-			error = this.regulateTo(carUpFront.getMeterDistance() - safetyDistance, carUpFront.currentSpeed, -acc(1), 10);
+			error = this.regulateTo(carUpFront, currentPanic, 10);
 //			this.currentAcc = error;
 //			return;
 		}
@@ -145,7 +144,7 @@ public class CMcorrectCar extends Car {
 				&& this.getDistance(surroundingCars[0]) < 400 && surroundingCars[1] != null
 				&& surroundingCars[0].getCurrentSpeed() > this.currentSpeed * speedImprovementFactor) {
 			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
-			if (gap.isSafe(this, SAFE_SPACE)) {
+			if (gap.isSafe(this, 0)) {
 				error = this.regulateTo(gap.getPosition(), gap.getSpeed(), gap.getAcc(), 1);
 				this.isChangingLane = true;
 			}
@@ -205,7 +204,7 @@ public class CMcorrectCar extends Car {
 					this.regulateTo(this.getMinDist(surroundingCars[1]), this.getDistance(surroundingCars[1]), 5));
 			// if no car will crash
 			Gap gap = new Gap(surroundingCars[1], surroundingCars[2]);
-			if (gap.isSafe(this, SAFE_SPACE + currentSpeed / 30))
+			if (gap.isSafe(this, 0))
 				this.isChangingLane = true;
 		}
 
@@ -228,7 +227,7 @@ public class CMcorrectCar extends Car {
 		// TODO this should be solved better.
 		TreeSet<Car> relevantCarsSet = null;
 		try {
-			relevantCarsSet = (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
+			relevantCarsSet = isRightLane? (TreeSet<Car>) game.getCarsLeft().subSet(game.getCarsLeft().first(), this) : (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
