@@ -253,7 +253,7 @@ public class GameUI {
 	}
 	
 	/**
-	 * resets the scaling so that the complete simulation area is shown while keeping the old zoom
+	 * updates Game.SCALE to the new TOTAL_SIMULATIUON_DISTANCE while keeping the  old zoom
 	 * @throws SlickException 
 	 */
 	public void scaleToFit() throws SlickException{
