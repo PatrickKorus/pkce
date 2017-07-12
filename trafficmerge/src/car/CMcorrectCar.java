@@ -266,37 +266,37 @@ public class CMcorrectCar extends Car {
 		return result;
 	}
 
-	private Gap findGapAgr(Game game, double Safe_Space) {
-
-		int carsLeft = this.countCars(0, 300, false, game);
-
-		// transfer relevant cars for gap search in to an array
-		// TODO this should be solved better.
-		TreeSet<Car> relevantCarsSet = null;
-		try {
-			relevantCarsSet = isRightLane ? (TreeSet<Car>) game.getCarsLeft().subSet(game.getCarsLeft().first(), this)
-					: (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
-		Car[] relevantCars = new Car[relevantCarsSet.size()];
-		Iterator<Car> itr = relevantCarsSet.iterator();
-		for (int i = 0; i < relevantCars.length; i++) {
-			relevantCars[i] = itr.next();
-		}
-
-		Gap result = null;
-		for (int i = 0; i < relevantCars.length -1; i++) {
-			result = new Gap(relevantCars[i], relevantCars[i+1]);//TODO: from 0 & 1 -> i & i+1
-			// TODO make accurate
-			if (result.isValid(Safe_Space)) {
-				if (--carsLeft <= 0) {
-					return result;
-				}
-			}
-		}
-		return result;
-	}
+//	private Gap findGapAgr(Game game, double Safe_Space) {
+//
+//		int carsLeft = this.countCars(0, 300, false, game);
+//
+//		// transfer relevant cars for gap search in to an array
+//		// TODO this should be solved better.
+//		TreeSet<Car> relevantCarsSet = null;
+//		try {
+//			relevantCarsSet = isRightLane ? (TreeSet<Car>) game.getCarsLeft().subSet(game.getCarsLeft().first(), this)
+//					: (TreeSet<Car>) game.getCarsRight().subSet(game.getCarsLeft().first(), this);
+//		} catch (IllegalArgumentException e) {
+//			return null;
+//		}
+//		Car[] relevantCars = new Car[relevantCarsSet.size()];
+//		Iterator<Car> itr = relevantCarsSet.iterator();
+//		for (int i = 0; i < relevantCars.length; i++) {
+//			relevantCars[i] = itr.next();
+//		}
+//
+//		Gap result = null;
+//		for (int i = 0; i < relevantCars.length -1; i++) {
+//			result = new Gap(relevantCars[i], relevantCars[i+1]);//TODO: from 0 & 1 -> i & i+1
+//			// TODO make accurate
+//			if (result.isValid(Safe_Space)) {
+//				if (--carsLeft <= 0) {
+//					return result;
+//				}
+//			}
+//		}
+//		return result;
+//	}
 
 	/**
 	 * Counts all cars that are up to metersBehind behind and up to metersAhead

@@ -36,8 +36,6 @@ public class GameUI {
 	private int totalCountStart = 0;
 	private int totalCarsStart = 0;
 	
-	
-	
 	public GameUI(Game game , GameContainer container, EntitySpawner spawn){
 		this.spawner = spawn;
 		this.game = game;
