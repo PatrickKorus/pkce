@@ -28,9 +28,9 @@ public class Gap {
 	public boolean isSafe(Car passingCar, double safeSpace) {
 
 		boolean tailCarDoesntCrash = tailCar == null ? true
-				: tailCar.getDistance(passingCar) > tailCar.getMinDist(passingCar) + safeSpace;
+				: tailCar.getDistance(passingCar) > tailCar.getSafetyDistance(passingCar) + safeSpace;
 		boolean passingCarDoesntCrash = frontCar == null ? true
-				: passingCar.getDistance(frontCar) > passingCar.getMinDist(frontCar) + safeSpace;
+				: passingCar.getDistance(frontCar) > passingCar.getSafetyDistance(frontCar) + safeSpace;
 		return tailCarDoesntCrash && passingCarDoesntCrash;
 	}
 
@@ -40,6 +40,14 @@ public class Gap {
 
 	public boolean isValid(double validSize) {
 		return tailCar.getDistance(frontCar) > validSize;
+	}
+
+	public double getSpeed() {
+		return frontCar == null ? 180 : frontCar.getCurrentSpeed();
+	}
+	
+	public double getAcc() {
+		return Math.max(frontCar == null ? 0 : frontCar.getCurrentAcc(), tailCar == null ? 0 : tailCar.getCurrentAcc());
 	}
 
 }

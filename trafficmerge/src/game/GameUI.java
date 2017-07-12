@@ -178,8 +178,8 @@ public class GameUI {
 		//update/resort list
 		if(container.getInput().isKeyPressed(Input.KEY_L)){
 			//TODO: Listen aktualisieren!
-			game.resortList(game.getCarsLeft());
-			game.resortList(game.getCarsRight());
+//			game.resortList(game.getCarsLeft());
+//			game.resortList(game.getCarsRight());
 		}
 		
 		//pause simulation
