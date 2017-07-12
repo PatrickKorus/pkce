@@ -10,13 +10,14 @@
 \usepackage{numprint}
 \usepackage[ngerman]{cleveref}
 \usepackage{csquotes}
-\usepackage{apacite}
 \usepackage{svg}
 \usepackage{pstricks}
 \usepackage{float}
 \usepackage{geometry}
 \usepackage{microtype}
 \usepackage{subcaption}
+\usepackage[style=numeric]{biblatex}
+
 
 \selectlanguage{ngerman}
 \graphicspath{{img/}}
@@ -24,6 +25,7 @@
 \title{Ein neues Reißverschlusssystem}
 \subtitle{Projektkurs CE – SS 2017}
 \subsubtitle{Johannes Beck, Christian Bergfried, Patrick Korus, Robin Menzenbach, Greta Ruppert}
+\addbibresource{literatur.bib}
 
 \begin{document}
 \maketitle
@@ -45,8 +47,7 @@
 \include{Fazit}
 %Literaturverzeichnis
 %\bibliographystyle{plaindin}
-\bibliographystyle{apacite}
-\bibliography{literatur}
+\printbibliography
 %Appendix
 \appendix
 %\include{appendix}
