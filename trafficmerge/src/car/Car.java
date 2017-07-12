@@ -261,7 +261,6 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		this.color = color;
 		String name = "basicCar";
 		switch (color) {
-		// TODO: Other colors
 		case BLUE:
 			name = "basicCar";
 			break;

@@ -36,8 +36,6 @@ public class GameUI {
 	private int totalCountStart = 0;
 	private int totalCarsStart = 0;
 	
-	
-	
 	public GameUI(Game game , GameContainer container, EntitySpawner spawn){
 		this.spawner = spawn;
 		this.game = game;
@@ -83,7 +81,7 @@ public class GameUI {
 
 	//Shortcuts:
 		g.drawString("D -> Zeige Autoinformationen",50, container.getHeight()-125);
-		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);//TODO: andere beschriftung
+		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);
 		g.drawString("R -> Reset der Simulation",50, container.getHeight()-75);
 		if(Game.classicMerge){
 		g.drawString("T -> Alternatives Verfahren",50, container.getHeight()-50);	
@@ -91,12 +89,10 @@ public class GameUI {
 		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-50);
 		}
 		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/2.5), container.getHeight()-125);
-//		g.drawString("L -> Listen aktualisieren",(float) (container.getWidth()/2.5), container.getHeight()-100);
 
 	}
 
 	public void update(int delta) throws SlickException{
-		// TODO: In einen Parser auskoppeln?
 		// rescaling
 		boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
 		try {
@@ -107,8 +103,7 @@ public class GameUI {
 				scaler.setText("");
 			}
 		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
+			scaler.setText("");
 		}
 
 		// change timeLapse
@@ -120,8 +115,7 @@ public class GameUI {
 				timeControler.setText("");
 			}
 		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
+			timeControler.setText("");
 		}
 
 		// change traffic density
@@ -133,7 +127,7 @@ public class GameUI {
 				trafficDensity.setText("");
 			}
 		} catch (NumberFormatException e) {
-			//TODO: Handle exceptions
+			trafficDensity.setText("");
 		}
 		
 		// change aggressive percentage
@@ -145,7 +139,7 @@ public class GameUI {
 				aggressiveDriver.setText("");
 			}
 		} catch (NumberFormatException e) {
-			//TODO: Handle exceptions
+			aggressiveDriver.setText("");
 		}
 
 		// change passive percentage
@@ -157,7 +151,7 @@ public class GameUI {
 				passiveDriver.setText("");
 			}
 		} catch (NumberFormatException e) {
-			//TODO: Handle exceptions
+			passiveDriver.setText("");
 		}
 		enterPressed = false;
 		
@@ -183,13 +177,6 @@ public class GameUI {
 		if(container.getInput().isKeyPressed(Input.KEY_T)){
 			Game.classicMerge = !Game.classicMerge;
 			game.reset();
-		}
-		
-		//update/resort list
-		if(container.getInput().isKeyPressed(Input.KEY_L)){
-			//TODO: Listen aktualisieren!
-//			game.resortList(game.getCarsLeft());
-//			game.resortList(game.getCarsRight());
 		}
 		
 		//pause simulation
