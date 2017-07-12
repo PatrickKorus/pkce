@@ -330,5 +330,9 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	public boolean isChangingLane() {
 		return isChangingLane;
 	}
+	//TODO: Just a test for resetting the obstacle location
+	public void setDistance(double distance){
+		this.meter = distance;
+	}
 
 }

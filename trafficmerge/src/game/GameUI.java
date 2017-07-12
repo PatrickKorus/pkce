@@ -29,6 +29,7 @@ public class GameUI {
 
 	private int systemTimer = 0;
 	private int AverageSpeedTimer = 0;
+	private float scalingFactor = 1;
 	
 	//average in-/output:
 	public static double outgoingTraffic = 0;
@@ -50,9 +51,9 @@ public class GameUI {
 		isPaused = false;
 	}
 	
-	public void render(GameContainer container, Graphics g){
+	public void render(GameContainer container, Graphics g){//TODO: Beschreibungen checken
 	//Input:
-		g.drawString("Skalierung: " + Math.round(Game.SCALE*100)/100.0, scaler.getX(), scaler.getY()-20);
+		g.drawString("Skalierung: " + Math.round(scalingFactor*100)/100.0, scaler.getX(), scaler.getY()-20);
 		scaler.render(container, g);
 		g.drawString("Zeitraffer: " + Math.round(Game.timeFactor*100)/100.0, timeControler.getX(), timeControler.getY()-20);
 		timeControler.render(container, g);
@@ -62,7 +63,7 @@ public class GameUI {
 		aggressiveDriver.render(container, g);
 		g.drawString("Anteil an passiven Fahrern: " + Math.round(passivePers * 100)/100.0, passiveDriver.getX(), passiveDriver.getY()-20);
 		passiveDriver.render(container, g);
-		g.drawString("Anzeige Engstelle: " + (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE) + " m", postObstacleDistance.getX(), postObstacleDistance.getY()-20);
+		g.drawString("Strecke hinter Engstelle: " + (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE) + " m", postObstacleDistance.getX(), postObstacleDistance.getY()-20);
 		postObstacleDistance.render(container, g);
 		
 	//Data-Output:
@@ -100,14 +101,17 @@ public class GameUI {
 	}
 
 	public void update(int delta) throws SlickException{
-		// rescaling
 		boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
-		try {
-			//TODO: improove scaling so that it is in percentage ~> 1 is 100%, .5 is half area, ...
+		// rescaling
+		try {//TODO: 2 equals you could show 200% or you show the thing 2 times as big -> only 50% ?
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
 			if (newscale > 0.01 && enterPressed){
-				game.rescale(newscale);
+				if(newscale != scalingFactor){
+				game.rescale((float) (Game.SCALE*(scalingFactor/newscale)));
+				scalingFactor = newscale;
+
+				}
 				scaler.setText("");
 			}
 		} catch (NumberFormatException e) {
@@ -163,31 +167,16 @@ public class GameUI {
 		}
 		
 		//change distance shown after obstacle
-		try{//TODO: not working
+		try{//TODO -update the lanemarkings too!
 			String value = postObstacleDistance.getText();
 			float newObstacleDist = Float.parseFloat(value);
 			if(newObstacleDist >=50 && enterPressed){
-				double oldObstacleDist = Game.TOTAL_SIMULATION_DISTANCE;
-				Game.END_OF_LANE = newObstacleDist;
-				Game.TOTAL_SIMULATION_DISTANCE = 1100 + Game.END_OF_LANE;
+				postObstacleDistance.setText("");	
+				Game.TOTAL_SIMULATION_DISTANCE = 1100 + newObstacleDist;
+				scaleToFit();
 				game.setConstants(Game.SCALE);
-				postObstacleDistance.setText("");
-				//TODO: add difference between old length and new length to the cars positions, so that the additional simulation area is added at the back, not the front
-				double distanceDiff = oldObstacleDist - newObstacleDist;
-				for(Car car : game.getCarsLeft()){
-					if(-distanceDiff < car.meter)
-						car.meter += distanceDiff;
-					else
-						game.removeCarLeft(car);
-				}
-				for(Car car : game.getCarsRight()){
-					if(-distanceDiff < car.meter)
-						car.meter += distanceDiff;
-					else
-						game.removeCarRight(car);
-				}
 				game.getSigns().clear();
-				spawner.init(game);			
+				spawner.init(game);	
 			}
 		} catch(NumberFormatException e){
 			postObstacleDistance.setText("");
@@ -261,6 +250,15 @@ public class GameUI {
 			systemTimer += delta;
 		}
 		enterPressed = false;
+	}
+	
+	/**
+	 * resets the scaling so that the complete simulation area is shown while keeping the old zoom
+	 * @throws SlickException 
+	 */
+	public void scaleToFit() throws SlickException{
+		Game.SCALE = 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09253012048192771;
+		game.rescale((float) (Game.SCALE/scalingFactor));
 	}
 	
 	private double[] averageSpeed(){

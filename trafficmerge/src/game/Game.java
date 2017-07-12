@@ -34,10 +34,11 @@ public class Game extends BasicGame {
 	// to switch between classic and normal merge
 	public static boolean classicMerge = true;
 	public static float timeFactor = 1.0f;
-	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
+	public static double pastObstacleDist = 100;
+	public static double TOTAL_SIMULATION_DISTANCE = 1100 + pastObstacleDist; // in meter
 	public static double SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;
 
-	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
+	public static double END_OF_LANE = 1100;//TOTAL_SIMULATION_DISTANCE - pastObstacleDist; // in
 																		// meter
 
 	/* ---------------- END PRESET ---------------- */
@@ -197,15 +198,15 @@ public class Game extends BasicGame {
 	}
 
 	public void resetParams() throws SlickException {
-		SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
-		rescale((float) SCALE);
 		TOTAL_SIMULATION_DISTANCE = 1200;
 		END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100;
 		timeFactor = 1.0f;
 		spawner.setTrafficDensity(0.6);
 		GameUI.aggressivePers = 0.0;
 		GameUI.passivePers = 0.0;
-	}
+		gameUi.scaleToFit();
+		rescale((float) SCALE);
+		}
 
 	public void rescale(float scale) throws SlickException {
 		this.setConstants(scale);
@@ -218,6 +219,8 @@ public class Game extends BasicGame {
 		obstacle.rescale(scale);
 		Game.SCALE = scale;
 	}
+	
+
 
 	public static int meterToPixel(double meter) {
 		return (int) Math.round(meter * meterToPixel);

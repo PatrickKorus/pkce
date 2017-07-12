@@ -14,6 +14,4 @@ public interface EntitySpawner {
 	void setTrafficDensity ( double Density);
 	
 	double getTrafficDensity();
-
-	void initSigns(Game game) throws SlickException;
 }
