@@ -24,7 +24,7 @@ public class manualSpawner implements EntitySpawner {
 	
 	private double trafficDensity = 0.6;  
 	private int deltaCOunter = 0;
-	private boolean spawncar = true;
+	private boolean spawncar = false;
 
 	@Override
 	public void spawn(int delta, Input input, Game game) throws SlickException {
@@ -47,11 +47,11 @@ public class manualSpawner implements EntitySpawner {
 		}
 	}
 	
-	boolean laneSetter = true;
+	boolean laneSetter = false;
 	
 	private void moreCars(int mausX, int mausY, Game game) throws SlickException {
 		Car car = new CMcorrectCar(0, laneSetter, 90.0, 90.0, game);
-		laneSetter = !laneSetter;
+//		laneSetter = !laneSetter;
 		game.addCar(car);
 	}
 

@@ -31,11 +31,11 @@ public class Game extends BasicGame {
 	public static final int height = 768;
 	public static final int width = 1024;
 
-	//to switch between classic and normal merge
+	// to switch between classic and normal merge
 	public static boolean classicMerge = true;
 	public static float timeFactor = 1.0f;
 	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
-	public static double SCALE = 0.09253012048192771;//2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;
+	public static double SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;
 
 	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
 																		// meter
@@ -62,7 +62,7 @@ public class Game extends BasicGame {
 
 	public int carsEndCounter = 0;
 	public int time = 0;
-	public double[] averageLaneSpeed = new double[]{ 0.0 , 0.0};
+	public double[] averageLaneSpeed = new double[] { 0.0, 0.0 };
 
 	public Game() {
 		super("Traffic Merge Simulation");
@@ -112,15 +112,13 @@ public class Game extends BasicGame {
 		spawner = new CMSpawner();
 		spawner.init(this);
 		gameUi = new GameUI(this, container, spawner);
-		
+
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
 		 * new Image( "res/fonts/score_numer_font.png")); punkte = new
 		 * Punkte(container.getWidth() - 180, 10, fontPunkte);
 		 */
 	}
-	
-	
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
@@ -145,6 +143,13 @@ public class Game extends BasicGame {
 			carsEndCounter++;
 		}
 
+		Car firstLeftCar = null;
+		if (!carsLeft.isEmpty())
+			firstLeftCar = carsLeft.first();
+		if (firstLeftCar != null && firstLeftCar.meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
+			carsLeft.pollFirst();
+		}
+		
 		for (Sign sign : signs) {
 			sign.update(newDelta);
 		}
@@ -165,15 +170,15 @@ public class Game extends BasicGame {
 
 		gameUi.update(newDelta);
 	}
-	
-//	public void resortList(TreeSet<Car> list){
-//		TreeSet<Car> newlist = new TreeSet<Car>();
-////		newlist.addAll(list);
-//		for(Car car : list)
-//			newlist.add(car);
-//		list = newlist;
-//	}
-	
+
+	// public void resortList(TreeSet<Car> list){
+	// TreeSet<Car> newlist = new TreeSet<Car>();
+	//// newlist.addAll(list);
+	// for(Car car : list)
+	// newlist.add(car);
+	// list = newlist;
+	// }
+
 	public void resortLists() {
 		TreeSet<Car> sortedSetLeft = new TreeSet<>();
 		sortedSetLeft.addAll(carsLeft);
@@ -182,31 +187,31 @@ public class Game extends BasicGame {
 		carsLeft = sortedSetLeft;
 		carsRight = sortedSetRight;
 	}
-	
-	public void reset() throws SlickException{
-		//Works but hardcoded
-		
-		//clear cars
+
+	public void reset() throws SlickException {
+		// Works but hardcoded
+
+		// clear cars
 		carsLeft.clear();
 		carsRight.clear();
-		
-		//reset variables
-		SCALE = 0.09253012048192771;//2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
+
+		// reset variables
+		SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
 		time = 0;
 		carsEndCounter = 0;
-		averageLaneSpeed = new double[]{ 0.0 , 0.0};
+		averageLaneSpeed = new double[] { 0.0, 0.0 };
 		GameUI.incomingTraffic = 0;
 		GameUI.outgoingTraffic = 0;
 	}
-	
-	public void resetParams()throws SlickException{
+
+	public void resetParams() throws SlickException {
 		rescale((float) SCALE);
 		timeFactor = 1.0f;
 		spawner.setTrafficDensity(0.6);
-		GameUI.aggressivePers = 0.33;
-		GameUI.passivePers = 0.33;
-		
-		//clean TextFields
+		GameUI.aggressivePers = 0.0;
+		GameUI.passivePers = 0.0;
+
+		// clean TextFields
 		gameUi.scaler.setText("");
 		gameUi.timeControler.setText("");
 		gameUi.trafficDensity.setText("");
