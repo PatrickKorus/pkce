@@ -17,8 +17,8 @@ public class GameUI {
 	private boolean isPaused;
 	
 	public static boolean carData = false;
-	public static double aggressivePers = 0.33;
-	public static double passivePers = 0.33;
+	public static double aggressivePers = 0.0;
+	public static double passivePers = 0.0;
 	
 	public TextField scaler;
 	public TextField timeControler;
@@ -35,8 +35,6 @@ public class GameUI {
 	private int inOutTimer = 0;
 	private int totalCountStart = 0;
 	private int totalCarsStart = 0;
-	
-	
 	
 	public GameUI(Game game , GameContainer container, EntitySpawner spawn){
 		this.spawner = spawn;
@@ -83,7 +81,7 @@ public class GameUI {
 
 	//Shortcuts:
 		g.drawString("D -> Zeige Autoinformationen",50, container.getHeight()-125);
-		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);//TODO: andere beschriftung
+		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);
 		g.drawString("R -> Reset der Simulation",50, container.getHeight()-75);
 		if(Game.classicMerge){
 		g.drawString("T -> Alternatives Verfahren",50, container.getHeight()-50);	
@@ -91,65 +89,71 @@ public class GameUI {
 		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-50);
 		}
 		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/2.5), container.getHeight()-125);
-//		g.drawString("L -> Listen aktualisieren",(float) (container.getWidth()/2.5), container.getHeight()-100);
 
 	}
 
 	public void update(int delta) throws SlickException{
-		// TODO: In einen Parser auskoppeln?
 		// rescaling
+		boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
 		try {
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
-			if (newscale > 0.01)
+			if (newscale > 0.01 && enterPressed){
 				game.rescale(newscale);
+				scaler.setText("");
+			}
 		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
+			scaler.setText("");
 		}
 
 		// change timeLapse
 		try {
 			String value = timeControler.getText();
 			float newFactor = Float.parseFloat(value);
-			if (newFactor > 0.1)
+			if (newFactor > 0.1  && enterPressed){
 				Game.timeFactor = newFactor;
+				timeControler.setText("");
+			}
 		} catch (NumberFormatException e) {
-			// e.printStackTrace();
-			// TODO: handle exception
+			timeControler.setText("");
 		}
 
 		// change traffic density
 		try {
 			String value = trafficDensity.getText();
 			float newDensity = Float.parseFloat(value);
-			if (newDensity <= 1.0 && newDensity >= 0.01)
+			if (newDensity <= 1.0 && newDensity >= 0.01 && enterPressed){
 				spawner.setTrafficDensity(newDensity);
+				trafficDensity.setText("");
+			}
 		} catch (NumberFormatException e) {
-			//TODO: Handle exceptions
+			trafficDensity.setText("");
 		}
 		
 		// change aggressive percentage
 		try {
 			String value = aggressiveDriver.getText();
 			float newPercentage = Float.parseFloat(value);
-			if (newPercentage + passivePers <= 1.0 && newPercentage >= 0)
+			if (newPercentage + passivePers <= 1.0 && newPercentage >= 0  && enterPressed){
 				aggressivePers = newPercentage;
+				aggressiveDriver.setText("");
+			}
 		} catch (NumberFormatException e) {
-			//TODO: Handle exceptions
+			aggressiveDriver.setText("");
 		}
 
 		// change passive percentage
 		try {
 			String value = passiveDriver.getText();
 			float newPercentage = Float.parseFloat(value);
-			
-			if (newPercentage + aggressivePers <= 1.0 && newPercentage >= 0)
+			if (newPercentage + aggressivePers <= 1.0 && newPercentage >= 0  && enterPressed){
 				passivePers = newPercentage;
+				passiveDriver.setText("");
+			}
 		} catch (NumberFormatException e) {
-			//TODO: Handle exceptions
+			passiveDriver.setText("");
 		}
-
+		enterPressed = false;
 		
 		// End simulation via KEY_ESCAPE
 		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
@@ -173,13 +177,6 @@ public class GameUI {
 		if(container.getInput().isKeyPressed(Input.KEY_T)){
 			Game.classicMerge = !Game.classicMerge;
 			game.reset();
-		}
-		
-		//update/resort list
-		if(container.getInput().isKeyPressed(Input.KEY_L)){
-			//TODO: Listen aktualisieren!
-			game.resortList(game.getCarsLeft());
-			game.resortList(game.getCarsRight());
 		}
 		
 		//pause simulation

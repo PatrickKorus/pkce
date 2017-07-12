@@ -72,7 +72,6 @@ public class CMSpawner implements EntitySpawner  {
 
 			Car[] lastCars = lastCarOnLane(game);
 			
-			
 			maxSpd[0] = 150.0;
 			maxSpd[1] = 0.75 * maxSpd[0];
 			laneSpd[0] = 170.0;
@@ -103,7 +102,6 @@ public class CMSpawner implements EntitySpawner  {
 					maxSpd[0] = 0;
 					leftSpawnFree = true;
 				}
-					
 				//spawn if enough space and reset timer
 				if(leftSpawnFree){
 					if(rightTime <= 0.75 * rightTTrigger || laneSpd[1] <= 60){
@@ -130,7 +128,6 @@ public class CMSpawner implements EntitySpawner  {
 					phantomCarR.setSpeed(lastCars[1].getCurrentSpeed());
 					double safetyDist = phantomCarR.getSafetyDistance(lastCars[1]);
 					if(actDist >= safetyDist+12){
-						
 						// convert laneSpd to mps for the calculation
 						maxSpd[1] = mpsTOkmh((0.5 * kmhTOmps(laneSpd[1])) 
 								+ Math.sqrt((Math.pow(0.5 * kmhTOmps(laneSpd[1]) , 2)/4)+ 2* phantomCarR.getMaxBreak() * (actDist - 6)));
@@ -144,7 +141,6 @@ public class CMSpawner implements EntitySpawner  {
 					maxSpd[1] = 0;
 					rightSpawnFree = true;
 				}
-				
 				//limit right speed to left speed
 				if(laneSpd[0] <= maxSpd[1]){
 					maxSpd[1] = laneSpd[0];
@@ -152,15 +148,12 @@ public class CMSpawner implements EntitySpawner  {
 						laneSpd[1] = maxSpd[1];
 					}
 				}
-				
-					
 				//spawn if enough space and reset timer
 				if(rightSpawnFree){
 					spawnRandomCar(maxSpd[1], laneSpd[1], true, game);
 					rightSpawnFree = false;
 					rightTime = 0;
 					rightTTrigger = calcTrigger(true);
-	
 				}
 			}
 			else{
@@ -184,7 +177,6 @@ public class CMSpawner implements EntitySpawner  {
 			}
 			trafficDensity = Density;
 			sigma = (1.0/trafficDensity);
-
 		}
 	}
 	
@@ -249,7 +241,6 @@ public class CMSpawner implements EntitySpawner  {
 		
 		initSpd = (randomGenerator.nextGaussian()*sigma)+ LaneSpd+(maxSpd-LaneSpd)/3.0;
 		
-		//TODO: Testwise: lower speedlimit matching with the current traffic
 		if(rightLane){
 			if(initSpd <= 0.6 * laneSpd[1]){
 				initSpd = 0.6 * laneSpd[1];
@@ -281,8 +272,7 @@ public class CMSpawner implements EntitySpawner  {
 			else
 				car = new NMCorrectCar(0, rightLane, initSpd, goalSpd, game);
 			break;
-
-		default://passiveCar	
+		default: //CMpassiveCar	
 			car = new CMpassiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 		}
