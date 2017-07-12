@@ -34,7 +34,7 @@ public class CMaggressiveCar extends CMcorrectCar {
 		PANIC_FACTOR = 1.1 + r.nextGaussian()*0.5;
 		SPEEDING = 1.2 + r.nextGaussian()*0.1;
 		SAFE_SPACE = Math.max(5 + r.nextGaussian()*3, 0);
-		speedImprovementFactor = 1.5 + r.nextGaussian()*0.2;
+		speedImprovementFactor = 1.3 + r.nextGaussian()*0.2;
 	}
 
 }
