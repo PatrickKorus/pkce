@@ -25,6 +25,7 @@ public class GameUI {
 	public TextField trafficDensity;
 	public TextField aggressiveDriver;
 	public TextField passiveDriver;
+	public TextField postObstacleDistance;
 
 	private int systemTimer = 0;
 	private int AverageSpeedTimer = 0;
@@ -45,6 +46,7 @@ public class GameUI {
 		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
 		aggressiveDriver = new TextField(container, container.getDefaultFont(), 50, 200, 100, 20);
 		passiveDriver = new TextField(container, container.getDefaultFont(), 50, 250, 100, 20);
+		postObstacleDistance = new TextField(container, container.getDefaultFont(), 50, 300, 100, 20);
 		isPaused = false;
 	}
 	
@@ -60,6 +62,8 @@ public class GameUI {
 		aggressiveDriver.render(container, g);
 		g.drawString("Anteil an passiven Fahrern: " + Math.round(passivePers * 100)/100.0, passiveDriver.getX(), passiveDriver.getY()-20);
 		passiveDriver.render(container, g);
+		g.drawString("Anzeige Engstelle: " + (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE) + " m", postObstacleDistance.getX(), postObstacleDistance.getY()-20);
+		postObstacleDistance.render(container, g);
 		
 	//Data-Output:
 		//general data:
@@ -76,10 +80,10 @@ public class GameUI {
 		g.drawString("~>Rechte Bahn:" + Math.round(game.averageLaneSpeed[1]*100)/100.0 + " km/h", container.getWidth()-300 , 140);
 
 		//average In-/Output
-		g.drawString("Eingangsverkehrsdichte: " + Math.round(incomingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 165);
-		g.drawString("~>Total:" + Math.round((game.carsSpawnedCounter/(float)game.time)*100)/100.0 + " Autos/s", container.getWidth()-300 , 185);
-		g.drawString("Ausgangsverkehrsdichte: " + Math.round(outgoingTraffic*100)/100.0 + " Autos/s", container.getWidth()-350 , 210);
-		g.drawString("~>Total:" + Math.round((game.carsEndCounter/(float)game.time)*100)/100.0 + " Autos/s", container.getWidth()-300 , 230);
+		g.drawString("Eingangsverkehrsdichte: " + Math.round(60*incomingTraffic*100)/100.0 + " Autos/min", container.getWidth()-350 , 165);
+		g.drawString("~>Total:" + Math.round((60*game.carsSpawnedCounter/(float)game.time)*100)/100.0 + " Autos/min", container.getWidth()-300 , 185);
+		g.drawString("Ausgangsverkehrsdichte: " + Math.round(60*outgoingTraffic*100)/100.0 + " Autos/min", container.getWidth()-350 , 210);
+		g.drawString("~>Total:" + Math.round((60*game.carsEndCounter/(float)game.time)*100)/100.0 + " Autos/min", container.getWidth()-300 , 230);
 
 
 	//Shortcuts:
@@ -99,6 +103,7 @@ public class GameUI {
 		// rescaling
 		boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
 		try {
+			//TODO: improove scaling so that it is in percentage ~> 1 is 100%, .5 is half area, ...
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
 			if (newscale > 0.01 && enterPressed){
@@ -156,7 +161,38 @@ public class GameUI {
 		} catch (NumberFormatException e) {
 			passiveDriver.setText("");
 		}
-		enterPressed = false;
+		
+		//change distance shown after obstacle
+		try{//TODO: not working
+			String value = postObstacleDistance.getText();
+			float newObstacleDist = Float.parseFloat(value);
+			if(newObstacleDist >=50 && enterPressed){
+				double oldObstacleDist = Game.TOTAL_SIMULATION_DISTANCE;
+				Game.END_OF_LANE = newObstacleDist;
+				Game.TOTAL_SIMULATION_DISTANCE = 1100 + Game.END_OF_LANE;
+				game.setConstants(Game.SCALE);
+				postObstacleDistance.setText("");
+				//TODO: add difference between old length and new length to the cars positions, so that the additional simulation area is added at the back, not the front
+				double distanceDiff = oldObstacleDist - newObstacleDist;
+				for(Car car : game.getCarsLeft()){
+					if(-distanceDiff < car.meter)
+						car.meter += distanceDiff;
+					else
+						game.removeCarLeft(car);
+				}
+				for(Car car : game.getCarsRight()){
+					if(-distanceDiff < car.meter)
+						car.meter += distanceDiff;
+					else
+						game.removeCarRight(car);
+				}
+				game.getSigns().clear();
+				spawner.init(game);			
+			}
+		} catch(NumberFormatException e){
+			postObstacleDistance.setText("");
+		}
+		
 		
 		// End simulation via KEY_ESCAPE
 		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
@@ -179,6 +215,8 @@ public class GameUI {
 		//change Merge method: (reset before changing)
 		if(container.getInput().isKeyPressed(Input.KEY_T)){
 			Game.classicMerge = !Game.classicMerge;
+			game.getSigns().clear();
+			spawner.init(game);
 			game.reset();
 		}
 		
@@ -222,6 +260,7 @@ public class GameUI {
 		else{
 			systemTimer += delta;
 		}
+		enterPressed = false;
 	}
 	
 	private double[] averageSpeed(){

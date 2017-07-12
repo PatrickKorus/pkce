@@ -55,7 +55,8 @@ public class manualSpawner implements EntitySpawner {
 		game.addCar(car);
 	}
 
-	private void initSigns(Game game) throws SlickException {
+	@Override
+	public void initSigns(Game game) throws SlickException {
 		if(Game.classicMerge){
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));

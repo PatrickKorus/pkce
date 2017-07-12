@@ -70,7 +70,7 @@ public class Game extends BasicGame {
 		setConstants(SCALE);
 	}
 
-	private void setConstants(double scale) {
+	public void setConstants(double scale) {
 		meterToPixel = scale * Game.VEHICLE_LENGTH_PIX / Game.VEHICLE_LENGTH_M;
 		meter_per_width = Game.width / meterToPixel;
 		meter_out_of_window = Game.TOTAL_SIMULATION_DISTANCE - (Game.meter_per_width * 2);
@@ -172,14 +172,6 @@ public class Game extends BasicGame {
 		gameUi.update(newDelta);
 	}
 
-	// public void resortList(TreeSet<Car> list){
-	// TreeSet<Car> newlist = new TreeSet<Car>();
-	//// newlist.addAll(list);
-	// for(Car car : list)
-	// newlist.add(car);
-	// list = newlist;
-	// }
-
 	public void resortLists() {
 		TreeSet<Car> sortedSetLeft = new TreeSet<>();
 		sortedSetLeft.addAll(carsLeft);
@@ -197,7 +189,6 @@ public class Game extends BasicGame {
 		carsRight.clear();
 
 		// reset variables
-		SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
 		time = 0;
 		carsEndCounter = 0;
 		averageLaneSpeed = new double[] { 0.0, 0.0 };
@@ -206,19 +197,14 @@ public class Game extends BasicGame {
 	}
 
 	public void resetParams() throws SlickException {
+		SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
 		rescale((float) SCALE);
-
+		TOTAL_SIMULATION_DISTANCE = 1200;
+		END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100;
 		timeFactor = 1.0f;
 		spawner.setTrafficDensity(0.6);
 		GameUI.aggressivePers = 0.0;
 		GameUI.passivePers = 0.0;
-
-		// clean TextFields
-		gameUi.scaler.setText("");
-		gameUi.timeControler.setText("");
-		gameUi.trafficDensity.setText("");
-		gameUi.aggressiveDriver.setText("");
-		gameUi.passiveDriver.setText("");
 	}
 
 	public void rescale(float scale) throws SlickException {
