@@ -101,7 +101,10 @@ public class CMcorrectCar extends Car {
 		double error = 0;
 //				this.regulateTo(safetyDistance, distanceCarUpFront, 50);
 		if (carUpFront != null ) {
+			
 			error = this.regulateTo(carUpFront, currentPanic, 10);
+//			error = this.regulateTo(carUpFront.getMeterDistance(), carUpFront.currentSpeed, carUpFront.currentAcc, 10);
+			
 //			this.currentAcc = error;
 //			return;
 		}
@@ -238,8 +241,8 @@ public class CMcorrectCar extends Car {
 		}
 
 		Gap result = null;
-		for (int i = 0; i < relevantCars.length - 1; i++) {
-			result = new Gap(relevantCars[0], relevantCars[1]);
+		for (int i = 0; i < relevantCars.length -1; i++) {
+			result = new Gap(relevantCars[i], relevantCars[i+1]);//TODO: from 0 & 1 -> i & i+1
 			// TODO make accurate
 			if (result.isValid(Safe_Space)) {
 				if (--carsLeft <= 0) {
@@ -334,8 +337,8 @@ public class CMcorrectCar extends Car {
 		double xdot = v1 - v0;
 		// TODO choose wisely
 		double b = 2 + 1/importance;
-		double m = 1;
-
+		double m = 1.0;
+		
 		double newAcc = a1 + (b / m) * (xdot + (b / (4 * m)) * x);
 		if (newAcc < 0) {
 			newAcc = Math.max(newAcc, -MAX_BREAKING_FORCE);

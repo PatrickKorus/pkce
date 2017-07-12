@@ -200,7 +200,7 @@ public class Game extends BasicGame {
 	}
 	
 	public void resetParams()throws SlickException{
-		rescale((float) SCALE);
+		rescale((float) 0.09253012048192771);
 		timeFactor = 1.0f;
 		spawner.setTrafficDensity(0.6);
 		GameUI.aggressivePers = 0.33;

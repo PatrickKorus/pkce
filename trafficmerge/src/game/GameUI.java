@@ -98,11 +98,14 @@ public class GameUI {
 	public void update(int delta) throws SlickException{
 		// TODO: In einen Parser auskoppeln?
 		// rescaling
+		boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
 		try {
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
-			if (newscale > 0.01)
+			if (newscale > 0.01 && enterPressed){
 				game.rescale(newscale);
+				scaler.setText("");
+			}
 		} catch (NumberFormatException e) {
 			// e.printStackTrace();
 			// TODO: handle exception
@@ -112,8 +115,10 @@ public class GameUI {
 		try {
 			String value = timeControler.getText();
 			float newFactor = Float.parseFloat(value);
-			if (newFactor > 0.1)
+			if (newFactor > 0.1  && enterPressed){
 				Game.timeFactor = newFactor;
+				timeControler.setText("");
+			}
 		} catch (NumberFormatException e) {
 			// e.printStackTrace();
 			// TODO: handle exception
@@ -123,8 +128,10 @@ public class GameUI {
 		try {
 			String value = trafficDensity.getText();
 			float newDensity = Float.parseFloat(value);
-			if (newDensity <= 1.0 && newDensity >= 0.01)
+			if (newDensity <= 1.0 && newDensity >= 0.01 && enterPressed){
 				spawner.setTrafficDensity(newDensity);
+				trafficDensity.setText("");
+			}
 		} catch (NumberFormatException e) {
 			//TODO: Handle exceptions
 		}
@@ -133,8 +140,10 @@ public class GameUI {
 		try {
 			String value = aggressiveDriver.getText();
 			float newPercentage = Float.parseFloat(value);
-			if (newPercentage + passivePers <= 1.0 && newPercentage >= 0)
+			if (newPercentage + passivePers <= 1.0 && newPercentage >= 0  && enterPressed){
 				aggressivePers = newPercentage;
+				aggressiveDriver.setText("");
+			}
 		} catch (NumberFormatException e) {
 			//TODO: Handle exceptions
 		}
@@ -143,13 +152,14 @@ public class GameUI {
 		try {
 			String value = passiveDriver.getText();
 			float newPercentage = Float.parseFloat(value);
-			
-			if (newPercentage + aggressivePers <= 1.0 && newPercentage >= 0)
+			if (newPercentage + aggressivePers <= 1.0 && newPercentage >= 0  && enterPressed){
 				passivePers = newPercentage;
+				passiveDriver.setText("");
+			}
 		} catch (NumberFormatException e) {
 			//TODO: Handle exceptions
 		}
-
+		enterPressed = false;
 		
 		// End simulation via KEY_ESCAPE
 		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE)) {
