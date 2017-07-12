@@ -17,8 +17,8 @@ public class GameUI {
 	private boolean isPaused;
 	
 	public static boolean carData = false;
-	public static double aggressivePers = 0.33;
-	public static double passivePers = 0.33;
+	public static double aggressivePers = 0.0;
+	public static double passivePers = 0.0;
 	
 	public TextField scaler;
 	public TextField timeControler;
