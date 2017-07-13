@@ -27,7 +27,7 @@ public class GameUI {
 	public TextField passiveDriver;
 	public TextField pastObstacleDistance;
 
-	private int systemTimer = 0;
+	public static long systemTimer = 0;
 	private int AverageSpeedTimer = 0;
 	public static float scalingFactor = 1;
 	
@@ -37,6 +37,7 @@ public class GameUI {
 	private int inOutTimer = 0;
 	private int totalCountStart = 0;
 	private int totalCarsStart = 0;
+	public static double averageCarSpeed = 0;
 	
 	public GameUI(Game game , GameContainer container, EntitySpawner spawn){
 		this.spawner = spawn;
@@ -85,6 +86,7 @@ public class GameUI {
 		g.drawString("~>Total:" + Math.round((60*game.carsSpawnedCounter/(float)game.time)*100)/100.0 + " Autos/min", container.getWidth()-300 , 185);
 		g.drawString("Ausgangsverkehrsdichte: " + Math.round(60*outgoingTraffic*100)/100.0 + " Autos/min", container.getWidth()-350 , 210);
 		g.drawString("~>Total:" + Math.round((60*game.carsEndCounter/(float)game.time)*100)/100.0 + " Autos/min", container.getWidth()-300 , 230);
+		g.drawString("Av.-Speed(Auto): " + Math.round(100*(averageCarSpeed)/((double)game.carsEndCounter))/100.0 + " km/h", container.getWidth()-350 , 255);
 
 
 	//Shortcuts:
@@ -108,9 +110,8 @@ public class GameUI {
 			float newscale = Float.parseFloat(value);
 			if (newscale > 0.01 && enterPressed){
 				if(newscale != scalingFactor){
-				game.rescale((float) (Game.SCALE*(scalingFactor/newscale)));
-				scalingFactor = newscale;
-
+					scalingFactor = newscale;
+					scaleToFit();
 				}
 				scaler.setText("");
 			}
@@ -172,7 +173,7 @@ public class GameUI {
 			float newObstacleDist = Float.parseFloat(value);
 			if(enterPressed){
 			if(newObstacleDist >=50 && newObstacleDist <= 700 && newObstacleDist != (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE)){
-				Game.TOTAL_SIMULATION_DISTANCE = 1100 + newObstacleDist;
+				Game.TOTAL_SIMULATION_DISTANCE = Game.END_OF_LANE + newObstacleDist;
 				int i = 2;
 				//TODO: I don't know why but big "jumps" only work coreect after a second scaling -> everything gets scaled twice to be safe
 				do{
@@ -266,7 +267,7 @@ public class GameUI {
 	 */
 	public void scaleToFit() throws SlickException{
 		Game.SCALE = 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09253012048192771;
-		game.rescale((float) (Game.SCALE/scalingFactor));
+		game.rescale((float) (Game.SCALE*scalingFactor));
 	}
 	
 	private double[] averageSpeed(){

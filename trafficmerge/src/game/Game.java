@@ -35,10 +35,10 @@ public class Game extends BasicGame {
 	public static boolean classicMerge = true;
 	public static float timeFactor = 1.0f;
 	public static double pastObstacleDist = 100;
-	public static double TOTAL_SIMULATION_DISTANCE = 1100 + pastObstacleDist; // in meter
+	public static double END_OF_LANE = 2000;//TOTAL_SIMULATION_DISTANCE - pastObstacleDist; // in
+	public static double TOTAL_SIMULATION_DISTANCE = END_OF_LANE + pastObstacleDist; // in meter
 	public static double SCALE = 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;  0.09253012048192771;// 
 
-	public static double END_OF_LANE = 1100;//TOTAL_SIMULATION_DISTANCE - pastObstacleDist; // in
 																		// meter
 
 	/* ---------------- END PRESET ---------------- */
@@ -141,6 +141,7 @@ public class Game extends BasicGame {
 		if (!carsRight.isEmpty())
 			firstCar = carsRight.first();
 		if (firstCar != null && firstCar.meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
+			GameUI.averageCarSpeed += 3.6*TOTAL_SIMULATION_DISTANCE/((double)(time - (double)carsRight.first().getSpawnTime()));
 			carsRight.pollFirst();
 			carsEndCounter++;
 		}
@@ -195,6 +196,7 @@ public class Game extends BasicGame {
 		averageLaneSpeed = new double[] { 0.0, 0.0 };
 		GameUI.incomingTraffic = 0;
 		GameUI.outgoingTraffic = 0;
+		GameUI.averageCarSpeed = 0;
 	}
 
 	public void resetParams() throws SlickException {

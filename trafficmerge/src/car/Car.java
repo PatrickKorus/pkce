@@ -14,6 +14,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	protected final static double MAX_POSSIBLE_BREAKING_FORCE = acc(1.5);
 	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
 	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
+	private long SpawnTime = 0;
 
 	// car images
 	protected Image basicImage, indicateImage, breakImage;
@@ -333,6 +334,14 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	//TODO: Just a test for resetting the obstacle location
 	public void setDistance(double distance){
 		this.meter = distance;
+	}
+
+	public long getSpawnTime() {
+		return SpawnTime;
+	}
+
+	public void setSpawnTime(long systemTimer) {
+		SpawnTime = systemTimer;
 	}
 
 }

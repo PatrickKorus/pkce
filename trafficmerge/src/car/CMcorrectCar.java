@@ -365,7 +365,7 @@ public class CMcorrectCar extends Car {
 	 * @return [car ahead; car ahead on the other lane; car behind on the other
 	 *         lane]
 	 */
-	Car[] getSurroundingCars(Game game) {
+	public Car[] getSurroundingCars(Game game) {
 
 		Car[] carUpFront = new Car[3];
 

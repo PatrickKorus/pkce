@@ -12,17 +12,17 @@ public class Obstacle extends GameObject {
 		setImage(Game.SCALE);
 	}
 
-	public void setImage(double sCALE) throws SlickException {
+	public void setImage(double scale) throws SlickException {
 		this.image = new Image("res/obstacle/obstacle.png");
-		this.image = this.image.getScaledCopy((int) Math.round(image.getWidth()*Game.SCALE*3.61065), image.getHeight());
-	
+		this.image = this.image.getScaledCopy((int) Math.round(image.getWidth() * scale * 3.61065), image.getHeight());
+
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		image.drawCentered(x, y);
 	}
-	
+
 	@Override
 	public void rescale(float scale) throws SlickException {
 		setImage(scale);
