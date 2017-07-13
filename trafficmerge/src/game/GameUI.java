@@ -128,8 +128,8 @@ public class GameUI {
 		System.out.println("Results are :");
 		System.out.println(
 				"Autos: \t Eingangsverkehrsdichte: \t Ausgangsverkehrsdichte: \t Durchschnittsgeschwindigkeit");
-		System.out.println(game.carsEndCounter + " \t \t " + Math.round(60 * incomingTraffic * 100) / 100.0 + " Autos/min"
-				+ " \t \t " + Math.round(60 * outgoingTraffic * 100) / 100.0 + " Autos/min" + " \t \t "
+		System.out.println(game.carsEndCounter + " \t \t " + Math.round(60 * game.carsSpawnedCounter/((float)game.time) * 100) / 100.0 + " Autos/min"
+				+ " \t \t " + Math.round(60 * game.carsEndCounter/((float)game.time)* 100) / 100.0 + " Autos/min" + " \t \t "
 				+ Math.round(100 * (averageCarSpeed) / ((double) game.carsEndCounter)) / 100.0 + " km/h");
 
 	}
