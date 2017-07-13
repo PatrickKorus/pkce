@@ -108,7 +108,7 @@ public class Game extends BasicGame {
 		carsToAddLeft = new LinkedList<>();
 		carsToAddRight = new LinkedList<>();
 
-		background = new Image("res/background_stripes.jpg");
+		background = new Image("res/background.png");
 		obstacle = new Obstacle(END_OF_LANE+100);
 		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
