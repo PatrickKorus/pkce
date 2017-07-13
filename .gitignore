@@ -46,3 +46,6 @@ trafficmerge/trafficmerge\.iml
 
 ## Generated if empty string is given at "Please type another file name for output:"
 .pdf
+doc/tex/main\.synctex\.gz
+
+parser/\.idea/
