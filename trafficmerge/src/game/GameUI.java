@@ -77,7 +77,7 @@ public class GameUI {
 		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-350, 75);
 		
 		//Average lane speed:
-		g.drawString("Durchschnittsgeschwindigkeit:", container.getWidth()-350 , 100);
+		g.drawString("\u00D8-Geschwindigkeit:", container.getWidth()-350 , 100);
 		g.drawString("~>Linke Bahn: " + Math.round(game.averageLaneSpeed[0]*100)/100.0 + " km/h", container.getWidth()-300 , 120);
 		g.drawString("~>Rechte Bahn:" + Math.round(game.averageLaneSpeed[1]*100)/100.0 + " km/h", container.getWidth()-300 , 140);
 
@@ -91,19 +91,19 @@ public class GameUI {
 
 	//Shortcuts:
 		//first column
-		g.drawString("    -> Zeige Autoinformationen",50, container.getHeight()-75);
+		g.drawString("     -> Zeige Autoinformationen",50, container.getHeight()-70);
 		if(Game.classicMerge){
-		g.drawString("    -> Alternatives Verfahren",50, container.getHeight()-50);	
+		g.drawString("     -> Alternatives Verfahren",50, container.getHeight()-45);	
 		}else{
-		g.drawString("    -> Reissverschlussverfahren",50, container.getHeight()-50);
+		g.drawString("     -> Reissverschlussverfahren",50, container.getHeight()-45);
 		}
 		
 		//second column
-		g.drawString("    -> Reset der Anzeigeeinstellungen",(float)(container.getWidth()*0.33), container.getHeight()-75);
-		g.drawString("    -> Reset der Simulation",(float)(container.getWidth()*0.33), container.getHeight()-50);
+		g.drawString("     -> Reset der Anzeigeeinstellungen",(float)(container.getWidth()*0.33), container.getHeight()-70);
+		g.drawString("     -> Reset der Simulation",(float)(container.getWidth()*0.33), container.getHeight()-45);
 		
 		//third column
-		g.drawString("    -> Pausiere Simulation",(float) (container.getWidth()*0.66), container.getHeight()-75);
+		g.drawString("     -> Pausiere Simulation",(float) (container.getWidth()*0.66), container.getHeight()-70);
 
 	}
 
