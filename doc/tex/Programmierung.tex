@@ -2,7 +2,7 @@
 \section{Attribute Fahrzeug}
 \textbf{Schwierigkeit:} Welche Eigenschaften müssen einem Auto übergeben werden damit eine realistische Simulation möglich ist?
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Beim Erstellen erhält das Auto eine Position und eine Geschwindigkeit. Die Position besteht aus einer Meteranzeige, wo auf der Strecke es sich aufhält und einer Abfrage auf welcher Spur es sich befindet. Zudem hat es die Möglichkeit zu beschleunigen bezeihungsweise zu bremsen und kann die zugelassene Höchstgeschwindigkeit abfragen. Die Länge jedes Fahrzeugs beträgt 4,5\,m. Das bedeutet, dass LKWs in der Simulation nicht betrachtet werden.\\
+	\item \textbf{Lösungsansatz:} Beim Erstellen erhält das Auto eine Position und eine Geschwindigkeit. Die Position besteht aus einer Meteranzeige, wo auf der Strecke es sich aufhält und einer Abfrage auf welcher Spur es sich befindet. Zudem hat es die Möglichkeit zu beschleunigen bezeihungsweise zu bremsen und kann die zugelassene Höchstgeschwindigkeit abfragen. Weitere Attribute werden jedoch nicht betrachtet. Das bedeutet, dass der Zustand des Reifen, das Gewicht des Fahrzeugs, die Antriebsart und noch andere Attribute, welche ein Fahrzeug besitzen kann und die Simulation nur geringfügig beeinflussen nicht mit ins Ergebnis einfließen. Die Länge jedes Fahrzeugs beträgt 4,5\,m, wodurch LKWs in der Simulation nicht betrachtet werden. \\
 \end{addmargin}
 
 \section{Visualisierung}
@@ -91,13 +91,13 @@ Um ein neues Fahrzeug in die Simulationsumgebung einzuzufügen, wird eine normal
 \textbf{Schwierigkeit:} Wie erhält man eine benutzerfreundliche Bedienungsoberfläche, bei der man möglichst viele Variablen verändern kann.
 \begin{addmargin}[25pt]{0pt}
 	\begin{figure}
-		\begin{subfigure}{0.5\linewidth}
+		\begin{subfigure}{0.55\linewidth}
 			\centering
 			\includegraphics[width=\linewidth]{images/Eingabe}
 			\caption*{Eingabefelder}
 			\label{fig:eingabe}
 		\end{subfigure}
-		\begin{subfigure}{0.5\linewidth}
+		\begin{subfigure}{0.37\linewidth}
 			\centering
 			\includegraphics[width=\linewidth]{images/Bedienung}
 			\caption*{Shortcuts}
