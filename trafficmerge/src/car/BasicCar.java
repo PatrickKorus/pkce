@@ -17,6 +17,8 @@ public class BasicCar extends Car {
 		MAX_ACC = acc(12);
 		MAX_BREAKING_FORCE = acc(4);
 	}
+	
+	
 
 	@Override
 	public void update(int delta) {

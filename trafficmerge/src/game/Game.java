@@ -184,8 +184,6 @@ public class Game extends BasicGame {
 	}
 
 	public void reset() throws SlickException {
-		// Works but hardcoded
-
 		// clear cars
 		carsLeft.clear();
 		carsRight.clear();
@@ -193,6 +191,7 @@ public class Game extends BasicGame {
 		// reset variables
 		time = 0;
 		carsEndCounter = 0;
+		carsSpawnedCounter = 0;
 		averageLaneSpeed = new double[] { 0.0, 0.0 };
 		GameUI.incomingTraffic = 0;
 		GameUI.outgoingTraffic = 0;

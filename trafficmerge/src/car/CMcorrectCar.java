@@ -15,6 +15,7 @@ import sign.SpeedLimitSign;
 
 public class CMcorrectCar extends Car {
 
+	protected double area0;
 	protected double areaI;
 	protected double areaII;
 	double PANIC_FACTOR = 1.5;
@@ -46,6 +47,7 @@ public class CMcorrectCar extends Car {
 		Random r = new Random();
 		MAX_ACC = acc(7);
 		MAX_BREAKING_FORCE = acc(3);
+		area0 = 100;
 		areaI = Game.END_OF_LANE - 500 + Math.round(r.nextGaussian() * 50.0);
 		areaII = Game.END_OF_LANE
 				- 150 /* + Math.round(r.nextGaussian() * 50.0) */;
@@ -106,7 +108,7 @@ public class CMcorrectCar extends Car {
 
 
 		// priority 3: position dependent
-		if (this.meter < this.areaI) {
+		if (this.meter > area0 && this.meter < this.areaI) {
 			error = this.reactAreaI(game, surroundingCars, error);
 		} else if (this.meter >= this.areaI && this.meter < this.areaII) {
 			error = this.reactAreaII(game, surroundingCars, error);
@@ -151,10 +153,11 @@ public class CMcorrectCar extends Car {
 			// // area V
 			// if fewer cars right than left
 			if (moreCarsLeftThanRight(game)) {
-				if (surroundingCars[0] == null) {
+				if (surroundingCars[0] == null && !game.getCarsLeft().isEmpty()) {
 					error = this.regulateTo(game.getCarsLeft().first(), 1, 10);
-				} else {
-					error = this.regulateTo(surroundingCars[0], 1.5 * currentPanic, 5);
+					
+				} else if (surroundingCars[0] != null) {
+					error = this.regulateTo(surroundingCars[0], 1.5*currentPanic, 5);
 				}
 			}
 		} else {
@@ -169,8 +172,8 @@ public class CMcorrectCar extends Car {
 
 			if (gapAimedFor != null) {
 				speeding = 1.1 * SPEEDING;
-				double newerror = regulateTo(gapAimedFor.getPosition(), gapAimedFor.getSpeedMpS(), gapAimedFor.getAcc(),
-						6);
+				double newerror = (8*currentErr + 2*regulateTo(gapAimedFor.getPosition(), gapAimedFor.getSpeedMpS(), gapAimedFor.getAcc(),
+						6))/10;
 				if (newerror + currentSpeed > 0.8 * this.goalSpeed) {
 					error = newerror;
 				}
