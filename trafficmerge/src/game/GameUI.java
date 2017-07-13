@@ -30,7 +30,7 @@ public class GameUI {
 	public static long systemTimer = 0;
 	private int AverageSpeedTimer = 0;
 	public static float scalingFactor = 1;
-	private boolean alreadyPaused = false;
+	public static boolean alreadyPaused = false;
 	
 	//average in-/output:
 	public static double outgoingTraffic = 0;
@@ -266,12 +266,17 @@ public class GameUI {
 		}
 		enterPressed = false;
 		
+		//different simulation states
 		if(game.time >= Game.SIMULATION_TIME && !alreadyPaused){
-			container.pause();
-			isPaused = true;
-			alreadyPaused = true;
+//			container.pause();
+//			isPaused = true;
+//			alreadyPaused = true;
+			printToConsole(game);
+			game.updateSimulation();
 		}
 	}
+
+
 	
 	/**
 	 * updates Game.SCALE to the new TOTAL_SIMULATIUON_DISTANCE while keeping the  old zoom

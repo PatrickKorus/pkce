@@ -60,6 +60,7 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToRemoveLeft;
 	private LinkedList<Car> carsToAddRight;
 	private LinkedList<Car> carsToAddLeft;
+	private LinkedList<double[]> simStates;
 
 	EntitySpawner spawner;
 	
@@ -72,7 +73,7 @@ public class Game extends BasicGame {
 		super("Traffic Merge Simulation");
 		setConstants(SCALE);
 	}
-
+	
 	public void setConstants(double scale) {
 		meterToPixel = scale * Game.VEHICLE_LENGTH_PIX / Game.VEHICLE_LENGTH_M;
 		meter_per_width = Game.width / meterToPixel;
@@ -109,7 +110,7 @@ public class Game extends BasicGame {
 		carsToRemoveRight = new LinkedList<>();
 		carsToAddLeft = new LinkedList<>();
 		carsToAddRight = new LinkedList<>();
-
+		simStates = getSimulationStates();
 		background = new Image("res/background.png");
 		obstacle = new Obstacle(END_OF_LANE+100);
 		// spawner = new manualSpawner();
@@ -185,6 +186,10 @@ public class Game extends BasicGame {
 		carsRight = sortedSetRight;
 	}
 
+	/**
+	 * restarts the simulation
+	 * @throws SlickException
+	 */
 	public void reset() throws SlickException {
 		// clear cars
 		carsLeft.clear();
@@ -198,8 +203,13 @@ public class Game extends BasicGame {
 		GameUI.incomingTraffic = 0;
 		GameUI.outgoingTraffic = 0;
 		GameUI.averageCarSpeed = 0;
+		GameUI.alreadyPaused = false;
 	}
 
+	/**
+	 * resets the simulation parameter
+	 * @throws SlickException
+	 */
 	public void resetParams() throws SlickException {
 		TOTAL_SIMULATION_DISTANCE = END_OF_LANE + 100;
 		END_OF_LANE = 1100;
@@ -295,5 +305,39 @@ public class Game extends BasicGame {
 			carsLeft.add(car);
 		}
 	}
+	
+
+	public void updateSimulation() throws SlickException{
+		//SimulationData : [ density ; troublemaker ; system ; simSpeed]
+		reset();
+		while(!simStates.isEmpty()){
+			double[] actState = simStates.removeFirst();
+			spawner.setTrafficDensity(actState[0]);
+			GameUI.aggressivePers = actState[1];
+			GameUI.passivePers = actState[1];
+			if(actState[2] == 0)
+				classicMerge = true;
+			else
+				classicMerge = false;
+			Game.timeFactor = (float) actState[3];
+			
+		}
+	}
+	
+	/**
+	 * add the needed simulation States here.
+	 * @return
+	 */
+	private LinkedList<double[]> getSimulationStates(){
+		LinkedList<double[]> states = new LinkedList<double[]>();
+		//TODO: insert wanted simStates here
+		//===================================================================
+		states.add(new double[]{0.15 , 0.075 , 0 , 5});
+		
+		
+		//===================================================================
+		return states;
+	}
+	
 
 }
