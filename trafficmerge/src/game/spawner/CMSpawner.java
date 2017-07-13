@@ -364,7 +364,7 @@ public class CMSpawner implements EntitySpawner  {
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 810, Sign_Type.LINE_END_0));
-			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 1000, Sign_Type.SPD_100));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 1400, Sign_Type.SPD_100));
 			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_80));
 			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
 		}
