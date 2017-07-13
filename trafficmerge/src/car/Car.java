@@ -12,7 +12,7 @@ import game.Obstacle;
 public abstract class Car extends GameObject implements Comparable<Car> {
 
 	protected final static double MAX_POSSIBLE_BREAKING_FORCE = acc(1.5);
-	protected double MAX_ACC; // specific maximum acc: Seconds from 0 to 100
+	protected double MAX_ACC; // specific maximum acceleration: Seconds from 0 to 100
 	protected double MAX_BREAKING_FORCE; // seconds 100 to 0
 
 	// car images
@@ -25,8 +25,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	// current data
 	double goalSpeed, currentAcc, currentSpeed;
 	protected boolean isIndicating, isChangingLane, isBlockingBothLanes = false;
-	// boolean isBreaking; // redundant since true when currentACC < 0
-
+	
 	// pointer to the game this car is in
 	protected Game game;
 
@@ -132,10 +131,9 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		this.meter += currentSpeed * delta / 1000.0;
 	}
 
-	// TODO: There is probably a better way to do this
+	// for indicating
 	private int deltaCounter = 400;
 	private boolean indicatingLightsOn = false;
-
 	/**
 	 * This is used to make the indicator flash.
 	 * 
@@ -168,18 +166,15 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 
 		int sign = isRightLane ? -1 : 1;
 
-		// if (isRightLane != toLeft) {
-		// return;
-		// }
 		if (isBlockingBothLanes) {
 			if (laneMover >= Math.round(Game.SPACE_BETWEEN_LANES / 2.0)) {
 				this.y += laneMover;
-				this.isIndicating = false;
+				this.stopInidicating();
 				return;
 			}
 		}
 
-		laneMover += sign * Math.round((delta / 1500.0) * Game.SPACE_BETWEEN_LANES);
+		laneMover += sign * Math.round((delta / 2000.0) * Game.SPACE_BETWEEN_LANES);
 		if (sign * laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
 		} else if (sign == 1) {
@@ -264,12 +259,14 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		case BLUE:
 			name = "basicCar";
 			break;
-		case AGGRESSIVE:
+		case RED:
 			name = "aggressiveCar";
 			break;
-		case PASSIVE:
+		case GREEN:
 			name = "passiveCar";
 			break;
+		case DARKBLUE:
+			name = "nmcorrect";
 		default:
 			break;
 		}

@@ -27,7 +27,7 @@ public class CMpassiveCar extends CMcorrectCar {
 		// super(meter, isRightLane, initSpeed, initGoalSpeed, game,
 		// Color.PASSIVE);
 
-		this.setColor(Color.PASSIVE, Game.SCALE);
+		this.setColor(Color.GREEN, Game.SCALE);
 		Random r = new Random();
 		MAX_ACC = acc(12);
 		MAX_BREAKING_FORCE = acc(2.5);
