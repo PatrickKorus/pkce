@@ -30,6 +30,7 @@ public class GameUI {
 	public static long systemTimer = 0;
 	private int AverageSpeedTimer = 0;
 	public static float scalingFactor = 1;
+	private boolean alreadyPaused = false;
 	
 	//average in-/output:
 	public static double outgoingTraffic = 0;
@@ -264,6 +265,12 @@ public class GameUI {
 			systemTimer += delta;
 		}
 		enterPressed = false;
+		
+		if(game.time >= Game.SIMULATION_TIME && !alreadyPaused){
+			container.pause();
+			isPaused = true;
+			alreadyPaused = true;
+		}
 	}
 	
 	/**
