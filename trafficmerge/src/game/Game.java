@@ -21,7 +21,7 @@ import sign.Sign;
 public class Game extends BasicGame {
 
 	/* ---------------- PRESET: ---------------- */
-	public static final int SIMULATION_TIME = 600;
+	public static int SIMULATION_TIME = 600;
 	
 
 	public static final float VEHICLE_LENGTH_M = 4.5f;
@@ -117,7 +117,7 @@ public class Game extends BasicGame {
 		spawner = new CMSpawner();
 		spawner.init(this);
 		gameUi = new GameUI(this, container, spawner);
-
+		updateSimulation();
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
 		 * new Image( "res/fonts/score_numer_font.png")); punkte = new
@@ -308,10 +308,15 @@ public class Game extends BasicGame {
 	
 
 	public void updateSimulation() throws SlickException{
-		//SimulationData : [ density ; troublemaker ; system ; simSpeed]
-		reset();
-		while(!simStates.isEmpty()){
+		//SimulationData : [ density ; troublemaker ; system ; simSpeed ; simTime]
+		
+		if(!simStates.isEmpty()){
 			double[] actState = simStates.removeFirst();
+			
+			System.out.println(simStates.size());
+
+			
+			simStates.remove(actState);
 			spawner.setTrafficDensity(actState[0]);
 			GameUI.aggressivePers = actState[1];
 			GameUI.passivePers = actState[1];
@@ -320,21 +325,21 @@ public class Game extends BasicGame {
 			else
 				classicMerge = false;
 			Game.timeFactor = (float) actState[3];
+			SIMULATION_TIME = (int) actState[4];
 			
 		}
 	}
 	
 	/**
 	 * add the needed simulation States here.
-	 * @return
+	 * @return array pos:[density (%) , troublemaker(each %) , 0-> classic 1->new merging , simSpeed , simulation time]
 	 */
 	private LinkedList<double[]> getSimulationStates(){
 		LinkedList<double[]> states = new LinkedList<double[]>();
 		//TODO: insert wanted simStates here
 		//===================================================================
-		states.add(new double[]{0.15 , 0.075 , 0 , 5});
-		
-		
+		states.add(new double[]{0.15 , 0.25 , 1 , 10 , 600});
+
 		//===================================================================
 		return states;
 	}
