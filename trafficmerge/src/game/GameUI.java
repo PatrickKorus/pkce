@@ -43,12 +43,12 @@ public class GameUI {
 		this.spawner = spawn;
 		this.game = game;
 		this.container = container;
-		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
-		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
-		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
-		aggressiveDriver = new TextField(container, container.getDefaultFont(), 300, 50, 100, 20);
-		passiveDriver = new TextField(container, container.getDefaultFont(), 300, 100, 100, 20);
-		pastObstacleDistance = new TextField(container, container.getDefaultFont(), 300, 150, 100, 20);
+		scaler = new TextField(container, container.getDefaultFont(), 50, 155, 100, 20);
+		timeControler = new TextField(container, container.getDefaultFont(), 50, 205, 100, 20);
+		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 255, 100, 20);
+		aggressiveDriver = new TextField(container, container.getDefaultFont(), 300, 155, 100, 20);
+		passiveDriver = new TextField(container, container.getDefaultFont(), 300, 205, 100, 20);
+		pastObstacleDistance = new TextField(container, container.getDefaultFont(), 300, 255, 100, 20);
 		isPaused = false;
 	}
 	
@@ -90,15 +90,20 @@ public class GameUI {
 
 
 	//Shortcuts:
-		g.drawString("D -> Zeige Autoinformationen",50, container.getHeight()-125);
-		g.drawString("E -> Reset der Anzeigeeinstellungen",50, container.getHeight()-100);
-		g.drawString("R -> Reset der Simulation",50, container.getHeight()-75);
+		//first column
+		g.drawString("    -> Zeige Autoinformationen",50, container.getHeight()-75);
 		if(Game.classicMerge){
-		g.drawString("T -> Alternatives Verfahren",50, container.getHeight()-50);	
+		g.drawString("    -> Alternatives Verfahren",50, container.getHeight()-50);	
 		}else{
-		g.drawString("T -> klassisches Reissverschlussverfahren",50, container.getHeight()-50);
+		g.drawString("    -> Reissverschlussverfahren",50, container.getHeight()-50);
 		}
-		g.drawString("P -> Pausiere Simulation",(float) (container.getWidth()/2.5), container.getHeight()-125);
+		
+		//second column
+		g.drawString("    -> Reset der Anzeigeeinstellungen",(float)(container.getWidth()*0.33), container.getHeight()-75);
+		g.drawString("    -> Reset der Simulation",(float)(container.getWidth()*0.33), container.getHeight()-50);
+		
+		//third column
+		g.drawString("    -> Pausiere Simulation",(float) (container.getWidth()*0.66), container.getHeight()-75);
 
 	}
 
