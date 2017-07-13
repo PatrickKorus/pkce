@@ -62,12 +62,12 @@ Results are
 Autos 	 Eingangsverkehrsdichte 	 Ausgangsverkehrsdichte 	 Durchschnittsgeschwindigkeit
 52 	 	 17.17 Autosmin 	 	 5.19 Autosmin 	 	 110.49 kmh
 Iterations to go 6
-New Merge solution for
-Verkehrsdichte (prozent) 	 Anteil Störer 	 SpeedFactor
-	 	 0.2 	 	 0.5 	 	 	 50.0
-Results are
-Autos 	 Eingangsverkehrsdichte 	 Ausgangsverkehrsdichte 	 Durchschnittsgeschwindigkeit
-0 	 	 17.1 Autosmin 	 	 0.0 Autosmin 	 	 0.0 kmh
+New Merge solution for:
+Verkehrsdichte (prozent): 	 Anteil Störer: 	 SpeedFactor:
+	 	 0.2 	 	 0.5 	 	 	 5.0
+Results are :
+Autos: 	 Eingangsverkehrsdichte: 	 Ausgangsverkehrsdichte: 	 Durchschnittsgeschwindigkeit
+172 	 	 19.4 Autos/min 	 	 17.2 Autos/min 	 	 107.87 km/h
 Iterations to go 5
 New Merge solution for
 Verkehrsdichte (prozent) 	 Anteil Störer 	 SpeedFactor
@@ -88,7 +88,7 @@ Verkehrsdichte (prozent) 	 Anteil Störer 	 SpeedFactor
 	 	 0.15 	 	 0.85 	 	 	 507.0
 Results are
 Autos 	 Eingangsverkehrsdichte 	 Ausgangsverkehrsdichte 	 Durchschnittsgeschwindigkeit
-64 	 	 9.15 Autosmin 	 	 6.3 Autosmin 	 	 36.36 kmh
+92 	 	 13.2 Autosmin 	 	 9.2 Autosmin 	 	 108.5 kmh
 Iterations to go 2
 New Merge solution for
 Verkehrsdichte (prozent) 	 Anteil Störer 	 SpeedFactor

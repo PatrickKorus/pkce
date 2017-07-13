@@ -2,7 +2,7 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 
-file = open('log3.txt', 'r')
+file = open('log5.txt', 'r')
 log = file.read().replace('\n', ' ')
 m = re.findall('\s([0-9]+\.?[0-9]*)', log)
 a = np.array(m).astype(np.float)
