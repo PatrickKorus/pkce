@@ -328,6 +328,7 @@ public class Game extends BasicGame {
 			
 		}
 		else
+			gameUi.pauseSimulation();
 			gameUi.isPaused = true;
 	}
 	
@@ -358,7 +359,7 @@ public class Game extends BasicGame {
 		states.add(new double[]{0.25 , 0.425 , 0 , 5 , 600});
 		states.add(new double[]{0.33 , 0.425 , 0 , 5 , 600});
 		
-//		// new 
+		// new 
 		states.add(new double[]{0.15 , 0.0 , 1 , 5 , 600});
 		states.add(new double[]{0.2 , 0.0 , 1 , 5 , 600});
 		states.add(new double[]{0.25 , 0.0 , 1 , 5 , 600});
