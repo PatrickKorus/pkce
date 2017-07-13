@@ -60,7 +60,7 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToRemoveLeft;
 	private LinkedList<Car> carsToAddRight;
 	private LinkedList<Car> carsToAddLeft;
-	private LinkedList<double[]> simStates;
+	public LinkedList<double[]> simStates = new LinkedList<double[]>();
 
 	EntitySpawner spawner;
 	
@@ -110,13 +110,14 @@ public class Game extends BasicGame {
 		carsToRemoveRight = new LinkedList<>();
 		carsToAddLeft = new LinkedList<>();
 		carsToAddRight = new LinkedList<>();
-		simStates = getSimulationStates();
 		background = new Image("res/background.png");
 		obstacle = new Obstacle(END_OF_LANE+100);
 		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
 		spawner.init(this);
 		gameUi = new GameUI(this, container, spawner);
+		//TODO: comment this line to either have or don't have preset simulations
+		simStates = getSimulationStates();
 		updateSimulation();
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
