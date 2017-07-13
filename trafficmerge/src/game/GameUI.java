@@ -14,7 +14,7 @@ public class GameUI {
 	private Game game;
 	private GameContainer container;
 	private EntitySpawner spawner;
-	private boolean isPaused;
+	public boolean isPaused;
 
 	public static boolean carData = false;
 	public static double aggressivePers = 0.0;
@@ -30,9 +30,8 @@ public class GameUI {
 	public static long systemTimer = 0;
 	private int AverageSpeedTimer = 0;
 	public static float scalingFactor = 1;
+	public static boolean alreadyPaused = false;
 
-	private boolean alreadyPaused = false;
-	
 	//average in-/output:
 	public static double outgoingTraffic = 0;
 	public static double incomingTraffic = 0;
@@ -54,9 +53,7 @@ public class GameUI {
 		isPaused = false;
 	}
 
-	public void render(GameContainer container, Graphics g) {// TODO:
-																// Beschreibungen
-																// checken
+	public void render(GameContainer container, Graphics g) {
 		// Input:
 		g.drawString("Skalierung: " + Math.round(scalingFactor * 100) / 100.0, scaler.getX(), scaler.getY() - 20);
 		scaler.render(container, g);
@@ -125,12 +122,12 @@ public class GameUI {
 		System.out.println(Game.classicMerge ? "Classic Merge Solutions for:" : "New Merge solution for:");
 		System.out.println("Verkehrsdichte (prozent): \t Anteil Störer: \t SpeedFactor:");
 		System.out
-				.println("\t \t " + spawner.getTrafficDensity() + " \t \t " + Math.round(60 * (aggressivePers + passivePers) * 100)/100.0 + " \t \t \t " + Game.timeFactor);
+				.println("\t \t " + spawner.getTrafficDensity() + " \t \t " + Math.round((aggressivePers + passivePers) * 100)/100.0 + " \t \t \t " + Game.timeFactor);
 		System.out.println("Results are :");
 		System.out.println(
 				"Autos: \t Eingangsverkehrsdichte: \t Ausgangsverkehrsdichte: \t Durchschnittsgeschwindigkeit");
-		System.out.println(game.carsEndCounter + " \t \t " + Math.round(60 * incomingTraffic * 100) / 100.0 + " Autos/min"
-				+ " \t \t " + Math.round(60 * outgoingTraffic * 100) / 100.0 + " Autos/min" + " \t \t "
+		System.out.println(game.carsEndCounter + " \t \t " + Math.round(60 * game.carsSpawnedCounter/((float)game.time) * 100) / 100.0 + " Autos/min"
+				+ " \t \t " + Math.round(60 * game.carsEndCounter/((float)game.time)* 100) / 100.0 + " Autos/min" + " \t \t "
 				+ Math.round(100 * (averageCarSpeed) / ((double) game.carsEndCounter)) / 100.0 + " km/h");
 
 	}
@@ -138,7 +135,7 @@ public class GameUI {
 	public void update(int delta) throws SlickException {
 		boolean enterPressed = container.getInput().isKeyPressed(Input.KEY_ENTER);
 		// rescaling
-		try {// TODO: 2 equals you could show 200% or you show the thing 2 times
+		try {
 				// as big -> only 50% ?
 			String value = scaler.getText();
 			float newscale = Float.parseFloat(value);
@@ -202,7 +199,7 @@ public class GameUI {
 		}
 
 		// change distance shown after obstacle
-		try {// TODO -update the lanemarkings too!
+		try {
 			String value = pastObstacleDistance.getText();
 			float newObstacleDist = Float.parseFloat(value);
 			if (enterPressed) {
@@ -210,7 +207,7 @@ public class GameUI {
 						&& newObstacleDist != (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE)) {
 					Game.TOTAL_SIMULATION_DISTANCE = Game.END_OF_LANE + newObstacleDist;
 					int i = 2;
-					// TODO: I don't know why but big "jumps" only work coreect
+					
 					// after a second scaling -> everything gets scaled twice to
 					// be safe
 					do {
@@ -261,7 +258,7 @@ public class GameUI {
 				container.resume();
 				isPaused = false;
 			} else {
-				container.pause();
+				pauseSimulation();
 				isPaused = true;
 			}
 		}
@@ -294,12 +291,17 @@ public class GameUI {
 		}
 		enterPressed = false;
 		
-		if(game.time >= Game.SIMULATION_TIME && !alreadyPaused){
-			container.pause();
-			isPaused = true;
-			alreadyPaused = true;
+		//different simulation states
+//		alreadyPaused = true;
+		if(game.time >= Game.SIMULATION_TIME){
+			if(!game.simStates.isEmpty()){
+				printToConsole(game);
+				game.reset();
+				game.updateSimulation();
+			}
 		}
 	}
+
 
 	/**
 	 * updates Game.SCALE to the new TOTAL_SIMULATIUON_DISTANCE while keeping
@@ -334,6 +336,10 @@ public class GameUI {
 		}
 		avSpd[1] = totalSpd / game.getCarsRight().size();
 		return avSpd;
+	}
+	
+	public void pauseSimulation(){
+		container.pause();
 	}
 
 }
