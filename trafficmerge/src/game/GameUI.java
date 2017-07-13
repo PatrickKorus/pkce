@@ -30,14 +30,10 @@ public class GameUI {
 	public static long systemTimer = 0;
 	private int AverageSpeedTimer = 0;
 	public static float scalingFactor = 1;
-<<<<<<< HEAD
 
-	// average in-/output:
-=======
 	private boolean alreadyPaused = false;
 	
 	//average in-/output:
->>>>>>> f8f2fc3f18a8a4d4de78d9f2f516ea6f10b2247d
 	public static double outgoingTraffic = 0;
 	public static double incomingTraffic = 0;
 	private int inOutTimer = 0;
@@ -85,51 +81,7 @@ public class GameUI {
 		if (Game.classicMerge)
 			g.drawString("Aktiv: Reissverschlussverfahren", container.getWidth() - 350, 25);
 		else
-<<<<<<< HEAD
-			g.drawString("Aktiv: Alternatives Verfahren", container.getWidth() - 350, 25);
-		g.drawString("Simulationsdauer: " + game.time / 3600 + " h " + (game.time / 60) % 60 + " min "
-				+ (game.time % 60) + " sek", container.getWidth() - 350, 50);
-		g.drawString("Autos:" + game.carsEndCounter, container.getWidth() - 350, 75);
 
-		// Average lane speed:
-		g.drawString("Durchschnittsgeschwindigkeit:", container.getWidth() - 350, 100);
-		g.drawString("~>Linke Bahn: " + Math.round(game.averageLaneSpeed[0] * 100) / 100.0 + " km/h",
-				container.getWidth() - 300, 120);
-		g.drawString("~>Rechte Bahn:" + Math.round(game.averageLaneSpeed[1] * 100) / 100.0 + " km/h",
-				container.getWidth() - 300, 140);
-
-		// average In-/Output
-		g.drawString("Eingangsverkehrsdichte: " + Math.round(60 * incomingTraffic * 100) / 100.0 + " Autos/min",
-				container.getWidth() - 350, 165);
-		g.drawString("~>Total:" + Math.round((60 * game.carsSpawnedCounter / (float) game.time) * 100) / 100.0
-				+ " Autos/min", container.getWidth() - 300, 185);
-		g.drawString("Ausgangsverkehrsdichte: " + Math.round(60 * outgoingTraffic * 100) / 100.0 + " Autos/min",
-				container.getWidth() - 350, 210);
-		g.drawString(
-				"~>Total:" + Math.round((60 * game.carsEndCounter / (float) game.time) * 100) / 100.0 + " Autos/min",
-				container.getWidth() - 300, 230);
-		g.drawString(
-				"\u00D8-Geschwindigkeit(Auto): "
-						+ Math.round(100 * (averageCarSpeed) / ((double) game.carsEndCounter)) / 100.0 + " km/h",
-				container.getWidth() - 350, 255);
-
-		// Shortcuts:
-		// first column
-		g.drawString("    -> Zeige Autoinformationen", 50, container.getHeight() - 75);
-		if (Game.classicMerge) {
-			g.drawString("    -> Alternatives Verfahren", 50, container.getHeight() - 50);
-		} else {
-			g.drawString("    -> Reissverschlussverfahren", 50, container.getHeight() - 50);
-		}
-
-		// second column
-		g.drawString("    -> Reset der Anzeigeeinstellungen", (float) (container.getWidth() * 0.33),
-				container.getHeight() - 75);
-		g.drawString("    -> Reset der Simulation", (float) (container.getWidth() * 0.33), container.getHeight() - 50);
-
-		// third column
-		g.drawString("    -> Pausiere Simulation", (float) (container.getWidth() * 0.66), container.getHeight() - 75);
-=======
 			g.drawString("Aktiv: Alternatives Verfahren", container.getWidth()-350, 25);
 		g.drawString("Simulationsdauer: " + game.time/3600 + " h " + (game.time/60)%60 + " min " + (game.time%60) + " sek", container.getWidth()-350, 50);
 		g.drawString("Autos:" + game.carsEndCounter, container.getWidth()-350, 75);
@@ -162,7 +114,6 @@ public class GameUI {
 		
 		//third column
 		g.drawString("     -> Pausiere Simulation",(float) (container.getWidth()*0.66), container.getHeight()-70);
->>>>>>> f8f2fc3f18a8a4d4de78d9f2f516ea6f10b2247d
 
 	}
 
