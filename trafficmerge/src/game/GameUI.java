@@ -25,11 +25,11 @@ public class GameUI {
 	public TextField trafficDensity;
 	public TextField aggressiveDriver;
 	public TextField passiveDriver;
-	public TextField postObstacleDistance;
+	public TextField pastObstacleDistance;
 
 	private int systemTimer = 0;
 	private int AverageSpeedTimer = 0;
-	private float scalingFactor = 1;
+	public static float scalingFactor = 1;
 	
 	//average in-/output:
 	public static double outgoingTraffic = 0;
@@ -45,9 +45,9 @@ public class GameUI {
 		scaler = new TextField(container, container.getDefaultFont(), 50, 50, 100, 20);
 		timeControler = new TextField(container, container.getDefaultFont(), 50, 100, 100, 20);
 		trafficDensity = new TextField(container, container.getDefaultFont(), 50, 150, 100, 20);
-		aggressiveDriver = new TextField(container, container.getDefaultFont(), 50, 200, 100, 20);
-		passiveDriver = new TextField(container, container.getDefaultFont(), 50, 250, 100, 20);
-		postObstacleDistance = new TextField(container, container.getDefaultFont(), 50, 300, 100, 20);
+		aggressiveDriver = new TextField(container, container.getDefaultFont(), 300, 50, 100, 20);
+		passiveDriver = new TextField(container, container.getDefaultFont(), 300, 100, 100, 20);
+		pastObstacleDistance = new TextField(container, container.getDefaultFont(), 300, 150, 100, 20);
 		isPaused = false;
 	}
 	
@@ -63,8 +63,8 @@ public class GameUI {
 		aggressiveDriver.render(container, g);
 		g.drawString("Anteil an passiven Fahrern: " + Math.round(passivePers * 100)/100.0, passiveDriver.getX(), passiveDriver.getY()-20);
 		passiveDriver.render(container, g);
-		g.drawString("Strecke hinter Engstelle: " + (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE) + " m", postObstacleDistance.getX(), postObstacleDistance.getY()-20);
-		postObstacleDistance.render(container, g);
+		g.drawString("Strecke hinter Engstelle: " + (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE) + " m", pastObstacleDistance.getX(), pastObstacleDistance.getY()-20);
+		pastObstacleDistance.render(container, g);
 		
 	//Data-Output:
 		//general data:
@@ -168,18 +168,26 @@ public class GameUI {
 		
 		//change distance shown after obstacle
 		try{//TODO -update the lanemarkings too!
-			String value = postObstacleDistance.getText();
+			String value = pastObstacleDistance.getText();
 			float newObstacleDist = Float.parseFloat(value);
-			if(newObstacleDist >=50 && enterPressed){
-				postObstacleDistance.setText("");	
+			if(enterPressed){
+			if(newObstacleDist >=50 && newObstacleDist <= 700 && newObstacleDist != (Game.TOTAL_SIMULATION_DISTANCE - Game.END_OF_LANE)){
 				Game.TOTAL_SIMULATION_DISTANCE = 1100 + newObstacleDist;
-				scaleToFit();
-				game.setConstants(Game.SCALE);
-				game.getSigns().clear();
-				spawner.init(game);	
+				int i = 2;
+				//TODO: I don't know why but big "jumps" only work coreect after a second scaling -> everything gets scaled twice to be safe
+				do{
+					game.setConstants(Game.SCALE);
+					game.setObstacle(new Obstacle(Game.END_OF_LANE + 100));
+					spawner.init(game);	
+					scaleToFit();
+					i--;
+				}while(i>=1);
 			}
+			pastObstacleDistance.setText("");				
+			}
+	
 		} catch(NumberFormatException e){
-			postObstacleDistance.setText("");
+			pastObstacleDistance.setText("");
 		}
 		
 		
