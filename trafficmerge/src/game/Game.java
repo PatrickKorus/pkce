@@ -21,6 +21,8 @@ import sign.Sign;
 public class Game extends BasicGame {
 
 	/* ---------------- PRESET: ---------------- */
+	public static final int SIMULATION_TIME = 600;
+	
 
 	public static final float VEHICLE_LENGTH_M = 4.5f;
 	public static final float VEHICLE_LENGTH_PIX = 83; // at scale 1
