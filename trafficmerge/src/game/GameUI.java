@@ -124,7 +124,7 @@ public class GameUI {
 		System.out.println(Game.classicMerge ? "Classic Merge Solutions for:" : "New Merge solution for:");
 		System.out.println("Verkehrsdichte (prozent): \t Anteil Störer: \t SpeedFactor:");
 		System.out
-				.println("\t \t " + spawner.getTrafficDensity() + " \t \t " + Math.round(60 * (aggressivePers + passivePers) * 100)/100.0 + " \t \t \t " + Game.timeFactor);
+				.println("\t \t " + spawner.getTrafficDensity() + " \t \t " + Math.round((aggressivePers + passivePers) * 100)/100.0 + " \t \t \t " + Game.timeFactor);
 		System.out.println("Results are :");
 		System.out.println(
 				"Autos: \t Eingangsverkehrsdichte: \t Ausgangsverkehrsdichte: \t Durchschnittsgeschwindigkeit");
@@ -260,7 +260,7 @@ public class GameUI {
 				container.resume();
 				isPaused = false;
 			} else {
-				container.pause();
+				pauseSimulation();
 				isPaused = true;
 			}
 		}
@@ -339,6 +339,10 @@ public class GameUI {
 		}
 		avSpd[1] = totalSpd / game.getCarsRight().size();
 		return avSpd;
+	}
+	
+	public void pauseSimulation(){
+		container.pause();
 	}
 
 }
