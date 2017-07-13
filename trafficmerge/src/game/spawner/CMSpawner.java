@@ -276,6 +276,7 @@ public class CMSpawner implements EntitySpawner  {
 			car = new CMpassiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 		}
+		car.setSpawnTime(game.time);
 		game.addCar(car);
 		game.carsSpawnedCounter++;
 	}
@@ -292,9 +293,9 @@ public class CMSpawner implements EntitySpawner  {
 		Car[] lastcar = new Car[2];
 		//searches the last car on each lane
 		if(!game.getCarsLeft().isEmpty())
-			lastcar[0] = game.getCarsLeft().last();
+			lastcar[0] = phantomCarL.getSurroundingCars(game)[0];
 		if(!game.getCarsRight().isEmpty())
-			lastcar[1] = game.getCarsRight().last();
+			lastcar[1] = phantomCarR.getSurroundingCars(game)[0];//game.getCarsRight().last();
 		return lastcar;
 		
 	}
