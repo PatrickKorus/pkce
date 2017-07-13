@@ -313,9 +313,8 @@ public class Game extends BasicGame {
 		if(!simStates.isEmpty()){
 			double[] actState = simStates.removeFirst();
 			
-			System.out.println(simStates.size());
-
-			
+			System.out.println("Iterations to go: " +simStates.size());
+	
 			simStates.remove(actState);
 			spawner.setTrafficDensity(actState[0]);
 			GameUI.aggressivePers = actState[1];
@@ -328,6 +327,8 @@ public class Game extends BasicGame {
 			SIMULATION_TIME = (int) actState[4];
 			
 		}
+		else
+			gameUi.isPaused = true;
 	}
 	
 	/**
@@ -338,8 +339,45 @@ public class Game extends BasicGame {
 		LinkedList<double[]> states = new LinkedList<double[]>();
 		//TODO: insert wanted simStates here
 		//===================================================================
-		states.add(new double[]{0.15 , 0.25 , 1 , 10 , 600});
+		
+		// classic 
+		states.add(new double[]{0.15 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.15 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.15 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.15 , 0.425 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.425 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.425 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.425 , 0 , 5 , 600});
+		
+//		// new 
+		states.add(new double[]{0.15 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.2 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.25 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.33 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.15 , 0.075 , 1 , 5 , 600});
+		states.add(new double[]{0.2 , 0.075 , 1 , 5 , 600});
+		states.add(new double[]{0.25 , 0.075 , 1 , 5 , 600});
+		states.add(new double[]{0.33 , 0.075 , 1 , 5 , 600});
+		states.add(new double[]{0.15 , 0.25 , 1 , 5 , 600});
+		states.add(new double[]{0.2 , 0.25 , 1 , 5 , 600});
+		states.add(new double[]{0.25 , 0.25 , 1 , 5 , 600});
+		states.add(new double[]{0.33 , 0.25 , 1 , 5 , 600});
+		states.add(new double[]{0.15 , 0.425 , 1 , 5 , 600});
+		states.add(new double[]{0.2 , 0.425 , 1 , 5 , 600});
+		states.add(new double[]{0.25 , 0.425 , 1 , 5 , 600});
+		states.add(new double[]{0.33 , 0.425 , 1 , 5 , 600});
 
+
+		
 		//===================================================================
 		return states;
 	}

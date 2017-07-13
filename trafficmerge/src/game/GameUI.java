@@ -14,7 +14,7 @@ public class GameUI {
 	private Game game;
 	private GameContainer container;
 	private EntitySpawner spawner;
-	private boolean isPaused;
+	public boolean isPaused;
 
 	public static boolean carData = false;
 	public static double aggressivePers = 0.0;
@@ -299,7 +299,7 @@ public class GameUI {
 //			container.pause();
 //			isPaused = true;
 //			alreadyPaused = true;
-//			printToConsole(game);
+			printToConsole(game);
 			game.reset();
 			game.updateSimulation();
 		}
