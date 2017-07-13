@@ -259,7 +259,7 @@ public class CMSpawner implements EntitySpawner  {
 		}
 		else{
 //			goalSpd = (randomGenerator.nextGaussian()*sigma) + 140;
-			goalSpd = (randomGenerator.nextGaussian()*20) + 130;
+			goalSpd = (randomGenerator.nextGaussian()*20) + 140;
 		}
 		
 		switch(type){
@@ -276,8 +276,9 @@ public class CMSpawner implements EntitySpawner  {
 			car = new CMpassiveCar(0, rightLane, initSpd, goalSpd, game);
 			break;
 		}
+		car.setSpawnTime(game.time);
 		game.addCar(car);
-		
+		game.carsSpawnedCounter++;
 	}
 
 	/**
@@ -292,9 +293,9 @@ public class CMSpawner implements EntitySpawner  {
 		Car[] lastcar = new Car[2];
 		//searches the last car on each lane
 		if(!game.getCarsLeft().isEmpty())
-			lastcar[0] = game.getCarsLeft().last();
+			lastcar[0] = phantomCarL.getSurroundingCars(game)[0];
 		if(!game.getCarsRight().isEmpty())
-			lastcar[1] = game.getCarsRight().last();
+			lastcar[1] = phantomCarR.getSurroundingCars(game)[0];//game.getCarsRight().last();
 		return lastcar;
 		
 	}
@@ -349,6 +350,7 @@ public class CMSpawner implements EntitySpawner  {
 		return carDens;
 	}
 	
+
 	private void initSigns(Game game) throws SlickException {
 		if(Game.classicMerge){
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
@@ -362,7 +364,7 @@ public class CMSpawner implements EntitySpawner  {
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 210, Sign_Type.LINE_END_0));
 			game.addSign(new LaneEndsSign(Game.END_OF_LANE - 810, Sign_Type.LINE_END_0));
-			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 1000, Sign_Type.SPD_100));
+			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 1400, Sign_Type.SPD_100));
 			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 800, Sign_Type.SPD_80));
 			game.addSign(new SpeedLimitSign(Game.END_OF_LANE - 200, Sign_Type.SPD_80));
 		}

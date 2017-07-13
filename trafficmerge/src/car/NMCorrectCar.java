@@ -11,8 +11,9 @@ public class NMCorrectCar extends CMcorrectCar {
 			throws SlickException {
 		super(meter, isRightLane, initSpeed, initGoalSpeed, game);
 		this.areaI = Game.END_OF_LANE - 1000;
-		this.areaII = Game.END_OF_LANE - 800;
+		this.areaII = Game.END_OF_LANE - 500;
 		this.isBlockingBothLanes = true;
+		setColor(Color.DARKBLUE, Game.SCALE);
 	}
 
 	@Override

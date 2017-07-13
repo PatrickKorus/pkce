@@ -21,6 +21,8 @@ import sign.Sign;
 public class Game extends BasicGame {
 
 	/* ---------------- PRESET: ---------------- */
+	public static final int SIMULATION_TIME = 600;
+	
 
 	public static final float VEHICLE_LENGTH_M = 4.5f;
 	public static final float VEHICLE_LENGTH_PIX = 83; // at scale 1
@@ -34,10 +36,11 @@ public class Game extends BasicGame {
 	// to switch between classic and normal merge
 	public static boolean classicMerge = true;
 	public static float timeFactor = 1.0f;
-	public static double TOTAL_SIMULATION_DISTANCE = 1200; // in meter
-	public static double SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;
+	public static double pastObstacleDist = 100;
+	public static double END_OF_LANE = 2000;//TOTAL_SIMULATION_DISTANCE - pastObstacleDist; // in
+	public static double TOTAL_SIMULATION_DISTANCE = END_OF_LANE + pastObstacleDist; // in meter
+	public static double SCALE = 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);//0.09f;  0.09253012048192771;// 
 
-	public static double END_OF_LANE = TOTAL_SIMULATION_DISTANCE - 100; // in
 																		// meter
 
 	/* ---------------- END PRESET ---------------- */
@@ -59,8 +62,9 @@ public class Game extends BasicGame {
 	private LinkedList<Car> carsToAddLeft;
 
 	EntitySpawner spawner;
-
+	
 	public int carsEndCounter = 0;
+	public int carsSpawnedCounter = 0;
 	public int time = 0;
 	public double[] averageLaneSpeed = new double[] { 0.0, 0.0 };
 
@@ -69,7 +73,7 @@ public class Game extends BasicGame {
 		setConstants(SCALE);
 	}
 
-	private void setConstants(double scale) {
+	public void setConstants(double scale) {
 		meterToPixel = scale * Game.VEHICLE_LENGTH_PIX / Game.VEHICLE_LENGTH_M;
 		meter_per_width = Game.width / meterToPixel;
 		meter_out_of_window = Game.TOTAL_SIMULATION_DISTANCE - (Game.meter_per_width * 2);
@@ -106,8 +110,8 @@ public class Game extends BasicGame {
 		carsToAddLeft = new LinkedList<>();
 		carsToAddRight = new LinkedList<>();
 
-		background = new Image("res/background_stripes.jpg");
-		obstacle = new Obstacle(END_OF_LANE);
+		background = new Image("res/background.png");
+		obstacle = new Obstacle(END_OF_LANE+100);
 		// spawner = new manualSpawner();
 		spawner = new CMSpawner();
 		spawner.init(this);
@@ -139,6 +143,7 @@ public class Game extends BasicGame {
 		if (!carsRight.isEmpty())
 			firstCar = carsRight.first();
 		if (firstCar != null && firstCar.meter > Game.TOTAL_SIMULATION_DISTANCE + 10) {
+			GameUI.averageCarSpeed += 3.6*TOTAL_SIMULATION_DISTANCE/((double)(time - (double)carsRight.first().getSpawnTime()));
 			carsRight.pollFirst();
 			carsEndCounter++;
 		}
@@ -171,14 +176,6 @@ public class Game extends BasicGame {
 		gameUi.update(newDelta);
 	}
 
-	// public void resortList(TreeSet<Car> list){
-	// TreeSet<Car> newlist = new TreeSet<Car>();
-	//// newlist.addAll(list);
-	// for(Car car : list)
-	// newlist.add(car);
-	// list = newlist;
-	// }
-
 	public void resortLists() {
 		TreeSet<Car> sortedSetLeft = new TreeSet<>();
 		sortedSetLeft.addAll(carsLeft);
@@ -189,36 +186,31 @@ public class Game extends BasicGame {
 	}
 
 	public void reset() throws SlickException {
-		// Works but hardcoded
-
 		// clear cars
 		carsLeft.clear();
 		carsRight.clear();
 
 		// reset variables
-		SCALE = 0.09253012048192771;// 2*Game.width*Game.VEHICLE_LENGTH_M/(Game.TOTAL_SIMULATION_DISTANCE*Game.VEHICLE_LENGTH_PIX);
 		time = 0;
 		carsEndCounter = 0;
+		carsSpawnedCounter = 0;
 		averageLaneSpeed = new double[] { 0.0, 0.0 };
 		GameUI.incomingTraffic = 0;
 		GameUI.outgoingTraffic = 0;
+		GameUI.averageCarSpeed = 0;
 	}
 
 	public void resetParams() throws SlickException {
-		rescale((float) SCALE);
-
+		TOTAL_SIMULATION_DISTANCE = END_OF_LANE + 100;
+		END_OF_LANE = 1100;
 		timeFactor = 1.0f;
 		spawner.setTrafficDensity(0.6);
 		GameUI.aggressivePers = 0.0;
 		GameUI.passivePers = 0.0;
-
-		// clean TextFields
-		gameUi.scaler.setText("");
-		gameUi.timeControler.setText("");
-		gameUi.trafficDensity.setText("");
-		gameUi.aggressiveDriver.setText("");
-		gameUi.passiveDriver.setText("");
-	}
+		GameUI.scalingFactor = 1;
+		gameUi.scaleToFit();
+		rescale((float) SCALE);
+		}
 
 	public void rescale(float scale) throws SlickException {
 		this.setConstants(scale);
@@ -231,6 +223,8 @@ public class Game extends BasicGame {
 		obstacle.rescale(scale);
 		Game.SCALE = scale;
 	}
+	
+
 
 	public static int meterToPixel(double meter) {
 		return (int) Math.round(meter * meterToPixel);
@@ -288,6 +282,10 @@ public class Game extends BasicGame {
 
 	public GameObject getObstacle() {
 		return this.obstacle;
+	}
+	
+	public void setObstacle(Obstacle obstacle){
+		this.obstacle = obstacle;		
 	}
 
 	public void addCar(Car car) {
