@@ -342,28 +342,28 @@ public class Game extends BasicGame {
 		//===================================================================
 		
 		// classic 
-		states.add(new double[]{0.15 , 0.0 , 0 , 5 , 600});
-		states.add(new double[]{0.2 , 0.0 , 0 , 5 , 600});
-		states.add(new double[]{0.25 , 0.0 , 0 , 5 , 600});
-		states.add(new double[]{0.33 , 0.0 , 0 , 5 , 600});
-		states.add(new double[]{0.15 , 0.075 , 0 , 5 , 600});
-		states.add(new double[]{0.2 , 0.075 , 0 , 5 , 600});
-		states.add(new double[]{0.25 , 0.075 , 0 , 5 , 600});
-		states.add(new double[]{0.33 , 0.075 , 0 , 5 , 600});
-		states.add(new double[]{0.15 , 0.25 , 0 , 5 , 600});
-		states.add(new double[]{0.2 , 0.25 , 0 , 5 , 600});
-		states.add(new double[]{0.25 , 0.25 , 0 , 5 , 600});
-		states.add(new double[]{0.33 , 0.25 , 0 , 5 , 600});
-		states.add(new double[]{0.15 , 0.425 , 0 , 5 , 600});
-		states.add(new double[]{0.2 , 0.425 , 0 , 5 , 600});
-		states.add(new double[]{0.25 , 0.425 , 0 , 5 , 600});
-		states.add(new double[]{0.33 , 0.425 , 0 , 5 , 600});
-		
-		// new 
-		states.add(new double[]{0.15 , 0.0 , 1 , 5 , 600});
-		states.add(new double[]{0.2 , 0.0 , 1 , 5 , 600});
-		states.add(new double[]{0.25 , 0.0 , 1 , 5 , 600});
-		states.add(new double[]{0.33 , 0.0 , 1 , 5 , 600});
+//		states.add(new double[]{0.15 , 0.0 , 0 , 5 , 600});
+//		states.add(new double[]{0.2 , 0.0 , 0 , 5 , 600});
+//		states.add(new double[]{0.25 , 0.0 , 0 , 5 , 600});
+//		states.add(new double[]{0.33 , 0.0 , 0 , 5 , 600});
+//		states.add(new double[]{0.15 , 0.075 , 0 , 5 , 600});
+//		states.add(new double[]{0.2 , 0.075 , 0 , 5 , 600});
+//		states.add(new double[]{0.25 , 0.075 , 0 , 5 , 600});
+//		states.add(new double[]{0.33 , 0.075 , 0 , 5 , 600});
+//		states.add(new double[]{0.15 , 0.25 , 0 , 5 , 600});
+//		states.add(new double[]{0.2 , 0.25 , 0 , 5 , 600});
+//		states.add(new double[]{0.25 , 0.25 , 0 , 5 , 600});
+//		states.add(new double[]{0.33 , 0.25 , 0 , 5 , 600});
+//		states.add(new double[]{0.15 , 0.425 , 0 , 5 , 600});
+//		states.add(new double[]{0.2 , 0.425 , 0 , 5 , 600});
+//		states.add(new double[]{0.25 , 0.425 , 0 , 5 , 600});
+//		states.add(new double[]{0.33 , 0.425 , 0 , 5 , 600});
+//		
+//		// new 
+//		states.add(new double[]{0.15 , 0.0 , 1 , 5 , 600});
+//		states.add(new double[]{0.2 , 0.0 , 1 , 5 , 600});
+//		states.add(new double[]{0.25 , 0.0 , 1 , 5 , 600});
+//		states.add(new double[]{0.33 , 0.0 , 1 , 5 , 600});
 		states.add(new double[]{0.15 , 0.075 , 1 , 5 , 600});
 		states.add(new double[]{0.2 , 0.075 , 1 , 5 , 600});
 		states.add(new double[]{0.25 , 0.075 , 1 , 5 , 600});

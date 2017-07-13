@@ -2,15 +2,8 @@
 Weiterführende Verbesserungen der Simulation könnten in folgenden Bereichen implementiert werden:
 \begin{itemize}
 	\item \textbf{Debuggen:}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{images/BUG}
-		\caption{Rosa Auto ist zuweit gefahren}
-		\label{fig:bug}
-	\end{figure}
-
-Die Simulation besitzt noch mehrere Bugs. Wenn das Verkehrsvorkommen zu hoch ist, fahren manche Autos einfach über das Hindernis hinweg oder bleiben davor stehen, erkennen aber keine Lücke mehr. Das Problem dabei ist, dass die Fahrzeuge auf der rechten Seite das Fahrzeug noch erkennen und bremsen um dieses reinzulassen. Dadurch kommt es zu unnötigem und realtitätsfernem Rückstau.
-Auch der Fahrbahnwechsel ist noch nicht perfekt implementiert. Das Fahrzeug erkennt, wenn es auf der stärker befahrerenen Spur ist und wechselt auf die andere Fahrbahn, jedoch ist dieser Wechsel nicht immer sinnvoll.
+Die Simulation besitzt noch mehrere Bugs. Manchmal hält der aggressive Fahrer von der Engstelle und die nachfahrenden Fahrzeuge überholen nichtmehr.
+Der Fahrbahnwechsel ist noch nicht perfekt implementiert. Das Fahrzeug erkennt, wenn es auf der stärker befahrerenen Spur ist und wechselt auf die andere Fahrbahn, jedoch ist dieser Wechsel nicht immer sinnvoll.
 \item \textbf{Ein weiteres Verfahren:}\\
 Es wäre interessant ein Verfahren zu entwickeln was davon aus geht, dass nur autonome Fahrzeuge beteiligt sind. So könnten aufgrund der Kommunikation zwischen den Fahrzeugen statt Lücken suchen zu lassen, Lücken  gebildet werden, welche dann dem jeweiligen Fahrzeug zugewiesen werden. Diese Verfahren dürfte das Effektivste sein, jedoch frühestens in 20 Jahren von Bedeutung.
 
