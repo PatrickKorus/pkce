@@ -116,6 +116,10 @@ public class GameUI {
 
 	}
 
+	/**
+	 * prints current values to the console
+	 * @param game
+	 */
 	public void printToConsole(Game game) {
 		System.out.println(Game.classicMerge ? "Classic Merge Solutions for:" : "New Merge solution for:");
 		System.out.println("Verkehrsdichte (prozent): \t Anteil Störer: \t SpeedFactor:");
