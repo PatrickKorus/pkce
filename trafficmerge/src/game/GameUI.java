@@ -86,7 +86,7 @@ public class GameUI {
 		g.drawString("~>Total:" + Math.round((60*game.carsSpawnedCounter/(float)game.time)*100)/100.0 + " Autos/min", container.getWidth()-300 , 185);
 		g.drawString("Ausgangsverkehrsdichte: " + Math.round(60*outgoingTraffic*100)/100.0 + " Autos/min", container.getWidth()-350 , 210);
 		g.drawString("~>Total:" + Math.round((60*game.carsEndCounter/(float)game.time)*100)/100.0 + " Autos/min", container.getWidth()-300 , 230);
-		g.drawString("Av.-Speed(Auto): " + Math.round(100*(averageCarSpeed)/((double)game.carsEndCounter))/100.0 + " km/h", container.getWidth()-350 , 255);
+		g.drawString("\u00D8-Geschwindigkeit(Auto): " + Math.round(100*(averageCarSpeed)/((double)game.carsEndCounter))/100.0 + " km/h", container.getWidth()-350 , 255);
 
 
 	//Shortcuts:
