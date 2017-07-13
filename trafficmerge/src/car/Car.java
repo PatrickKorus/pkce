@@ -59,12 +59,11 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	protected void draw(Graphics g) {
 
 		if (GameUI.carData) {
 			String speedString = (this.currentSpeed * 36 / 10) + "";
 			String accString = (this.currentAcc) + "";
-//			String position = this.meter + "";
 			if (isRightLane) {
 				g.drawString(this.toString().substring(20), this.x, this.y + 20);
 				g.drawString(speedString.substring(0, 3), this.x, this.y + 40);
@@ -73,7 +72,6 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 				g.drawString(this.toString().substring(20), this.x, this.y - 75);
 				g.drawString(speedString.substring(0, 3), this.x, this.y - 55);
 				g.drawString(accString.substring(0, 3), this.x, this.y - 35);
-//				g.drawString(position, this.x, this.y - 95);
 			}
 		}
 		backimage.drawCentered(x, y);
@@ -110,11 +108,34 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		if (isChangingLane) {
 			changeLane(delta, game);
 		}
+	}
+	
+	/**
+	 * Here the car makes its choices manipulating only currentACC, isIndicating
+	 * & isChangingLane!
+	 * 
+	 * @param delta
+	 */
+	public abstract void regulate(Game game, int delta);
 
-		// invoke superclass
-		// super.update(delta);
+	@Override
+	public void rescale(float scale) throws SlickException {
+		setColor(color, scale);
 	}
 
+	@Override
+	public int compareTo(Car otherCar) {
+		if (this.meter < otherCar.meter) {
+			return 1;
+		} else if (this.meter > otherCar.meter) {
+			return -1;
+		}
+		return 0;
+	}
+
+	/**
+	 * Simple method to turn of the indicator.
+	 */
 	protected void stopInidicating() {
 		this.indicatingLightsOn = false;
 		this.isIndicating = false;
@@ -148,16 +169,10 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		}
 	}
 
-	/**
-	 * Here the car makes its choices manipulating only currentACC, isIndicating
-	 * & isChangingLane!
-	 * 
-	 * @param delta
-	 */
-	public abstract void regulate(Game game, int delta);
 
+
+	// for moving 
 	private int laneMover = 0;
-
 	/**
 	 * Moves linearly to the right lane
 	 * 
@@ -175,7 +190,7 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			}
 		}
 
-		laneMover += sign * Math.round((delta / 2000.0) * Game.SPACE_BETWEEN_LANES);
+		laneMover += sign * Math.round((delta / 1800.0) * Game.SPACE_BETWEEN_LANES);
 		if (sign * laneMover <= Game.SPACE_BETWEEN_LANES) {
 			this.y += laneMover;
 		} else if (sign == 1) {
@@ -253,7 +268,13 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 		return mps * 3.60;
 	}
 
-	public void setColor(Color color, double sCALE) throws SlickException {
+	/**
+	 * Sets the images of this car, according to color and scale
+	 * @param color
+	 * @param scale
+	 * @throws SlickException
+	 */
+	public void setColor(Color color, double scale) throws SlickException {
 		this.color = color;
 		String name = "basicCar";
 		switch (color) {
@@ -272,27 +293,12 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 			break;
 		}
 
-		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy((float) sCALE);
-		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy((float) sCALE);
-		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy((float) sCALE);
+		basicImage = new Image("res/" + name + "/normal.png").getScaledCopy((float) scale);
+		breakImage = new Image("res/" + name + "/breaking.png").getScaledCopy((float) scale);
+		indicateImage = new Image("res/" + name + "/indicating.png").getScaledCopy((float) scale);
 		normback = new Image("res/" + name + "/normal_back.png");
 		breakback = new Image("res/" + name + "/breaking_back.png");
 		indback = new Image("res/" + name + "/indicating_back.png");
-	}
-
-	@Override
-	public void rescale(float scale) throws SlickException {
-		setColor(color, scale);
-	}
-
-	@Override
-	public int compareTo(Car otherCar) {
-		if (this.meter < otherCar.meter) {
-			return 1;
-		} else if (this.meter > otherCar.meter) {
-			return -1;
-		}
-		return 0;
 	}
 
 	public double getCurrentAcc() {
@@ -327,10 +333,6 @@ public abstract class Car extends GameObject implements Comparable<Car> {
 
 	public boolean isChangingLane() {
 		return isChangingLane;
-	}
-	//TODO: Just a test for resetting the obstacle location
-	public void setDistance(double distance){
-		this.meter = distance;
 	}
 
 	public long getSpawnTime() {

@@ -47,6 +47,7 @@ public class CMcorrectCar extends Car {
 		Random r = new Random();
 		MAX_ACC = acc(7);
 		MAX_BREAKING_FORCE = acc(3);
+		area0 = 100;
 		areaI = Game.END_OF_LANE - 500 + Math.round(r.nextGaussian() * 50.0);
 		areaII = Game.END_OF_LANE
 				- 150 /* + Math.round(r.nextGaussian() * 50.0) */;
@@ -107,7 +108,7 @@ public class CMcorrectCar extends Car {
 
 
 		// priority 3: position dependent
-		if (this.meter < this.areaI) {
+		if (this.meter > area0 && this.meter < this.areaI) {
 			error = this.reactAreaI(game, surroundingCars, error);
 		} else if (this.meter >= this.areaI && this.meter < this.areaII) {
 			error = this.reactAreaII(game, surroundingCars, error);

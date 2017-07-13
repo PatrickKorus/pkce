@@ -44,9 +44,17 @@ public abstract class GameObject {
 		}
 		this.draw(g);
 	}
+/**
+ * use draw with culling !
+ * @param g
+ */
+	@Deprecated 
+	protected abstract void draw(Graphics g);
 
-	public abstract void draw(Graphics g);
-
+	/**
+	 * Updates the logic of this object.
+	 * @param delta
+	 */
 	public void update(int delta) {
 		updateCoordinates();
 	};
