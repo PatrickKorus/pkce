@@ -116,8 +116,12 @@ public class Game extends BasicGame {
 		spawner = new CMSpawner();
 		spawner.init(this);
 		gameUi = new GameUI(this, container, spawner);
+		
+		
 		//TODO: comment this line to either have or don't have preset simulations
-		simStates = getSimulationStates();
+//		simStates = getSimulationStates();
+		
+		
 		updateSimulation();
 		/*
 		 * Font fontPunkte = new AngelCodeFont("res/fonts/score_numer_font.fnt",
@@ -343,28 +347,28 @@ public class Game extends BasicGame {
 		//===================================================================
 		
 		// classic 
-//		states.add(new double[]{0.15 , 0.0 , 0 , 5 , 600});
-//		states.add(new double[]{0.2 , 0.0 , 0 , 5 , 600});
-//		states.add(new double[]{0.25 , 0.0 , 0 , 5 , 600});
-//		states.add(new double[]{0.33 , 0.0 , 0 , 5 , 600});
-//		states.add(new double[]{0.15 , 0.075 , 0 , 5 , 600});
-//		states.add(new double[]{0.2 , 0.075 , 0 , 5 , 600});
-//		states.add(new double[]{0.25 , 0.075 , 0 , 5 , 600});
-//		states.add(new double[]{0.33 , 0.075 , 0 , 5 , 600});
-//		states.add(new double[]{0.15 , 0.25 , 0 , 5 , 600});
-//		states.add(new double[]{0.2 , 0.25 , 0 , 5 , 600});
-//		states.add(new double[]{0.25 , 0.25 , 0 , 5 , 600});
-//		states.add(new double[]{0.33 , 0.25 , 0 , 5 , 600});
-//		states.add(new double[]{0.15 , 0.425 , 0 , 5 , 600});
-//		states.add(new double[]{0.2 , 0.425 , 0 , 5 , 600});
-//		states.add(new double[]{0.25 , 0.425 , 0 , 5 , 600});
-//		states.add(new double[]{0.33 , 0.425 , 0 , 5 , 600});
-//		
-//		// new 
-//		states.add(new double[]{0.15 , 0.0 , 1 , 5 , 600});
-//		states.add(new double[]{0.2 , 0.0 , 1 , 5 , 600});
-//		states.add(new double[]{0.25 , 0.0 , 1 , 5 , 600});
-//		states.add(new double[]{0.33 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.15 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.0 , 0 , 5 , 600});
+		states.add(new double[]{0.15 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.075 , 0 , 5 , 600});
+		states.add(new double[]{0.15 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.25 , 0 , 5 , 600});
+		states.add(new double[]{0.15 , 0.425 , 0 , 5 , 600});
+		states.add(new double[]{0.2 , 0.425 , 0 , 5 , 600});
+		states.add(new double[]{0.25 , 0.425 , 0 , 5 , 600});
+		states.add(new double[]{0.33 , 0.425 , 0 , 5 , 600});
+		
+		// new 
+		states.add(new double[]{0.15 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.2 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.25 , 0.0 , 1 , 5 , 600});
+		states.add(new double[]{0.33 , 0.0 , 1 , 5 , 600});
 		states.add(new double[]{0.15 , 0.075 , 1 , 5 , 600});
 		states.add(new double[]{0.2 , 0.075 , 1 , 5 , 600});
 		states.add(new double[]{0.25 , 0.075 , 1 , 5 , 600});
