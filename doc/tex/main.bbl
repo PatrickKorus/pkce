@@ -14,10 +14,24 @@
   durch professionelles, partnerschaftliches Verhalten im Stra{\ss}enverkehr}}.
 \newblock Frankfurt/M. : FAT, 2004
 
+\bibitem[Eng03]{Engelmann.2003}
+\textsc{Engelmann}, Frank:
+\newblock \emph{Ver{\"o}ffentlichungen des Instituts f{\"u}r
+  Verkehrswirtschaft, Stra{\ss}enwesen und St{\"a}dtebau}. Bd.~31:
+  {\emph{Fahrstreifenreduktionen an Autobahnen: Auswirkungen auf die
+  Verkehrssicherheit und den Verkehrsablauf}}.
+\newblock Hannover : Ivh, 2003. --
+\newblock ISBN 3922344313
+
 \bibitem[SVB13]{StrassenVerkehrsBehorde.01.04.2013}
 \textsc{Strassen-Verkehrs-Beh{\"o}rde}:
 \newblock \emph{Strassenverkehrsordnung: StVO}.
 \newblock \url{https://www.stvo.de/strassenverkehrsordnung}.
 \newblock \,Version:\,01.04.2013
+
+\bibitem[{Tob}]{TobiasFritz.}
+\textsc{{Tobias Fritz}}:
+\newblock \emph{Eine Einf{\"u}hrung in die 2D Spielprogrammierung mit Java und
+  Slick}
 
 \end{thebibliography}
