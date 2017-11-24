@@ -1,21 +1,38 @@
 \chapter{Programmierung}
+Der komplette Code kann unter \textbf{https://github.com/PatrickKorus/pkce} eingesehe werden.
 
 \section{Klassenhierachie und Verknüpfungen}
 \textbf{Schwierigkeit:} Welche Klassenstruktur ist erforderlich um die Simulation umzusetzen?
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Das UML-Diagramm (\ref{fig:classuml}) stellt die Verknüpfungen zwischen den einzelnen Klassen da. 
+	\item \textbf{Lösungsansatz:} Das UML-Diagramm (\ref{fig:classessimple}) stellt die Verknüpfungen zwischen den einzelnen Klassen da. Deutlich wird die Vererbung der abstrakten Car-Klasse auf die spezifischen Car-Klassen. Die jeweiligen Attribute und Methoden zu den jeweiligen Klassen sind in Abbildung \ref{fig:classuml} dargestellt.
 \end{addmargin}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/classes_simple}
+	\caption{ULM Klassendiagramm}
+	\label{fig:classessimple}
+\end{figure}
 
 \section{Attribute Fahrzeug}
 \textbf{Schwierigkeit:} Welche Eigenschaften müssen einem Auto übergeben werden damit eine realistische Simulation möglich ist?
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Beim Erstellen erhält das Auto eine Position und eine Geschwindigkeit. Die Position besteht aus einer Meteranzeige, wo auf der Strecke es sich aufhält und einer Abfrage auf welcher Spur es sich befindet. Zudem hat es die Möglichkeit zu beschleunigen bezeihungsweise zu bremsen und kann die zugelassene Höchstgeschwindigkeit abfragen. Weitere Attribute werden jedoch nicht betrachtet. Das bedeutet, dass der Zustand des Reifen, das Gewicht des Fahrzeugs, die Antriebsart und noch andere Attribute, welche ein Fahrzeug besitzen kann und die Simulation nur geringfügig beeinflussen nicht mit ins Ergebnis einfließen. Die Länge jedes Fahrzeugs beträgt 4,5\,m, wodurch LKWs in der Simulation nicht betrachtet werden. \\
+	\item \textbf{Lösungsansatz:} Beim Erstellen erhält das Auto eine Position und eine Geschwindigkeit. Die Position besteht aus einer Meteranzeige, wo auf der Strecke es sich aufhält und einer Abfrage auf welcher Spur es sich befindet. Zudem hat es die Möglichkeit zu beschleunigen bezeihungsweise zu bremsen und kann die zugelassene Höchstgeschwindigkeit abfragen. Weitere Attribute werden jedoch nicht betrachtet. Das bedeutet, dass der Zustand des Reifen, das Gewicht des Fahrzeugs, die Antriebsart und noch andere mögliche Attribute nicht mit ins Ergebnis einfließen. Die Länge jedes Fahrzeugs beträgt 4,5\,m, wodurch LKWs in der Simulation nicht betrachtet werden. \\
+\end{addmargin}
+
+\section{Bremsen}
+\textbf{Schwierigkeit:} Wie schaft man es ein realistisches Bremsverhalten zu erreichen ohne, dass es zu Auffahrunfällen kommt.
+\begin{addmargin}[25pt]{0pt}
+	\item \textbf{Lösungsansatz:} Das Bremsverhalten wurde mit Hilfe einer Differentialgleichung implementiert. Der Soll-Wert für den Abstand berechnet sich aus der Daumenregel "'Halber-Tacho"' und dem Abstand, den das Auto tatsächlich halten muss, um im Falle einer Notbremsung beider Autos keinen Unfall zu bauen. Dem liegt die Annahme zu Grunde, das Fahrer ihrer Sicherheitsabstand so halten, dass Unfälle grundsätzlich vermieden werden. Um die Soll-Position möglichst sanft anzusteuern, modellieren wir das Verhalten über die Differentialgleichung der gedämpften Feder,  
+	\begin{align}m\ddot{x}+b\dot{x}+kx=0. \end{align}
+	Hier ist $x$ der Abstand des Autos zur Sollposition ("'Auslenkung der Feder"'), $\dot{x}$ ist die Differenz der Geschwindigkeit des Autos zu der des Vordermans und $\ddot{x}$ die Differenz aus unserer Steuergröße (die Beschleunigung des angesteuerten Autos) und einer Abschätzung für die Beschleunigung des Vordermanns ist.  
+	
+	
 \end{addmargin}
 
 \section{Visualisierung}
 \textbf{Schwierigkeit:} Wie lässt sich das Reißverschlussverfahren am besten simulieren?
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Für die Simulation wurde Slick verwendet, da alle Gruppenmitglieder schon Erfahrungen mit Java gesammelt haben und Slick bereits eine graphische Oberfläche für Java besitzt, auf die zugegriffen werden konnte. Somit konnte gleich mit der Implementierung des Reißverschlussverfahrens begonnen werden und es musste nicht erst eine graphische Umgebung erstellt werden. Um einen leichteren Einstieg in Slick zu erhalten,wurde ein bereits existierendes Spiel namens "'UfoInvasion"' benutzt, um zu überprüfen, ob Slick auf allen Computern läuft. Daraufhin wurde ein neues Programm geschrieben, in dem lediglich die Slick-Library übernommen wurde. \\
+	\item \textbf{Lösungsansatz:} Für die Simulation wurde Slick verwendet, da alle Gruppenmitglieder schon Erfahrungen mit Java gesammelt haben und Slick bereits eine graphische Oberfläche für Java besitzt, auf die zugegriffen werden konnte. Somit konnte gleich mit der Implementierung des Reißverschlussverfahrens begonnen werden und es musste nicht erst eine graphische Umgebung erstellt werden. Um einen leichteren Einstieg in Slick zu erhalten, wurde ein bereits existierendes Spiel namens "'UfoInvasion"' \cite{TobiasFritz.} benutzt, um zu überprüfen, ob Slick auf allen Computern läuft. Daraufhin wurde ein neues Programm geschrieben, in dem lediglich die Slick-Library übernommen wurde. \\
 \end{addmargin}
 \textbf{Schwierigkeit:} Wie sollte die Fahrbahn aufgebaut sein?
 \begin{addmargin}[25pt]{0pt}
@@ -23,7 +40,7 @@
 \end{addmargin}
 \textbf{Schwierigkeit:} Was für visuelle Eigenschaften muss das Auto besitzen?
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Um die Handlung jedes einzelne Auto zu erkennen, haben wir den Autos Bremslichter und Blinker gegeben. Damit man diese Aktionen auch bei sehr klein abgebildeten Fahrzeugen erkennbar ist, blinkt außerdem die Umrandung. Zudem zeigt die Fahrzeugfarbe den Fahrstyle an. Der aggressive Fahrer ist durch rosa, der neutrale durch blau und der passive durch grün gekennzeichnet.\\
+	\item \textbf{Lösungsansatz:} Um die Handlung jedes einzelne Auto zu erkennen, wurden die Autos mit Bremslichtern und Blinkern ausgestattet. Damit diese Aktionen auch bei sehr klein abgebildeten Fahrzeugen erkennbar ist, blinkt außerdem die Umrandung. Zudem zeigt die Fahrzeugfarbe den Fahrstil an. Der aggressive Fahrer ist durch rosa, der neutrale durch blau und der passive durch grün gekennzeichnet.\\
 \end{addmargin}
 
 \begin{figure} %Abbildung Fahrzeugtypen: Aggressiv, Neutral, Passiv
@@ -136,6 +153,6 @@ Zu guter letzt kann der Benutzer noch den Anteil der Fahrertypen variieren. Stan
 \section{Fahrer}
 \textbf{Schwierigkeit:} Es gibt in der Realität viele unterschiedliche Fahrertype. Jeder Fahrer hat einen individuellen Fahrstyle. Diese lassen sich häufig in Kategorien wie zum Beispiel aggressive oder passive Fahrer einordnen. Ganz ohne die Unterscheidung von Fahrertypen wäre die Simulation nicht Realitätsgetreu.
 \begin{addmargin}[25pt]{0pt}
-	\item \textbf{Lösungsansatz:} Die Programmierung von sehr vielen Fahrertypen ist zeitaufwendig und alle psychologischen Aspekte sind nicht darstellbar. Es wurden drei Fahrertypen implementiert: Der Aggressiven (rosa), der Neutralen (blau) und der Passiven (grün). Diese drei Fahrertypen unterscheiden sich darin, wie großen Sicherheitsabstand sie einhalten, mit welcher Geschwindigkeit sie erzeugt werden, wie stark der Fahrer abbremst sobald das vorausfahrende Fahrzeug bremst und wie sie sich beim Einsortieren verhalten. So hat der aggressive Fahrer eine deutlich höhere Wahrscheinlichkeit, dass er mit einer erhöhten Geschwindigkeit erzeugt wird, als der passive oder neutrale Fahrer. Zudem nutzt der aggressive Fahrer jede noch so kleine Lücke die sich bei der Verengung ergibt. Der Passive hingegen lässt einen deutlich größerenen Sicherheitsabstand zum vorausfahrenden Fahrzeug und hat einen höheren "Panikfaktor", welcher bewirkt, dass er sobald vorne gebremst wird, auch stark abbremst.\\
+	\item \textbf{Lösungsansatz:} Die Programmierung von sehr vielen Fahrertypen ist zeitaufwendig und alle psychologischen Aspekte sind nicht darstellbar. Es wurden drei Fahrertypen implementiert: der Aggressive (rosa), der Neutrale (blau) und der Passive (grün). Diese drei Fahrertypen unterscheiden sich darin, welchen Sicherheitsabstand sie einhalten, mit welcher Geschwindigkeit sie erzeugt werden, wie stark der Fahrer abbremst, sobald das vorausfahrende Fahrzeug bremst und wie sie sich beim Einsortieren verhalten. So hat der aggressive Fahrer eine deutlich höhere Wahrscheinlichkeit, dass er mit einer erhöhten Geschwindigkeit erzeugt wird, als der passive oder neutrale Fahrer. Zudem nutzt der aggressive Fahrer jede noch so kleine Lücke die sich bei der Verengung ergibt. Der Passive hingegen lässt einen deutlich größerenen Sicherheitsabstand zum vorausfahrenden Fahrzeug und hat einen höheren "Panikfaktor", welcher bewirkt, dass er, sobald vorne gebremst wird, auch stark abbremst.\\
 Um die Simulation realitätsgetreuer zu machen besitzt jeder Fahrer eine Reaktionszeit von 250\,ms. Dadurch bremsen nicht alle Fahrzeuge gleichzeitig sondern erst wenn der Vordermann auch bremst.\\
 \end{addmargin}
